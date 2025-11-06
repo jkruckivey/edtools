@@ -1,23 +1,15 @@
 {
-  "name": "education-toolkit",
-  "version": "3.0.0",
-  "description": "Comprehensive toolkit for educational developers with 18 specialized agents, 14 slash commands, and automatic code review",
+  "name": "edtools",
+  "version": "1.0.0",
+  "description": "Simple test plugin with one command and one agent",
   "author": {
     "name": "James Kruck",
     "email": "jkruck@ivey.ca"
   },
-  "homepage": "https://github.com/jkruckivey/edtools",
-  "repository": "https://github.com/jkruckivey/edtools",
+  "homepage": "https://github.com/jkruckivey/EdTools",
+  "repository": "https://github.com/jkruckivey/EdTools",
   "license": "MIT",
-  "keywords": [
-    "education",
-    "accessibility",
-    "wcag",
-    "assessment-design",
-    "course-development"
-  ],
+  "keywords": ["education", "test"],
   "agents": "./agents",
-  "commands": "./commands",
-  "skills": "./skills",
-  "hooks": "./hooks/hooks.json"
+  "commands": "./commands"
 }

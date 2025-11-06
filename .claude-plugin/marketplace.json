@@ -9,19 +9,49 @@
     {
       "name": "edtools-plugin",
       "source": "./",
-      "description": "Simple test plugin",
+      "description": "Comprehensive toolkit for course developers with 18 specialized agents, 15 slash commands, hooks, skills, and automatic code review",
       "version": "1.0.0",
       "author": {"name": "James Kruck"},
       "license": "MIT",
-      "keywords": ["education", "test"],
+      "keywords": ["education", "accessibility", "wcag", "udl", "quality-matters", "assessment-design", "course-development"],
       "strict": false,
       "commands": [
+        "./commands/audit-module.md",
+        "./commands/build-storyboard.md",
+        "./commands/check-branding.md",
+        "./commands/check-cohort-structure.md",
+        "./commands/check-concept-threading.md",
+        "./commands/check-terminology.md",
+        "./commands/create-outline.md",
+        "./commands/design-assessment.md",
+        "./commands/design-widget.md",
+        "./commands/generate-rubric.md",
         "./commands/hello.md",
-        "./commands/audit-module.md"
+        "./commands/peer-review.md",
+        "./commands/review-content.md",
+        "./commands/simulate-journey.md",
+        "./commands/test-widget.md"
       ],
       "agents": [
+        "./agents/accessibility-auditor.md",
+        "./agents/assessment-consistency-checker.md",
+        "./agents/assessment-designer.md",
+        "./agents/backend-reviewer.md",
+        "./agents/branding-checker.md",
+        "./agents/cohort-structure-checker.md",
+        "./agents/concept-threading-checker.md",
+        "./agents/course-outline-creator.md",
+        "./agents/frontend-reviewer.md",
+        "./agents/peer-review-simulator.md",
+        "./agents/rubric-generator.md",
+        "./agents/self-paced-structure-checker.md",
+        "./agents/student-journey-simulator.md",
+        "./agents/terminology-consistency-checker.md",
         "./agents/test-agent.md",
-        "./agents/accessibility-auditor.md"
+        "./agents/udl-content-generator.md",
+        "./agents/uplimit-storyboard-builder.md",
+        "./agents/widget-designer.md",
+        "./agents/widget-tester.md"
       ]
     }
   ]

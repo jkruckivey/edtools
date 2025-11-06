@@ -16,10 +16,12 @@
       "keywords": ["education", "test"],
       "strict": false,
       "commands": [
-        "./commands/hello.md"
+        "./commands/hello.md",
+        "./commands/audit-module.md"
       ],
       "agents": [
-        "./agents/test-agent.md"
+        "./agents/test-agent.md",
+        "./agents/accessibility-auditor.md"
       ]
     }
   ]

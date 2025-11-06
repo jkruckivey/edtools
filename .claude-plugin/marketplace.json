@@ -1,0 +1,15 @@
+{
+  "name": "edtools",
+  "owner": {
+    "name": "James Kruck",
+    "email": "jkruck@ivey.ca",
+    "github": "jkruckivey"
+  },
+  "plugins": [
+    {
+      "name": "edtools-plugin",
+      "source": "./edtools-plugin",
+      "description": "Simple test plugin"
+    }
+  ]
+}

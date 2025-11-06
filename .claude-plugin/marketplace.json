@@ -1,0 +1,14 @@
+{
+  "name": "education-toolkit",
+  "owner": {
+    "name": "James Kruck",
+    "email": "jkruck@ivey.ca"
+  },
+  "plugins": [
+    {
+      "name": "education-toolkit",
+      "source": "./",
+      "strict": true
+    }
+  ]
+}

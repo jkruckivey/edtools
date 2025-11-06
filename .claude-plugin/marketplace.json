@@ -1,5 +1,4 @@
 {
-  "$schema": "https://raw.githubusercontent.com/anthropics/claude-code/main/.claude-plugin/marketplace.schema.json",
   "name": "education-toolkit",
   "owner": {
     "name": "James Kruck",
@@ -8,13 +7,12 @@
   "plugins": [
     {
       "name": "education-toolkit",
-      "version": "3.0.0",
+      "source": "./plugins/education-toolkit",
       "description": "Comprehensive toolkit for educational developers with specialized agents, commands, and automatic code review",
-      "source": {
-        "source": "github",
-        "repo": "jkruckivey/edtools"
-      },
-      "strict": true
+      "version": "3.0.0",
+      "author": {
+        "name": "James Kruck"
+      }
     }
   ]
 }

@@ -1,77 +1,48 @@
-# Education Toolkit
+# Education Toolkit Marketplace
 
-Comprehensive Claude Code plugin for educational developers, instructional designers, and course creators.
-
-## Features
-
-- **18 Specialized Agents**: Strategic course planning, accessibility auditing, assessment design, code review, and more
-- **14 Slash Commands**: Quick-access workflows for common tasks
-- **Automatic Code Review**: PostToolUse hooks for fullstack quality enforcement
-- **Knowledge Base**: 614 KB of bundled course design principles and AI assessment research
+Claude Code plugin marketplace for educational developers, instructional designers, and course creators.
 
 ## Installation
 
+Add this marketplace to Claude Code:
+
 ```bash
-/plugin add jameskruck/education-toolkit
+/plugin marketplace add jkruckivey/edtools
 ```
 
-## Key Capabilities
+Then install the education-toolkit plugin:
 
-### Course Design
-- **course-outline-creator**: Strategic CLO/MLO planning with QM compliance
-- **uplimit-storyboard-builder**: Detailed module design with interactivity analysis
-- **cohort-structure-checker**: Validates WLO-based cohort course patterns
-- **self-paced-structure-checker**: Validates MLO-based self-paced structures
+```bash
+/plugin install education-toolkit@education-toolkit
+```
 
-### Consistency & Quality
-- **terminology-consistency-checker**: Build course glossaries, flag term variations
-- **concept-threading-checker**: Ensure Week 1 concepts appear in later weeks
-- **assessment-consistency-checker**: Validate PAIRR methodology, rubric alignment
-- **branding-checker**: Platform branding compliance (Canvas/Uplimit)
+## Plugins
 
-### Widget & Design
-- **widget-designer**: Generate/audit HTML widgets with standardized design system
-- **widget-tester**: Test widgets with 3 student personas
-- **accessibility-auditor**: WCAG 2.2 AA compliance checking
+### education-toolkit v3.0.0
 
-### Assessment & Pedagogy
-- **assessment-designer**: PAIRR, AI Roleplay, diagnostic rubrics (464 KB research)
-- **rubric-generator**: Create QM-compliant rubrics
-- **udl-content-generator**: Universal Design for Learning implementation
-
-### Code Review
-- **backend-reviewer**: FastAPI/Python security & best practices
-- **frontend-reviewer**: React/JSX with WCAG 2.2 AA focus
-
-### Testing & Simulation
-- **peer-review-simulator**: 6 ID specialists review (comprehensive QA)
-- **student-journey-simulator**: 4 learner personas test experience
+Comprehensive toolkit with:
+- **18 specialized agents** for course design, accessibility, assessment, and code review
+- **14 slash commands** for quick workflows
+- **Automatic quality hooks** for code and content validation
+- **614 KB knowledge base** of assessment research and course design patterns
 
 ## Structure
 
 ```
-EdTools/
+edtools/
 ├── .claude-plugin/
-│   ├── marketplace.json    # Marketplace distribution config
-│   └── plugin.json          # Plugin manifest
-├── agents/                  # 18 agent definitions
-├── commands/                # 14 slash commands
-├── skills/                  # 3 executable Python skills
-├── hooks/                   # Automatic quality enforcement
-├── assessment-knowledge/    # 464 KB assessment research
-└── course-design-knowledge/ # 150 KB Ivey process & patterns
+│   └── marketplace.json
+└── plugins/
+    └── education-toolkit/
+        ├── plugin.json
+        ├── agents/        (18 specialized agents)
+        ├── commands/      (14 slash commands)
+        ├── skills/        (3 executable Python skills)
+        ├── hooks/         (5 automatic quality hooks)
+        ├── assessment-knowledge/
+        └── course-design-knowledge/
 ```
-
-## Version
-
-**3.0.0** - Fresh marketplace structure with strict mode
 
 ## License
 
-MIT License - See LICENSE file
-
-## Author
-
-James Kruck
-Ivey Business School
-jkruck@ivey.ca
+MIT - See LICENSE in plugin directory

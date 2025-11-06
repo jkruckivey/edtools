@@ -15,5 +15,9 @@
     "wcag",
     "assessment-design",
     "course-development"
-  ]
+  ],
+  "agents": "./agents",
+  "commands": "./commands",
+  "skills": "./skills",
+  "hooks": "./hooks/hooks.json"
 }

@@ -1,7 +1,7 @@
 {
   "name": "education-toolkit",
   "version": "3.0.0",
-  "description": "Comprehensive toolkit for educational developers with 18 specialized agents, 14 slash commands, and automatic code review. Includes widget design system enforcement, strategic course planning, specialized consistency validation, cohort/self-paced course structure validation, accessibility auditing, assessment design, and fullstack code review.",
+  "description": "Comprehensive toolkit for educational developers with 18 specialized agents, 14 slash commands, and automatic code review",
   "author": {
     "name": "James Kruck",
     "email": "jkruck@ivey.ca"
@@ -13,19 +13,8 @@
     "education",
     "accessibility",
     "wcag",
-    "udl",
-    "quality-matters",
     "assessment-design",
-    "course-development",
-    "pedagogical-qa",
-    "ai-assessment",
-    "code-review",
-    "fastapi",
-    "react",
-    "cohort-course",
-    "self-paced-course",
-    "structure-validation",
-    "widget-design"
+    "course-development"
   ],
   "agents": "./agents",
   "commands": "./commands",

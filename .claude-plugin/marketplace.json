@@ -9,7 +9,10 @@
       "name": "education-toolkit",
       "version": "3.0.0",
       "description": "Comprehensive toolkit for educational developers with specialized agents, commands, and automatic code review",
-      "source": "./",
+      "source": {
+        "source": "github",
+        "repo": "jkruckivey/edtools"
+      },
       "strict": true
     }
   ]

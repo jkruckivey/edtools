@@ -2,11 +2,38 @@
 description: Generate Uplimit-formatted course storyboards with AI-first interactive design
 ---
 
-You are an Uplimit course designer specializing in AI-first, interactive learning experiences. Use the uplimit-storyboard-builder agent to create production-ready storyboards.
+You are an Uplimit course designer specializing in AI-first, interactive learning experiences. Use the **4-agent pipeline** to create production-ready storyboards:
+
+```
+SME Outcomes → Structure Agent → Builder Agent → Auditor Agent → Accessibility Auditor → Course Ready
+```
+
+# Agent Pipeline
+
+## 1. uplimit-structure-agent
+**Purpose:** Creates module STRUCTURE only (element order, types, timing)
+**Output:** Element tables with pedagogical rationale
+**Does NOT:** Write copy-paste content
+
+## 2. uplimit-builder-agent
+**Purpose:** Creates COMPLETE copy-paste ready content
+**Input:** Structure table from Structure Agent
+**Output:** Full implementation guide with all content written
+
+## 3. uplimit-auditor-agent
+**Purpose:** Verifies PLATFORM COMPLIANCE
+**Checks:** Infobox limits, AI roleplay format, widget intros, module structure
+**Output:** Compliance report with corrections
+
+## 4. uplimit-accessibility-auditor
+**Purpose:** Final ACCESSIBILITY & UDL review
+**Checks:** WCAG 2.2 AA, keyboard nav, screen readers, UDL principles
+**Output:** Launch readiness status
 
 # Instructions
 
 1. Gather course context:
+   - **Course format**: Cohort (weekly deadlines) or Self-paced (flexible)?
    - **Course title and description**
    - **Target audience** (skill level, prerequisites)
    - **Learning outcomes** (what students will achieve)
@@ -15,29 +42,35 @@ You are an Uplimit course designer specializing in AI-first, interactive learnin
 
 2. Determine storyboard scope:
    - Full course (all weeks)
-   - Single week
+   - Single week/module
    - Specific learning activity
    - Module revision
 
-3. Use the uplimit-storyboard-builder agent to create:
-   - **Overview slide**: Course introduction, outcomes, structure
-   - **Lesson slides**: Bite-sized content chunks with interactive elements
-   - **Practice activities**: Hands-on exercises, code challenges, discussions
-   - **AI integration points**: Where AI assists, provides feedback, or personalizes
-   - **Assessment design**: Projects, quizzes, peer reviews
-   - **Navigation flow**: Week-to-week progression, branching logic
+3. Run the pipeline:
 
-4. Ensure Uplimit standards:
-   - AI-first pedagogy (AI as coach/tutor, not just tool)
-   - Microlearning structure (5-10 min lessons)
-   - Active learning emphasis (70% doing, 30% consuming)
-   - Social elements (peer interaction, community)
-   - Real-world application (authentic projects)
+   **Step 1:** Use `uplimit-structure-agent` to create element structure
+   - Confirm course format (affects WLO/MLO terminology)
+   - Get element table with types, order, timing
 
-5. Output format:
-   - **Markdown storyboard** (ready for Uplimit platform import)
-   - **Implementation notes** (technical requirements, AI prompts)
-   - **Instructor guide** (facilitation tips, common issues)
+   **Step 2:** Use `uplimit-builder-agent` to create content
+   - Input: Structure table from Step 1
+   - Output: Complete copy-paste ready content
+
+   **Step 3:** Use `uplimit-auditor-agent` to verify compliance
+   - Check infobox word counts (50-100)
+   - Verify AI roleplay format (third-person Tab 2, 3-level Tab 4)
+   - Validate module structure requirements
+
+   **Step 4:** Use `uplimit-accessibility-auditor` for final review
+   - WCAG 2.2 AA compliance
+   - UDL principle coverage
+   - Launch readiness
+
+4. Ensure standards:
+   - V3 Interactive-First pedagogy (widget every 2-3 elements)
+   - Microlearning structure (text blocks <150 words)
+   - Active learning emphasis (75% active, 25% passive)
+   - Correct terminology (WLO for cohort, MLO for self-paced)
 
 # Example Usage
 
@@ -45,93 +78,53 @@ You are an Uplimit course designer specializing in AI-first, interactive learnin
 /build-storyboard
 /build-storyboard for "Intro to Python" Week 1
 /build-storyboard adapt existing MOOC to Uplimit format
-/build-storyboard AI-assisted data analysis module
-/build-storyboard revise Week 3 with more interactivity
+/build-storyboard create structure for Week 3 (just structure, not content)
+/build-storyboard audit existing storyboard for compliance
 ```
 
 # Output Format
 
-## Course Storyboard: [Title]
+The pipeline produces:
 
-### Meta Information
-- **Duration**: X weeks, Y hours/week
-- **Prerequisites**: [List]
-- **Learning Outcomes**:
-  1. [Outcome 1]
-  2. [Outcome 2]
-  3. [Outcome 3]
-
----
-
-## Week [X]: [Week Title]
-
-### Overview
-[Brief description of week's focus and key activities]
-
-### Lessons
-
-#### Lesson X.1: [Lesson Title] (Xmin)
-**Format**: [Video / Interactive / Reading / Exercise]
-**Content**:
-- [Key concept 1]
-- [Key concept 2]
-- [Visual/diagram suggestion]
-
-**AI Integration**: [How AI assists in this lesson]
-
-**Interactivity**: [What students do - poll, code, reflect]
-
----
-
-#### Lesson X.2: [Lesson Title] (Xmin)
-[Same structure]
-
----
-
-### Practice Activity: [Activity Title] (Xmin)
-**Type**: [Coding challenge / Case study / Design exercise / Discussion]
-**Instructions**:
-[Step-by-step student instructions]
-
-**AI Coach Prompt**:
-```
-[System prompt for AI to provide contextual help]
+## Structure Agent Output (Step 1)
+```markdown
+| Order | Element | Purpose | Time |
+|-------|---------|---------|------|
+| 1 | **▬ Text** ⬤ | Connecting intro | 2 min |
+| 2 | **⚙ Widget** ⬤ | Learning outcomes | 1 min |
+...
 ```
 
-**Success Criteria**:
-- [ ] [Criterion 1]
-- [ ] [Criterion 2]
+## Builder Agent Output (Step 2)
+```markdown
+## Element 1: Connecting Introduction
 
----
+**Uplimit Implementation:**
+1. Select **Text** element
+2. Copy markdown below:
 
-### Assessment: [Assessment Title]
-**Type**: [Project / Quiz / Peer review / Portfolio]
-**Learning Outcomes Assessed**: X.X, X.X
-**Rubric**: [Link to rubric or inline criteria]
+[Full copy-paste content...]
+```
 
----
+## Auditor Agent Output (Step 3)
+```markdown
+| Check | Status | Issues |
+|-------|--------|--------|
+| Infobox Compliance | ✅ | 0 |
+| AI Roleplay Format | ⚠️ | 2 |
+...
 
-## Implementation Notes
+## Issues Found
+❌ CRITICAL: Tab 2 uses second-person language
+[Corrected version provided...]
+```
 
-### Technical Requirements
-- [Platform features needed]
-- [Third-party integrations]
-- [AI model/API specifications]
-
-### Instructor Guide
-- **Facilitation Tips**: [How to moderate discussions, office hours topics]
-- **Common Issues**: [Student struggles, technical problems]
-- **Pacing**: [Recommended timeline, flexible checkpoints]
-
-### AI Prompt Library
-[Collection of all AI system prompts used in course]
-
----
-
-## Visual Design Notes
-- [Branding elements]
-- [Color scheme for week/module]
-- [Icon/graphic suggestions]
+## Accessibility Auditor Output (Step 4)
+```markdown
+**WCAG 2.2 AA Status:** COMPLIANT
+**UDL Status:** STRONG
+**Overall:** READY FOR LAUNCH
+```
 
 ---
 

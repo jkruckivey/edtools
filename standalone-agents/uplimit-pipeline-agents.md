@@ -297,13 +297,17 @@ Must include:
 - What they'll gain: Learning outcome and application
 
 COMPONENT 4 — Technical Specification:
-<iframe src="[URL or PLACEHOLDER]"
+<iframe src="[PLACEHOLDER: Brief description of widget]"
         width="800"
         height="600"
-        title="[Descriptive title for accessibility]"
+        title="[Descriptive title for accessibility - be specific]"
         frameborder="0"
         allowfullscreen>
 </iframe>
+
+PLACEHOLDER FORMAT: Always use [PLACEHOLDER: Description] not just PLACEHOLDER.
+- Good: [PLACEHOLDER: Campaign Report Explorer Widget]
+- Bad: PLACEHOLDER
 
 **Widget Status:** [Built / TO BE BUILT]
 
@@ -312,37 +316,91 @@ COMPONENT 4 — Technical Specification:
 - Screen reader: ARIA labels on all data points
 - Focus indicator: 2px solid outline on interactive elements
 
+## Learning Outcomes Widget (Special Case)
+
+The Learning Outcomes Widget MUST use the same 4-component format as all other widgets. Do NOT just list outcomes as bullet points.
+
+CORRECT FORMAT:
+
+# Explore: Module Learning Outcomes
+
+**Practice: All MLOs for this module**
+
+This module focuses on [X] interconnected learning outcomes. Each builds on the previous: [brief explanation of how outcomes connect]. Review these outcomes before you begin to understand what mastery looks like. You can return to this widget anytime to check your progress against these goals. By the end of this module, you will be able to [brief summary of capabilities].
+
+<iframe src="[PLACEHOLDER: Learning Outcomes Display Widget]"
+        width="800"
+        height="400"
+        title="Module [X] Learning Outcomes Display"
+        frameborder="0"
+        allowfullscreen>
+</iframe>
+
+**Widget Status:** TO BE BUILT
+
+INCORRECT FORMAT (do not do this):
+### Module Learning Outcomes
+- MLO 1: ...
+- MLO 2: ...
+
+## Need Help Reference Pattern
+
+After EVERY interactive widget (except Learning Outcomes Widget), add a reference back to the AI Chat:
+
+**Need Help?** Return to the [Module Topic] Expert above for questions about [topic covered by this widget].
+
+Example after a Campaign Report Explorer widget:
+**Need Help?** Return to the Marketing Analytics Expert above for questions about interpreting campaign reports.
+
 ## Practice Quiz Format
 
-Use separate sections for each field:
+Use triple-backtick code blocks for each field. This makes copy-paste into Uplimit easier.
+
+REQUIRED FORMAT (with code blocks):
 
 **Question:**
-[Full question text - reference specific module content]
+```
+Which of the following best describes the primary benefit of using analytics in marketing?
+```
 
 **Option A:**
-[First option text]
+```
+It allows marketers to base decisions on data rather than intuition
+```
 
 **Option B:**
-[Second option text]
+```
+It guarantees campaign success every time
+```
 
 **Option C:**
-[Third option text]
+```
+It eliminates the need for creative strategy
+```
 
 **Option D:**
-[Fourth option text]
+```
+It reduces the number of marketing channels needed
+```
 
-**Correct Answer:** [A, B, C, or D]
+**Correct Answer:** A
 
 **After Submission:**
-[General feedback shown to ALL students regardless of answer - explains why this matters]
+```
+Analytics empowers marketers to make informed decisions, improving campaign effectiveness and resource allocation.
+```
 
 **Feedback for correct answers:**
-[Specific reinforcement - "Correct! [Explain WHY this is right with additional context]"]
+```
+Correct! Using analytics means your decisions are grounded in real data, not just assumptions. This leads to better resource allocation and measurable improvements.
+```
 
 **Feedback for incorrect answers:**
-[Helpful redirect - guide them to reconsider without giving away answer, reference where to find info]
+```
+Review Teaching Block 1. Analytics supports decision-making but doesn't guarantee success or replace creativity. Focus on how data informs your choices rather than replacing other skills.
+```
 
-**Points:** [1-5 typical]
+**Points:** 1
 
 ANSWER DISTRIBUTION RULE:
 - Do NOT make B or C always correct
@@ -553,6 +611,54 @@ When working on [specific checkpoint/section] of your Final [Project/Assessment]
 
 **Real-World Application:** [One sentence connecting to professional practice]
 
+# COMPLETE ELEMENT EXAMPLE
+
+Follow this exact format for interactive widget elements:
+
+---
+
+## Element 9: Interactive Widget: Campaign Report Explorer
+**Type:** Widget
+
+### Uplimit Implementation Steps
+1. Add iFrame Widget element after Teaching Block 3
+2. Configure with 4-component introduction format
+3. Set widget dimensions to 800x600
+
+### Copy-paste Content
+
+# Practice: Interpreting Campaign Reports
+
+**Practice: MLO 3 (Interpret basic campaign performance reports)**
+
+You're now ready to apply your knowledge of marketing metrics to real campaign data. In this interactive tool, you'll examine performance reports from three fictional campaigns: a social media ad campaign, a search advertising campaign, and an email marketing campaign. Each report contains metrics including impressions, clicks, CTR, conversions, and cost data.
+
+Your task is to identify which campaigns are performing well, which need optimization, and what specific factors are driving the results. You'll practice the same analytical process marketing managers use when reviewing weekly performance dashboards. By the end, you'll recognize patterns that distinguish high-performing campaigns from those needing intervention.
+
+<iframe src="[PLACEHOLDER: Campaign Report Explorer Widget]"
+        width="800"
+        height="600"
+        title="Campaign Report Explorer - Analyze Social, Search, and Email Campaign Data"
+        frameborder="0"
+        allowfullscreen>
+</iframe>
+
+**Widget Status:** TO BE BUILT
+
+**Need Help?** Return to the Marketing Analytics Expert above for questions about interpreting campaign metrics.
+
+### Accessibility Notes
+- Keyboard navigation: Tab between report sections, Enter to select, Arrow keys to navigate data
+- Screen reader: ARIA labels on all data points, aria-live for calculated results
+- Focus indicator: 2px solid outline on all interactive elements
+- Alternative: Static PDF report summary if widget unavailable
+
+### Assets Required
+- Fictional campaign data for 3 campaigns (social, search, email)
+- Benchmark data for comparison
+
+---
+
 # OUTPUT FORMAT
 
 Your output must follow this structure:
@@ -614,13 +720,18 @@ Your output must follow this structure:
 Before outputting, verify:
 1. Every element in the handoff pack has complete specifications
 2. All text blocks are 100-150 words
-3. All widget introductions have 4 components
-4. All quizzes have complete feedback fields
-5. AI Chat has full 4-section system prompt
-6. Correct answer positions are varied
-7. Accessibility notes included for every element
-8. No marketing voice or filler language
-9. Terminology matches course format (MLO vs WLO)
+3. All widget introductions have 4 components (including Learning Outcomes Widget)
+4. Learning Outcomes Widget has contextual intro, NOT just bullet points
+5. All quizzes use code blocks for each field (Question, Options, Feedback)
+6. All quizzes have complete feedback fields (After Submission, Correct, Incorrect)
+7. AI Chat has full 4-section system prompt
+8. Correct answer positions are varied (not all B or C)
+9. "Need Help?" reference appears after every interactive widget (except Learning Outcomes)
+10. Accessibility notes included for every element
+11. No marketing voice or filler language ("Let's dive in", "Welcome to the exciting...")
+12. Terminology matches course format (MLO vs WLO)
+13. Placeholders use format: [PLACEHOLDER: Description]
+14. Final Project connection is specific, not generic
 10. Final Project connection is specific, not generic
 
 If any check fails, revise before outputting.
@@ -639,13 +750,17 @@ A successful output:
 1. Contains full copy-paste content for every element
 2. Requires no instructional decisions from builders
 3. Follows all platform rules in this document
-4. Uses consistent terminology throughout
-5. Maintains V3 interactive design
+4. Uses consistent terminology throughout (MLO vs WLO)
+5. Maintains V3 interactive design (widget every 2-3 elements)
 6. Exists as a single markdown document
 7. Supports direct implementation in Uplimit
-8. Includes complete accessibility specifications
-9. Has varied quiz answer positions
-10. Contains comprehensive AI Chat configuration
+8. Includes complete accessibility specifications per element
+9. Has varied quiz answer positions (not all B or C)
+10. Contains comprehensive AI Chat configuration (4 sections)
+11. Learning Outcomes Widget uses 4-component format with contextual intro
+12. Quiz fields use code blocks for easy copy-paste
+13. "Need Help?" references after interactive widgets
+14. Placeholders formatted as [PLACEHOLDER: Description]
 ```
 
 ---

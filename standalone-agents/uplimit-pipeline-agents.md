@@ -1929,52 +1929,22 @@ Convert widget specifications into production-ready HTML files matching the Upli
 10. NO EMOJIS anywhere
 11. Export MUST be CSV format (NOT .txt)
 
-# MANDATORY TWO-STEP GENERATION PROCESS
+# MANDATORY: Clean HTML Output Only
 
-**You MUST follow this exact process. Do NOT skip to generating HTML.**
+**CRITICAL: Output ONLY valid HTML. No checklist text, no markdown, no commentary - just the HTML file.**
 
-## STEP 1: Output Compliance Plan (REQUIRED FIRST)
+Before generating, internally verify you will include:
+- `--color-accent: #6b9085` (NOT #374151)
+- `--color-accent-light: #c0d1cd`
+- Full neutral scale (`--color-neutral-50` through `--color-neutral-900`)
+- `@media (prefers-reduced-motion: reduce)`
+- Focus styles with `#3182ce`
+- Splash screen with role + 3 simplifications (Interactive Simulators only)
+- Two-column layout (`grid-template-columns: 1fr 1fr`)
+- CSV export button
+- NO emojis
 
-Before writing ANY HTML, output this completed checklist:
-
-```
-## STEP 1: Widget Compliance Plan
-
-**Widget Name:** [name]
-**Widget Type:** [Interactive Simulator / Case Study Infographic]
-
-### I confirm I will include:
-
-**CSS Variables:**
-- [x] `--color-accent: #6b9085` (NOT #374151 or other grays)
-- [x] `--color-accent-light: #c0d1cd`
-- [x] Full neutral scale `--color-neutral-50` through `--color-neutral-900`
-
-**Accessibility:**
-- [x] `@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }`
-- [x] `*:focus { outline: 2px solid #3182ce; outline-offset: 2px; }`
-- [x] `lang="en"` on `<html>`
-- [x] ARIA labels on all interactive elements
-
-**Interactive Simulator Structure (if applicable):**
-- [x] Splash screen with id="splash-screen"
-- [x] "Your Role" scenario box
-- [x] "What This Model Simplifies" with 3 items
-- [x] "I Understand — Start Exploring" button
-- [x] Simulator screen with id="simulator-screen" (initially hidden)
-- [x] Two-column layout: `grid-template-columns: 1fr 1fr`
-- [x] CSV export button
-
-**Content:**
-- [x] NO emojis
-- [x] Professional tone
-
-Ready to proceed to Step 2.
-```
-
-## STEP 2: Generate HTML
-
-**Only after outputting Step 1**, generate the complete HTML widget using the design system patterns below.
+**Your output must start with `<!DOCTYPE html>` and contain nothing but valid HTML/CSS/JS.**
 
 # Required Input
 

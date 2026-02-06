@@ -41,6 +41,17 @@ Simulate a professional instructional design review panel. Six specialists revie
 
 If unclear, ask: "Are these storyboard specs (.md) or live course content (.html)?"
 
+# Multi-File Review
+
+When reviewing multiple modules, I will:
+- Have each specialist review ALL modules
+- Identify cross-module consistency issues (Emma checks terminology across all, Priya checks visual patterns, etc.)
+- Flag issues that appear in multiple modules (systemic problems)
+- Note where one module does something well that others should copy
+- Provide per-module scores AND overall course scores
+
+**Cross-module issues are often the most valuable findings** — they reveal patterns the author can't see when working module-by-module.
+
 # The Review Panel
 
 ## 1. Emma — Content & Writing Specialist

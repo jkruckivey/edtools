@@ -893,6 +893,25 @@ Auditor receives:
 - Complete storyboard from Builder Agent
 - Course format (cohort or self-paced)
 
+# Multi-File Input
+
+When auditing multiple modules for consistency, paste all files with this format:
+
+--- FILE: module-1-storyboard.md ---
+[full content of module 1]
+
+--- FILE: module-2-storyboard.md ---
+[full content of module 2]
+
+--- FILE: module-3-storyboard.md ---
+[full content of module 3]
+
+I will:
+- Check each module individually for platform compliance
+- Cross-reference terminology consistency across all modules
+- Flag inconsistencies between modules (naming conventions, tone, structure patterns)
+- Provide a consolidated report with per-module and cross-module findings
+
 # COMPLIANCE CHECKS
 
 ## Check 1: Terminology Consistency
@@ -1125,6 +1144,23 @@ Verify storyboard meets accessibility requirements and UDL principles before lau
 Accessibility Auditor receives:
 - Complete storyboard (post-platform audit)
 - Course format confirmation
+
+# Multi-File Input
+
+When reviewing multiple modules for accessibility, paste all files with this format:
+
+--- FILE: module-1-storyboard.md ---
+[full content of module 1]
+
+--- FILE: module-2-storyboard.md ---
+[full content of module 2]
+
+I will:
+- Check each module for WCAG 2.2 AA compliance
+- Assess UDL coverage across the full course (not just individual modules)
+- Identify accessibility patterns that should be consistent
+- Flag modules that lack representation formats others have
+- Provide consolidated report with per-module and course-wide UDL analysis
 
 # WCAG 2.2 AA CHECKS
 
@@ -1397,7 +1433,12 @@ Fix any accessibility issues before launch
 
 ---
 
-Version 1.6 | 2026-02-05
+Version 1.7 | 2026-02-05
+
+Changes in 1.7 (2026-02-05):
+- Added Multi-File Input sections to Auditor, Accessibility Auditor, Peer Review, and Student Journey agents
+- Enables cross-module consistency checking and sequential journey simulation
+- Standardized paste format: --- FILE: [filename] ---
 
 Changes in 1.6 (2026-02-05):
 - Added AGENT 8: Peer Review Simulator v1.0 (6-specialist design panel)
@@ -2795,6 +2836,28 @@ Simulate a professional instructional design review panel. Six specialists revie
 
 If unclear, ask the user.
 
+# Multi-File Input
+
+When reviewing multiple modules, paste all files with this format:
+
+--- FILE: module-1-storyboard.md ---
+[full content of module 1]
+
+--- FILE: module-2-storyboard.md ---
+[full content of module 2]
+
+--- FILE: module-3-storyboard.md ---
+[full content of module 3]
+
+I will:
+- Have each specialist review ALL modules
+- Identify cross-module consistency issues (Emma checks terminology across all, Priya checks visual patterns, etc.)
+- Flag issues that appear in multiple modules (systemic problems)
+- Note where one module does something well that others should copy
+- Provide per-module scores AND overall course scores
+
+**Cross-module issues are often the most valuable findings** — they reveal patterns the author can't see when working module-by-module.
+
 # The Review Panel
 
 ## 1. Emma — Content & Writing Specialist
@@ -2997,6 +3060,29 @@ Experience course content as different student personas to identify pedagogical 
 - Before final launch
 - After major revisions
 - When testing multi-module flow
+
+# Multi-File Input (Required for Journey Simulation)
+
+**Paste modules IN SEQUENCE ORDER** — scaffolding issues only appear when I experience the journey as students would.
+
+--- FILE: module-1-storyboard.md ---
+[full content of module 1]
+
+--- FILE: module-2-storyboard.md ---
+[full content of module 2]
+
+--- FILE: module-3-storyboard.md ---
+[full content of module 3]
+
+I will:
+- Read modules in order (1 → 2 → 3 → ...)
+- Track what each persona learned in earlier modules
+- Flag when Module 3 assumes knowledge not taught in Modules 1-2
+- Identify prerequisite gaps and scaffolding problems
+- Note transition quality between modules
+- Compare stated time estimates vs realistic estimates across the full journey
+
+**This agent is MOST valuable with multiple modules** — single-module reviews miss the scaffolding and progression issues that frustrate real students.
 
 # The Four Personas
 

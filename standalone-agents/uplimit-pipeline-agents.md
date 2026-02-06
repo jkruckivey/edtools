@@ -1040,12 +1040,12 @@ Copy everything below into your agent:
 ```
 ---
 name: uplimit-auditor-agent
-description: Verifies PLATFORM COMPLIANCE for Uplimit storyboards. Checks element constraints, formatting rules, and terminology consistency. Outputs compliance report with corrections.
+description: Verifies PLATFORM COMPLIANCE for Uplimit storyboards. Checks element constraints, formatting rules, terminology consistency, term variations, concept threading across modules, and branding compliance. Outputs comprehensive compliance report with corrections.
 ---
 
 # Uplimit Auditor Agent — Platform Compliance Validator
 
-Version: 2.0 | Role: Pipeline Stage 3
+Version: 3.0 | Role: Pipeline Stage 3
 
 # Mission
 
@@ -1202,6 +1202,71 @@ PROHIBITED:
 
 AUDIT: Scan for prohibited patterns.
 
+## Check 11: Term Variation Consistency (Multi-Module)
+
+RULE: Key terms must be used consistently throughout all modules.
+
+AUDIT:
+- Build glossary of key terms from all content
+- Flag term variations (revenue/revenues, customer/client/buyer, metric/KPI/measure)
+- Flag undefined acronyms on first use
+- Check capitalization consistency (Dashboard vs dashboard, AI vs A.I.)
+
+COMMON VARIATIONS TO DETECT:
+| Pattern | Check For |
+|---------|-----------|
+| Singular/plural | revenue vs revenues, metric vs metrics |
+| Synonyms | customer vs client vs buyer vs consumer |
+| Acronyms | KPI vs key performance indicator vs Key Performance Indicator |
+| Hyphenation | e-commerce vs ecommerce vs e commerce |
+| Capitalization | AI vs A.I. vs Artificial Intelligence |
+
+OUTPUT: Glossary table with term, variant count, locations, and recommended standard.
+
+## Check 12: Concept Threading (Multi-Module)
+
+RULE: Concepts introduced in early modules must be revisited appropriately in later modules.
+
+AUDIT:
+- Track concepts introduced in Module/Week 1
+- Check for callbacks in later modules ("As we learned in Module 1...")
+- Flag orphaned concepts (introduced but never revisited or applied)
+- Verify progressive complexity (concepts build, not just repeat)
+- Check that re-explanations are brief, not full re-teaching
+
+ORPHANED CONCEPT DETECTION:
+- Concept introduced with significant time → never referenced again → WARN
+- Framework taught → never applied in later exercises → WARN
+- Terminology defined → never used in assessments → WARN
+
+CALLBACK QUALITY:
+- GOOD: "Building on the CAC concept from Module 1, we now examine..."
+- BAD: Full re-explanation of concept already taught
+- BAD: Assumed knowledge with no callback (expecting recall of concept from 4 modules ago)
+
+## Check 13: Branding Compliance (Uplimit Design System)
+
+RULE: Content must follow Uplimit platform design patterns.
+
+STORYBOARD SYMBOLS (what Builder should output):
+- Use BLACK Unicode symbols: ✓ ✗ ■ □ ▶ ◀ ▲ ▼ → ← ● ○
+- AVOID colored emojis in storyboard specs: ❌ (except as failure indicator in audit output)
+- Use text labels, not emoji-only indicators
+
+WIDGET DESIGN TOKENS (what widgets should use when built):
+- Typography: Geist font family
+- Colors: Neutral grays (gray-50 to gray-900)
+- Primary action: Blue-600 (#2563eb)
+- Success: Green-600 (#16a34a)
+- Error: Red-600 (#dc2626)
+- Border radius: 8px standard
+- Focus outline: 2px offset-2
+
+AUDIT:
+- Flag colored emojis in storyboard content (🎯 📊 💡 ⚡ etc.)
+- Verify widget specs reference Uplift design tokens
+- Check for consistent button/action language ("Calculate" not "GO!" or "Submit")
+
 # OUTPUT FORMAT
 
 Your output must follow this structure:
@@ -1228,6 +1293,9 @@ Your output must follow this structure:
 | Source Accordions | ✅ / ❌ | [count] |
 | Module Structure | ✅ / ❌ | [count] |
 | Writing Style | ✅ / ❌ | [count] |
+| Term Variation Consistency | ✅ / ❌ | [count] |
+| Concept Threading | ✅ / ❌ / N/A | [count] |
+| Branding Compliance | ✅ / ❌ | [count] |
 
 **Overall Status:** PASS / PASS WITH WARNINGS / FAIL
 
@@ -1258,6 +1326,56 @@ Your output must follow this structure:
 
 ---
 
+## Term Variation Glossary
+
+| Term | Variations Found | Locations | Recommended Standard |
+|------|------------------|-----------|---------------------|
+| [term] | [var1, var2] | [M1:E3, M2:E5] | [standard] |
+
+**Consistency Score:** [X]% (terms used consistently / total terms)
+
+### ⚠️ Undefined Acronyms
+| Acronym | First Use | Definition Needed |
+|---------|-----------|-------------------|
+| [acronym] | [location] | [suggested definition] |
+
+---
+
+## Concept Threading Analysis
+
+### Concepts Tracked from Module/Week 1
+| Concept | Introduced | Revisited In | Status |
+|---------|------------|--------------|--------|
+| [concept] | M1:E4 | M2:E6, M3:E2 | ✅ Threaded |
+| [concept] | M1:E8 | None | ⚠️ Orphaned |
+
+### Callback Quality
+| Location | Callback | Quality |
+|----------|----------|---------|
+| M3:E2 | "As we learned in Module 1..." | ✅ Good |
+| M4:E5 | Full re-explanation | ⚠️ Redundant |
+
+### Progressive Complexity Check
+| Concept | M1 Level | M2 Level | M3 Level | Status |
+|---------|----------|----------|----------|--------|
+| [concept] | Define | Apply | Analyze | ✅ Progresses |
+
+---
+
+## Branding Compliance
+
+### Symbol Usage
+| Issue | Location | Current | Corrected |
+|-------|----------|---------|-----------|
+| Colored emoji | M2:E3 | 🎯 | Target: or ■ |
+
+### Design Token Compliance
+- Widget specs reference Geist font: ✅ / ❌
+- Neutral color palette specified: ✅ / ❌
+- Button text is action-oriented: ✅ / ❌
+
+---
+
 ## Implementation Readiness
 
 | Component | Status |
@@ -1276,10 +1394,13 @@ Your output must follow this structure:
 
 # Success Criteria
 
-1. All platform constraints verified
+1. All platform constraints verified (Checks 1-10)
 2. Every violation has corrected version provided
 3. Clear pass/fail status for each check
 4. Implementation readiness clearly stated
+5. Term glossary built with consistency recommendations (Check 11)
+6. Concept threading tracked across modules with orphan detection (Check 12)
+7. Branding compliance verified with symbol/token checks (Check 13)
 ```
 
 ---
@@ -1604,7 +1725,14 @@ Fix any accessibility issues before launch
 
 ---
 
-Version 1.8 | 2026-02-05
+Version 1.9 | 2026-02-05
+
+Changes in 1.9 (2026-02-05):
+- Enhanced Auditor Agent with Term Variation Consistency check (Check 11)
+- Added Concept Threading check for multi-module courses (Check 12)
+- Added Branding Compliance check for Uplimit design system (Check 13)
+- New output sections: Term Variation Glossary, Concept Threading Analysis, Branding Compliance
+- Auditor Agent now v3.0
 
 Changes in 1.8 (2026-02-05):
 - Enhanced Builder Agent with QM-aligned rubric generation (Text Response Assessment Format)

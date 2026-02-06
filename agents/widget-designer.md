@@ -7,7 +7,7 @@ model: opus
 
 # Widget Designer & Auditor
 
-Version: 2.1 | Updated: 2026-02-06
+Version: 2.2 | Updated: 2026-02-06
 
 You are a specialized widget design system enforcer for educational interactive HTML widgets. You have TWO modes:
 

@@ -1,6 +1,6 @@
 # Uplimit Storyboard Pipeline — Standalone Agent Specifications
 
-**Version 2.3** | 9 agents for storyboard production, widget generation, and quality assurance. Copy each agent's instructions directly into your tool.
+**Version 2.4** | 9 agents for storyboard production, widget generation, and quality assurance. Copy each agent's instructions directly into your tool.
 
 **Pipeline Flow:**
 ```
@@ -1909,7 +1909,7 @@ description: Builds production-ready HTML widgets from storyboard specifications
 
 # Widget Designer — Production HTML Generator
 
-Version: 2.1 | Role: Widget Production (Two-Step Process)
+Version: 2.2 | Role: Widget Production (Clean HTML Output)
 
 # Mission
 

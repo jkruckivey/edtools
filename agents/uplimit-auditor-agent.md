@@ -84,6 +84,16 @@ Per capabilities doc: Required components by module type
 #### V3 Interactive-First
 Per capabilities doc: Widget density, text limits, engagement ratio
 
+#### Widget HTML Compliance (if widget files provided)
+When widget HTML files are included in the audit:
+- **Color system:** Must use `--color-accent: #6b9085` (NOT `#374151` or Tailwind grays)
+- **Neutral scale:** Must use `--color-neutral-50` through `--color-neutral-900`
+- **Accessibility:** Must include `@media (prefers-reduced-motion: reduce)`
+- **Focus styles:** Must include `*:focus { outline: 2px solid #3182ce; }`
+- **Splash screen:** Interactive Simulators MUST have splash with simplifications
+- **Layout:** Must use horizontal two-column (`grid-template-columns: 1fr 1fr`)
+- **Export:** Must be CSV format (NOT .txt or jsPDF)
+
 ### Step 3: Generate Compliance Report
 
 **Report Format:**
@@ -107,6 +117,7 @@ Per capabilities doc: Widget density, text limits, engagement ratio
 | Module Structure | ✅/⚠️/❌ | [count] |
 | V3 Interactive-First | ✅/⚠️/❌ | [count] |
 | Course Type Consistency | ✅/⚠️/❌ | [count] |
+| Widget HTML Compliance | ✅/⚠️/❌ | [count] |
 
 **Overall Status:** [PASS / PASS WITH WARNINGS / NEEDS REVISION]
 
@@ -331,6 +342,82 @@ Replace with individual assessment:
 | 2 | ◈ AI Feedback | Optional practice tool |
 | 3 | 📝 Text Response | Submission with rubric |
 | 4 | ▬ Text | Module complete transition |
+```
+
+### Widget Using Wrong Color System
+
+```markdown
+❌ WIDGET HTML VIOLATION: Wrong accent color
+
+**Location:** [widget-file.html]
+**Line:** [CSS :root section]
+
+**Current Content:**
+```css
+--color-accent: #374151;
+```
+
+**Problem:** Widget uses Tailwind gray (#374151) instead of production accent color. All widgets must use the standardized color system.
+
+**Corrected Version:**
+```css
+:root {
+    /* Neutral Color Scale */
+    --color-neutral-50: #fafafa;
+    --color-neutral-100: #f5f5f5;
+    --color-neutral-200: #e5e5e5;
+    --color-neutral-300: #d4d4d4;
+    --color-neutral-400: #a3a3a3;
+    --color-neutral-500: #737373;
+    --color-neutral-600: #525252;
+    --color-neutral-700: #404040;
+    --color-neutral-800: #262626;
+    --color-neutral-900: #171717;
+
+    /* MANDATORY Accent Color */
+    --color-accent: #6b9085;
+    --color-accent-light: #c0d1cd;
+}
+```
+```
+
+### Widget Missing Reduced Motion
+
+```markdown
+❌ WIDGET HTML VIOLATION: Missing prefers-reduced-motion
+
+**Location:** [widget-file.html]
+**Line:** CSS section
+
+**Problem:** Widget has transitions/animations but no reduced motion media query. Required for WCAG 2.2 AA compliance.
+
+**Corrected Version (add to CSS):**
+```css
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+```
+```
+
+### Interactive Simulator Missing Splash Screen
+
+```markdown
+❌ WIDGET HTML VIOLATION: Interactive Simulator missing splash screen
+
+**Location:** [widget-file.html]
+**Widget Type:** Interactive Simulator
+
+**Problem:** Interactive Simulators MUST have a splash screen with:
+1. "Your Role" scenario box
+2. "What This Model Simplifies" section with 3 simplifications
+3. Disclaimer text
+4. "I Understand — Start Exploring" button
+
+**Required Structure:**
+Add splash screen div before simulator content. See widget-designer agent for complete template.
 ```
 
 ## Starting Prompt

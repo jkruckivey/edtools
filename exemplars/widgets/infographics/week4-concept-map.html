@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 4 Concept Map - Athletes, Brands & Emerging Sports</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-error: #ef4444;
+            --color-success: #c0d1cd;
+            --color-warning: #f0ede0;
+            --color-info: #bfe5e7;
+            --color-purple: #d5cae0;
+            --color-green: #c0d1cd;
+            --color-turquoise: #bfe5e7;
+            --color-sand: #f0ede0;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--color-neutral-600);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 16px;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .search-box:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .reset-btn {
+            padding: 10px 24px;
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .reset-btn:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .reset-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 24px;
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        #graph-container {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            position: relative;
+            height: 700px;
+        }
+
+        #definition-panel {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+            height: 700px;
+        }
+
+        .panel-empty {
+            color: var(--color-neutral-400);
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .panel-content {
+            display: none;
+        }
+
+        .panel-content.active {
+            display: block;
+        }
+
+        .panel-label {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 12px;
+        }
+
+        .panel-type {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--color-purple);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            color: var(--color-neutral-600);
+        }
+
+        .panel-section {
+            margin-bottom: 16px;
+        }
+
+        .panel-section-title {
+            font-weight: 600;
+            color: var(--color-neutral-700);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .panel-section-content {
+            color: var(--color-neutral-600);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .connected-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .connected-list li {
+            padding: 8px 12px;
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .connected-list li:hover {
+            background: var(--color-neutral-100);
+            border-color: var(--color-neutral-300);
+        }
+
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+            background: var(--color-neutral-50);
+            padding: 16px;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .node {
+            cursor: pointer;
+        }
+
+        .node circle {
+            stroke: white;
+            stroke-width: 2px;
+        }
+
+        .node.dimmed circle {
+            opacity: 0.2;
+        }
+
+        .node.dimmed text {
+            opacity: 0.2;
+        }
+
+        .node text {
+            font-family: 'Geist', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            pointer-events: none;
+            text-anchor: middle;
+        }
+
+        .link {
+            stroke: #e2e8f0;
+            stroke-width: 2px;
+            stroke-opacity: 0.3;
+        }
+
+        .link.dimmed {
+            stroke-opacity: 0.1;
+        }
+
+        .link.highlighted {
+            stroke-opacity: 0.8;
+            stroke-width: 3px;
+        }
+
+        @media (max-width: 1024px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            #definition-panel {
+                height: auto;
+                max-height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            h1 { font-size: 1.5rem; }
+            #graph-container { height: 500px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Week 4 Concept Map</h1>
+        <p class="subtitle">Interactive visualization of Athletes, Brands & Emerging Sports frameworks</p>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4A5568;"></div>
+                <span>Learning Outcomes</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #718096;"></div>
+                <span>Revenue Streams</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #A0AEC0;"></div>
+                <span>Key Concepts</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #CBD5E0;"></div>
+                <span>Real Examples</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <input type="text" class="search-box" id="search" placeholder="Search concepts, athletes, revenue streams...">
+            <button class="reset-btn" id="reset">Reset View</button>
+        </div>
+
+        <div class="layout">
+            <div id="graph-container"></div>
+
+            <div id="definition-panel">
+                <div class="panel-empty" id="panel-empty">
+                    Click any node to explore concepts and connections
+                </div>
+
+                <div class="panel-content" id="panel-content">
+                    <div class="panel-label" id="panel-label"></div>
+                    <div class="panel-type" id="panel-type"></div>
+
+                    <div class="panel-section">
+                        <div class="panel-section-title">Definition</div>
+                        <div class="panel-section-content" id="panel-definition"></div>
+                    </div>
+
+                    <div class="panel-section" id="panel-extra" style="display: none;">
+                        <div class="panel-section-title" id="panel-extra-title"></div>
+                        <div class="panel-section-content" id="panel-extra-content"></div>
+                    </div>
+
+                    <div class="panel-section">
+                        <div class="panel-section-title">Connected To</div>
+                        <ul class="connected-list" id="panel-connected"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data
+        const nodes = [
+            // Layer 1: Learning Outcomes
+            { id: 'mlo-4-1', label: 'MLO 4.1: Five Revenue Streams', type: 'learning_outcome', definition: 'Athletes generate revenue through endorsements, owned businesses, investments, media/content production, and licensing. Strategic allocation across streams determines long-term wealth.', module: 'Module 1', color: '#4A5568' },
+            { id: 'mlo-4-2', label: 'MLO 4.2: Owned Assets vs Endorsements', type: 'learning_outcome', definition: 'Core trade-off between guaranteed endorsement fees and equity ownership. Equity creates 2-3x more wealth over 20 years but requires upfront capital and risk tolerance.', module: 'Module 2', color: '#4A5568' },
+            { id: 'mlo-4-3', label: 'MLO 4.3: Women\'s Sports Investment', type: 'learning_outcome', definition: 'Emerging sports properties (NWSL, WNBA) offer first-mover advantage with high growth potential (25-40% IRR) despite higher risk than established leagues.', module: 'Module 3', color: '#4A5568' },
+            { id: 'mlo-4-4', label: 'MLO 4.4: Post-Career Strategy', type: 'learning_outcome', definition: 'Owned businesses and licensing continue generating value post-retirement while endorsements decline 60-80%. Asset-based strategy essential for long-term wealth preservation.', module: 'Module 4', color: '#4A5568' },
+
+            // Layer 2: Revenue Streams
+            { id: 'endorsements', label: 'Endorsements', type: 'revenue_stream', definition: 'Fee-based income from brand partnerships. Pros: Guaranteed cash, low risk. Cons: Fixed returns, expires post-career, doesn\'t compound.', example: 'Nike pays LeBron $32M/year for endorsement rights', color: '#718096' },
+            { id: 'owned-businesses', label: 'Owned Businesses', type: 'revenue_stream', definition: 'Equity in ventures you control. Pros: Exponential growth (25% annual), continues post-career, full upside. Cons: Requires capital, high risk, illiquid.', example: 'Serena Ventures: $111M fund → $500M value (4.5x return)', color: '#718096' },
+            { id: 'investments', label: 'Investments', type: 'revenue_stream', definition: 'Passive portfolio investments (stocks, VC funds). Pros: Market returns (10%), liquid, low effort. Cons: No control, moderate returns.', example: 'Standard 60/40 portfolio: $10M → $67M (20 years)', color: '#718096' },
+            { id: 'media-content', label: 'Media & Content', type: 'revenue_stream', definition: 'Production companies and IP ownership. Pros: IP appreciates (15%), residuals, creative control. Cons: Requires expertise, competitive market.', example: 'LeBron\'s SpringHill Entertainment: Production + IP ownership', color: '#718096' },
+            { id: 'licensing', label: 'Licensing & IP', type: 'revenue_stream', definition: 'Royalties from name/likeness rights. Pros: Passive income (12% growth), continues post-career. Cons: Depends on sustained brand value.', example: 'Michael Jordan: Nike royalty structure = $150M/year', color: '#718096' },
+
+            // Layer 3: Key Concepts
+            { id: 'equity-vs-fees', label: 'Equity vs Fees', type: 'concept', definition: 'Core trade-off: Take guaranteed fees now (endorsements) or invest in equity (owned businesses) that compounds over time. Equity creates 2-3x more wealth over 20 years but requires upfront capital and risk tolerance.', math: 'Fees: $10M/year × 5 years = $50M. Equity: $2M investment → $290M (20 years, 25% growth)', color: '#A0AEC0' },
+            { id: 'compounding', label: 'Compounding Returns', type: 'concept', definition: 'Exponential growth from reinvesting returns. Owned businesses compound at 25% vs endorsements at 8%. Over 20 years, this difference creates 5-10x wealth gap.', math: '$10M at 8% = $46M. $10M at 25% = $867M (20 years)', color: '#A0AEC0' },
+            { id: 'first-mover', label: 'First-Mover Advantage', type: 'concept', definition: 'Investing in emerging properties (women\'s sports) before valuations peak. Early NWSL investors (2015) saw 10-15x returns as league valuations rose from $4M to $40M+ (2023).', math: 'NWSL 2015 investment: $4M → $40M+ (2023) = 10x return in 8 years', color: '#A0AEC0' },
+            { id: 'wealth-preservation', label: 'Wealth Preservation', type: 'concept', definition: 'Protecting wealth post-career through asset-based income. 78% of NFL players go broke within 5 years without assets generating income. 4% withdrawal rate from $100M = $4M/year indefinitely.', math: 'Withdrawal rate: 4% preserve wealth, 7% stable, 12% depleting', color: '#A0AEC0' },
+            { id: 'valuation-gaps', label: 'Valuation Gaps', type: 'concept', definition: 'Market inefficiencies where assets trade below intrinsic value. Women\'s sports properties valued 5-10x less than male equivalents despite similar or higher growth rates.', math: 'NWSL avg attendance growth 48% vs MLS 12%, yet valuations 10x lower', color: '#A0AEC0' },
+            { id: 'lifestyle-discipline', label: 'Lifestyle Discipline', type: 'concept', definition: 'Spending control determines wealth preservation. Lavish lifestyle (80% spending) leaves $3.3M saved vs frugal (30% spending) leaves $11.55M - 3.5x difference compounds over time.', math: 'Spending 30% vs 80% creates $50M+ wealth difference over career', color: '#A0AEC0' },
+
+            // Layer 4: Real Examples
+            { id: 'serena', label: 'Serena Williams', type: 'athlete_example', definition: '$500M brand value on $94M prize money. Strategy: 30% endorsements, 70% equity (Serena Ventures, S by Serena). Result: Assets built during career sustain post-retirement value.', portfolio: 'Endorsements: $15M, Owned: $20M, Investments: $10M, Media: $3M, Licensing: $2M', color: '#CBD5E0' },
+            { id: 'lebron', label: 'LeBron James', type: 'athlete_example', definition: '$1B+ net worth. Strategy: Nike lifetime deal (cash flow) + equity in Blaze Pizza, SpringHill Entertainment, Liverpool FC. Result: Businesses worth $500M+ that appreciate independently of playing career.', portfolio: 'Endorsements: $10M, Owned: $25M, Investments: $12M, Media: $3M', color: '#CBD5E0' },
+            { id: 'mj', label: 'Michael Jordan', type: 'athlete_example', definition: '$2B+ net worth, majority from licensing. Nike royalty structure (licensing) generates $150M/year. Charlotte Hornets ownership (equity) worth $1.5B+. Demonstrates licensing can outperform endorsements long-term.', portfolio: 'Endorsements: $5M, Owned: $15M, Investments: $5M, Licensing: $25M (Nike)', color: '#CBD5E0' },
+            { id: 'magic', label: 'Magic Johnson', type: 'athlete_example', definition: '$1.2B+ wealth from post-career business focus. Strategy: Invested $3M in Starbucks, movie theaters, real estate during playing years. Held investments 30+ years, allowing full compounding effect.', portfolio: 'Peak strategy: Moderate spending, equity focus, business reinvestment', color: '#CBD5E0' },
+            { id: 'nwsl', label: 'NWSL Franchises', type: 'athlete_example', definition: 'First-mover investment case study. 2015 franchises: $4M entry. 2023 valuations: $40M+ (10x return in 8 years, 35% IRR). Demonstrates valuation gap opportunity in women\'s sports.', portfolio: 'Entry: $40M, Growth: 25%/year, IRR: 18-35%', color: '#CBD5E0' }
+        ];
+
+        const edges = [
+            { source: 'endorsements', target: 'mlo-4-1' },
+            { source: 'owned-businesses', target: 'mlo-4-1' },
+            { source: 'investments', target: 'mlo-4-1' },
+            { source: 'media-content', target: 'mlo-4-1' },
+            { source: 'licensing', target: 'mlo-4-1' },
+
+            { source: 'endorsements', target: 'mlo-4-2' },
+            { source: 'owned-businesses', target: 'mlo-4-2' },
+            { source: 'equity-vs-fees', target: 'mlo-4-2' },
+            { source: 'compounding', target: 'mlo-4-2' },
+
+            { source: 'investments', target: 'mlo-4-3' },
+            { source: 'first-mover', target: 'mlo-4-3' },
+            { source: 'valuation-gaps', target: 'mlo-4-3' },
+            { source: 'nwsl', target: 'mlo-4-3' },
+
+            { source: 'owned-businesses', target: 'mlo-4-4' },
+            { source: 'licensing', target: 'mlo-4-4' },
+            { source: 'wealth-preservation', target: 'mlo-4-4' },
+            { source: 'lifestyle-discipline', target: 'mlo-4-4' },
+
+            { source: 'serena', target: 'mlo-4-1' },
+            { source: 'serena', target: 'mlo-4-2' },
+            { source: 'serena', target: 'mlo-4-3' },
+            { source: 'serena', target: 'mlo-4-4' },
+
+            { source: 'lebron', target: 'mlo-4-1' },
+            { source: 'lebron', target: 'mlo-4-2' },
+            { source: 'lebron', target: 'mlo-4-4' },
+
+            { source: 'mj', target: 'mlo-4-2' },
+            { source: 'mj', target: 'mlo-4-4' },
+
+            { source: 'magic', target: 'mlo-4-2' },
+            { source: 'magic', target: 'mlo-4-4' }
+        ];
+
+        // Visualization
+        const width = document.getElementById('graph-container').clientWidth;
+        const height = 700;
+
+        const svg = d3.select('#graph-container')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height);
+
+        const simulation = d3.forceSimulation(nodes)
+            .force('link', d3.forceLink(edges).id(d => d.id).distance(150))
+            .force('charge', d3.forceManyBody().strength(-300))
+            .force('center', d3.forceCenter(width / 2, height / 2))
+            .force('collision', d3.forceCollide().radius(50));
+
+        const link = svg.append('g')
+            .selectAll('line')
+            .data(edges)
+            .join('line')
+            .attr('class', 'link');
+
+        const node = svg.append('g')
+            .selectAll('g')
+            .data(nodes)
+            .join('g')
+            .attr('class', 'node')
+            .call(d3.drag()
+                .on('start', dragStarted)
+                .on('drag', dragged)
+                .on('end', dragEnded));
+
+        node.append('circle')
+            .attr('r', d => d.type === 'learning_outcome' ? 30 : d.type === 'revenue_stream' ? 25 : d.type === 'concept' ? 20 : 18)
+            .attr('fill', d => d.color);
+
+        node.append('text')
+            .text(d => d.label.split(':')[1] || d.label)
+            .attr('dy', 40)
+            .style('fill', '#171717');
+
+        node.on('click', (event, d) => {
+            showDefinition(d);
+            highlightConnections(d);
+        });
+
+        simulation.on('tick', () => {
+            link
+                .attr('x1', d => d.source.x)
+                .attr('y1', d => d.source.y)
+                .attr('x2', d => d.target.x)
+                .attr('y2', d => d.target.y);
+
+            node.attr('transform', d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragStarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragEnded(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        function showDefinition(d) {
+            document.getElementById('panel-empty').style.display = 'none';
+            document.getElementById('panel-content').classList.add('active');
+
+            document.getElementById('panel-label').textContent = d.label;
+            document.getElementById('panel-type').textContent = d.type.replace('_', ' ');
+            document.getElementById('panel-definition').textContent = d.definition;
+
+            const extraSection = document.getElementById('panel-extra');
+            const extraTitle = document.getElementById('panel-extra-title');
+            const extraContent = document.getElementById('panel-extra-content');
+
+            if (d.math) {
+                extraSection.style.display = 'block';
+                extraTitle.textContent = 'Math Example';
+                extraContent.textContent = d.math;
+            } else if (d.portfolio) {
+                extraSection.style.display = 'block';
+                extraTitle.textContent = 'Portfolio';
+                extraContent.textContent = d.portfolio;
+            } else if (d.example) {
+                extraSection.style.display = 'block';
+                extraTitle.textContent = 'Example';
+                extraContent.textContent = d.example;
+            } else {
+                extraSection.style.display = 'none';
+            }
+
+            const connected = edges.filter(e => e.source.id === d.id || e.target.id === d.id)
+                .map(e => e.source.id === d.id ? e.target : e.source);
+
+            const connectedList = document.getElementById('panel-connected');
+            connectedList.innerHTML = '';
+            connected.forEach(n => {
+                const li = document.createElement('li');
+                li.textContent = n.label;
+                li.onclick = () => {
+                    showDefinition(n);
+                    highlightConnections(n);
+                };
+                connectedList.appendChild(li);
+            });
+        }
+
+        function highlightConnections(d) {
+            const connectedIds = edges.filter(e => e.source.id === d.id || e.target.id === d.id)
+                .flatMap(e => [e.source.id, e.target.id]);
+
+            connectedIds.push(d.id);
+
+            node.classed('dimmed', n => !connectedIds.includes(n.id));
+            link.classed('dimmed', true);
+            link.classed('highlighted', e => e.source.id === d.id || e.target.id === d.id);
+        }
+
+        document.getElementById('reset').addEventListener('click', () => {
+            node.classed('dimmed', false);
+            link.classed('dimmed', false);
+            link.classed('highlighted', false);
+
+            document.getElementById('panel-empty').style.display = 'block';
+            document.getElementById('panel-content').classList.remove('active');
+
+            document.getElementById('search').value = '';
+        });
+
+        document.getElementById('search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+
+            if (!query) {
+                node.classed('dimmed', false);
+                link.classed('dimmed', false);
+                return;
+            }
+
+            const matches = nodes.filter(n =>
+                n.label.toLowerCase().includes(query) ||
+                n.definition.toLowerCase().includes(query)
+            ).map(n => n.id);
+
+            node.classed('dimmed', n => !matches.includes(n.id));
+            link.classed('dimmed', true);
+        });
+    </script>
+</body>
+</html>

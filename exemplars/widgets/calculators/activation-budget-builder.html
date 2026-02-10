@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activation Budget Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+        body { font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: white; color: var(--color-neutral-800); padding: 1.5rem; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .widget-box { background: var(--color-neutral-50); border: 2px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.5rem; }
+        .widget-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+        .widget-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--color-neutral-800); color: white; padding: 0.375rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+        .widget-badge::before { content: ''; width: 8px; height: 8px; background: var(--color-accent); border-radius: 50%; }
+        .widget-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.25rem; }
+        .widget-subtitle { font-size: 0.85rem; color: var(--color-neutral-600); margin-bottom: 0.5rem; }
+        .widget-disclaimer { font-size: 0.75rem; color: var(--color-neutral-500); font-style: italic; margin-bottom: 1rem; }
+
+        /* Presets */
+        .presets { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+        .preset-btn { padding: 0.4rem 0.75rem; background: white; color: var(--color-neutral-700); border: 1px solid var(--color-neutral-300); border-radius: var(--border-radius-sm); font-family: inherit; font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .preset-btn:hover { background: var(--color-neutral-100); border-color: var(--color-neutral-400); }
+        .preset-btn.active { background: var(--color-neutral-800); color: white; border-color: var(--color-neutral-800); }
+
+        /* Two column layout */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1rem; }
+
+        /* Input panel */
+        .input-panel { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; }
+        .panel-label { font-size: 0.75rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+
+        /* Input groups */
+        .input-group { margin-bottom: 1rem; }
+        .input-group:last-child { margin-bottom: 0; }
+        .input-label { display: block; font-size: 0.8rem; font-weight: 500; color: var(--color-neutral-700); margin-bottom: 0.375rem; }
+        .input-row { display: flex; align-items: center; gap: 0.75rem; }
+        input[type="range"] { flex: 1; height: 6px; background: var(--color-neutral-200); border-radius: 3px; -webkit-appearance: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; background: var(--color-neutral-700); border-radius: 50%; cursor: pointer; }
+        input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; background: var(--color-neutral-700); border-radius: 50%; cursor: pointer; border: none; }
+        select { width: 100%; padding: 0.5rem; font-family: inherit; font-size: 0.85rem; color: var(--color-neutral-900); background: white; border: 1px solid var(--color-neutral-300); border-radius: var(--border-radius-sm); }
+        .value-badge { min-width: 55px; padding: 0.25rem 0.5rem; background: var(--color-neutral-100); border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); font-size: 0.8rem; font-weight: 600; color: var(--color-neutral-700); text-align: center; }
+
+        /* Results panel */
+        .results-panel { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); border-radius: var(--border-radius-sm); padding: 1rem; }
+        .budget-display { text-align: center; padding: 0.75rem 0; margin-bottom: 0.75rem; border-bottom: 1px solid var(--color-neutral-100); }
+        .budget-label { font-size: 0.7rem; font-weight: 500; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+        .budget-value { font-size: 1.5rem; font-weight: 700; color: var(--color-neutral-900); }
+        .total-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; }
+        .total-label { font-size: 0.8rem; color: var(--color-neutral-600); }
+        .total-value { font-size: 0.9rem; font-weight: 600; }
+        .total-valid { color: var(--color-accent); }
+        .total-invalid { color: var(--color-neutral-500); }
+
+        /* Sliders section */
+        .sliders-section { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; margin-bottom: 1rem; }
+        .allocation-slider { margin-bottom: 0.875rem; }
+        .allocation-slider:last-child { margin-bottom: 0; }
+        .slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.375rem; }
+        .slider-label { font-size: 0.8rem; font-weight: 500; color: var(--color-neutral-700); }
+        .slider-amounts { display: flex; gap: 0.5rem; font-size: 0.8rem; color: var(--color-neutral-600); }
+
+        /* Chart and table section */
+        .chart-section { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; }
+        .chart-title { font-size: 0.8rem; font-weight: 600; color: var(--color-neutral-700); margin-bottom: 0.5rem; }
+        .chart-container { height: 180px; }
+
+        .table-section { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); border-radius: var(--border-radius-sm); padding: 1rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; font-size: 0.7rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.05em; padding: 0.375rem 0; border-bottom: 1px solid var(--color-neutral-200); }
+        td { padding: 0.5rem 0; font-size: 0.8rem; color: var(--color-neutral-700); border-bottom: 1px solid var(--color-neutral-100); }
+        tr:last-child td { border-bottom: none; }
+
+        /* Insight section */
+        .insight-section { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; margin-bottom: 1rem; }
+        .insight-text { font-size: 0.85rem; color: var(--color-neutral-600); line-height: 1.5; margin-bottom: 0.5rem; }
+        .score-badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm); font-size: 0.75rem; font-weight: 600; background: var(--color-accent-light); color: var(--color-neutral-800); }
+
+        /* Action row */
+        .action-row { display: flex; justify-content: flex-end; gap: 0.5rem; }
+        .btn { padding: 0.5rem 1rem; border: none; border-radius: var(--border-radius-sm); font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .btn-secondary { background: var(--color-neutral-200); color: var(--color-neutral-700); }
+        .btn-secondary:hover { background: var(--color-neutral-300); }
+        .btn-primary { background: var(--color-neutral-800); color: white; }
+        .btn-primary:hover { background: var(--color-neutral-700); }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            .widget-box { padding: 1rem; }
+            .two-col { grid-template-columns: 1fr; }
+            .presets { gap: 0.375rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }
+
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+
+        /* Splash Screen Styles */
+        .splash-screen { text-align: center; padding: 2rem 1.5rem; }
+        .splash-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.5rem; }
+        .splash-subtitle { font-size: 0.9rem; color: var(--color-neutral-600); margin-bottom: 1.5rem; }
+        .splash-box { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.25rem; margin-bottom: 1.5rem; text-align: left; }
+        .splash-box-title { font-size: 0.8rem; font-weight: 600; color: var(--color-neutral-700); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .splash-box ul { list-style: none; padding: 0; margin: 0; }
+        .splash-box li { font-size: 0.85rem; color: var(--color-neutral-600); padding: 0.4rem 0; padding-left: 1.25rem; position: relative; line-height: 1.5; }
+        .splash-box li::before { content: "•"; position: absolute; left: 0; color: var(--color-neutral-400); }
+        .splash-disclaimer { font-size: 0.75rem; color: var(--color-neutral-500); font-style: italic; margin-bottom: 1.5rem; line-height: 1.5; }
+        .splash-btn { padding: 0.75rem 2rem; background: var(--color-neutral-800); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+        .splash-btn:hover { background: var(--color-neutral-700); }
+        .splash-btn:focus { outline: 3px solid var(--color-neutral-900); outline-offset: 2px; }
+        .simulator-screen { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+            <!-- Splash Screen -->
+            <div class="splash-screen" id="splashScreen">
+                <h1 class="splash-title">Activation Budget Builder</h1>
+                <p class="splash-subtitle">Design your sponsorship activation mix across channels</p>
+
+                <div class="splash-box">
+                    <div class="splash-box-title">What This Tool Does</div>
+                    <ul>
+                        <li>Helps you allocate activation budget across channels: advertising, hospitality, retail, digital, events, measurement</li>
+                        <li>Compares your allocation against industry benchmarks for different category strategies</li>
+                        <li>Calculates total spend based on the industry rule-of-thumb: activation runs 2-3× rights fees</li>
+                    </ul>
+                </div>
+
+                <div class="splash-box">
+                    <div class="splash-box-title">Model Simplifications</div>
+                    <ul>
+                        <li><strong>Benchmarks are illustrative:</strong> "Mass Market" and "Premium" allocations reflect general patterns, not specific company data</li>
+                        <li><strong>2-3× multiplier varies:</strong> Some sponsors spend 1× (under-activated), others spend 5× (heavily activated). Context matters.</li>
+                        <li><strong>"Benchmark Alignment" ≠ effectiveness:</strong> The score measures similarity to category norms, not actual ROI or strategic fit</li>
+                        <li><strong>Linear returns assumed:</strong> In reality, channels often exhibit diminishing or nonlinear effects — doubling digital spend rarely doubles impact</li>
+                        <li><strong>Categories overlap:</strong> Real activations blur boundaries — a hospitality event might also be digital content</li>
+                    </ul>
+                </div>
+
+                <div class="splash-box">
+                    <div class="splash-box-title">Strategic Note</div>
+                    <ul>
+                        <li><strong>Differentiation is valid:</strong> Some winning strategies intentionally overweight one channel (Red Bull's extreme events focus, Amex's hospitality dominance). Low benchmark alignment can signal innovation, not error.</li>
+                    </ul>
+                </div>
+
+                <p class="splash-disclaimer">
+                    Company names in presets are used for context only. Allocation patterns are illustrative and do not represent actual proprietary budgets.
+                </p>
+
+                <button class="splash-btn" onclick="startSimulator()">I Understand — Build My Budget</button>
+            </div>
+
+            <!-- Main Simulator (hidden until splash acknowledged) -->
+            <div class="simulator-screen" id="simulatorScreen">
+            <div class="widget-header">
+                <span class="widget-badge">Interactive Tool</span>
+            </div>
+            <h1 class="widget-title">Activation Budget Builder</h1>
+            <p class="widget-subtitle">Design your activation mix across channels. Remember: activation costs typically run 2-3x rights fees.</p>
+            <p class="widget-disclaimer">This simulator illustrates how assumptions shape outcomes. Real-world results vary widely.</p>
+
+            <div class="presets" role="group" aria-label="Category presets">
+                <button class="preset-btn" onclick="loadPreset('cocacola')">Beverage Brand (Coca-Cola-style)</button>
+                <button class="preset-btn" onclick="loadPreset('amex')">Premium Card (Amex-style)</button>
+                <button class="preset-btn" onclick="loadPreset('redbull')">Energy Drink (Red Bull-style)</button>
+            </div>
+
+            <div class="two-col">
+                <div class="input-panel">
+                    <div class="panel-label">Configuration</div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="rightsFee">Rights Fee</label>
+                        <select id="rightsFee" onchange="updateBudget()">
+                            <option value="1">$1M</option>
+                            <option value="5" selected>$5M</option>
+                            <option value="10">$10M</option>
+                            <option value="25">$25M</option>
+                            <option value="50">$50M</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="activationMultiplier">Activation Multiplier</label>
+                        <div class="input-row">
+                            <input type="range" id="activationMultiplier" min="2.0" max="3.5" value="2.5" step="0.1" oninput="updateBudget()">
+                            <span class="value-badge" id="multiplierValue">2.5x</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="categoryFocus">Category Focus</label>
+                        <select id="categoryFocus" onchange="updateInsights()">
+                            <option value="mass">Mass Market</option>
+                            <option value="premium">Premium</option>
+                            <option value="digital">Digital-First</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="results-panel" role="region" aria-label="Budget summary" aria-live="polite">
+                    <div class="panel-label">Budget Summary</div>
+                    <div class="budget-display">
+                        <div class="budget-label">Total Activation Budget</div>
+                        <div class="budget-value" id="totalBudget">$12.5M</div>
+                    </div>
+                    <div class="total-row">
+                        <span class="total-label">Current Allocation</span>
+                        <span class="total-value total-valid" id="allocationTotal">100%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sliders-section">
+                <div class="panel-label">Channel Allocation</div>
+
+                <div class="allocation-slider">
+                    <div class="slider-header">
+                        <span class="slider-label">Advertising</span>
+                        <div class="slider-amounts">
+                            <span id="advertisingPercent">30%</span>
+                            <span id="advertisingAmount">$3.75M</span>
+                        </div>
+                    </div>
+                    <input type="range" id="advertising" min="0" max="100" value="30" step="1" oninput="updateAllocation()" aria-label="Advertising allocation">
+                </div>
+
+                <div class="allocation-slider">
+                    <div class="slider-header">
+                        <span class="slider-label">Hospitality</span>
+                        <div class="slider-amounts">
+                            <span id="hospitalityPercent">15%</span>
+                            <span id="hospitalityAmount">$1.88M</span>
+                        </div>
+                    </div>
+                    <input type="range" id="hospitality" min="0" max="100" value="15" step="1" oninput="updateAllocation()" aria-label="Hospitality allocation">
+                </div>
+
+                <div class="allocation-slider">
+                    <div class="slider-header">
+                        <span class="slider-label">Retail</span>
+                        <div class="slider-amounts">
+                            <span id="retailPercent">20%</span>
+                            <span id="retailAmount">$2.50M</span>
+                        </div>
+                    </div>
+                    <input type="range" id="retail" min="0" max="100" value="20" step="1" oninput="updateAllocation()" aria-label="Retail allocation">
+                </div>
+
+                <div class="allocation-slider">
+                    <div class="slider-header">
+                        <span class="slider-label">Digital/Social</span>
+                        <div class="slider-amounts">
+                            <span id="digitalPercent">20%</span>
+                            <span id="digitalAmount">$2.50M</span>
+                        </div>
+                    </div>
+                    <input type="range" id="digital" min="0" max="100" value="20" step="1" oninput="updateAllocation()" aria-label="Digital allocation">
+                </div>
+
+                <div class="allocation-slider">
+                    <div class="slider-header">
+                        <span class="slider-label">Events</span>
+                        <div class="slider-amounts">
+                            <span id="eventsPercent">10%</span>
+                            <span id="eventsAmount">$1.25M</span>
+                        </div>
+                    </div>
+                    <input type="range" id="events" min="0" max="100" value="10" step="1" oninput="updateAllocation()" aria-label="Events allocation">
+                </div>
+
+                <div class="allocation-slider">
+                    <div class="slider-header">
+                        <span class="slider-label">Measurement</span>
+                        <div class="slider-amounts">
+                            <span id="measurementPercent">5%</span>
+                            <span id="measurementAmount">$0.63M</span>
+                        </div>
+                    </div>
+                    <input type="range" id="measurement" min="0" max="100" value="5" step="1" oninput="updateAllocation()" aria-label="Measurement allocation">
+                </div>
+            </div>
+
+            <div class="two-col">
+                <div class="chart-section">
+                    <div class="chart-title">Budget Allocation</div>
+                    <div class="chart-container">
+                        <canvas id="allocationChart" role="img" aria-label="Budget allocation pie chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="table-section">
+                    <div class="chart-title">Channel Spending</div>
+                    <table role="table">
+                        <thead>
+                            <tr>
+                                <th>Channel</th>
+                                <th>%</th>
+                                <th>Spend</th>
+                            </tr>
+                        </thead>
+                        <tbody id="spendTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="insight-section">
+                <p class="insight-text" id="insightText"></p>
+                <span class="score-badge" id="fitScore" title="Measures similarity to category norms, not effectiveness. Low scores can indicate inefficiency OR intentional differentiation.">Benchmark Alignment: 85/100</span>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" onclick="resetBuilder()">Reset</button>
+                <button class="btn btn-primary" onclick="exportData()">Export Budget Plan</button>
+            </div>
+            </div><!-- End simulator-screen -->
+        </div>
+    </div>
+
+    <script>
+        function startSimulator() {
+            document.getElementById('splashScreen').style.display = 'none';
+            document.getElementById('simulatorScreen').style.display = 'block';
+        }
+
+        let allocationChart = null;
+        const channels = ['advertising', 'hospitality', 'retail', 'digital', 'events', 'measurement'];
+
+        const presets = {
+            cocacola: { advertising: 40, hospitality: 5, retail: 30, digital: 10, events: 12, measurement: 3 },
+            amex: { advertising: 25, hospitality: 50, retail: 5, digital: 12, events: 5, measurement: 3 },
+            redbull: { advertising: 15, hospitality: 8, retail: 10, digital: 35, events: 28, measurement: 4 }
+        };
+
+        const benchmarks = {
+            mass: { advertising: 40, hospitality: 10, retail: 25, digital: 15, events: 7, measurement: 3 },
+            premium: { advertising: 25, hospitality: 45, retail: 8, digital: 12, events: 7, measurement: 3 },
+            digital: { advertising: 18, hospitality: 10, retail: 10, digital: 30, events: 28, measurement: 4 }
+        };
+
+        function loadPreset(type) {
+            const preset = presets[type];
+            channels.forEach(channel => {
+                document.getElementById(channel).value = preset[channel];
+            });
+
+            if (type === 'cocacola') document.getElementById('categoryFocus').value = 'mass';
+            else if (type === 'amex') document.getElementById('categoryFocus').value = 'premium';
+            else if (type === 'redbull') document.getElementById('categoryFocus').value = 'digital';
+
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            updateBudget();
+        }
+
+        function updateBudget() {
+            const rightsFee = parseFloat(document.getElementById('rightsFee').value);
+            const multiplier = parseFloat(document.getElementById('activationMultiplier').value);
+            const totalBudget = rightsFee * multiplier;
+
+            document.getElementById('multiplierValue').textContent = `${multiplier.toFixed(1)}x`;
+            document.getElementById('totalBudget').textContent = `$${totalBudget.toFixed(1)}M`;
+
+            updateAllocation();
+        }
+
+        function updateAllocation() {
+            const totalBudget = parseFloat(document.getElementById('totalBudget').textContent.replace(/[$M]/g, ''));
+
+            let total = 0;
+            channels.forEach(channel => {
+                const percent = parseInt(document.getElementById(channel).value);
+                const amount = (totalBudget * percent / 100).toFixed(2);
+                document.getElementById(`${channel}Percent`).textContent = `${percent}%`;
+                document.getElementById(`${channel}Amount`).textContent = `$${amount}M`;
+                total += percent;
+            });
+
+            const totalEl = document.getElementById('allocationTotal');
+            totalEl.textContent = `${total}%`;
+            totalEl.className = total === 100 ? 'total-value total-valid' : 'total-value total-invalid';
+
+            updateChart();
+            updateTable();
+            updateInsights();
+        }
+
+        function updateChart() {
+            const ctx = document.getElementById('allocationChart').getContext('2d');
+            const data = channels.map(channel => parseInt(document.getElementById(channel).value));
+
+            if (allocationChart) allocationChart.destroy();
+
+            allocationChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Advertising', 'Hospitality', 'Retail', 'Digital/Social', 'Events', 'Measurement'],
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            'rgba(64,64,64,0.85)',
+                            'rgba(115,115,115,0.85)',
+                            'rgba(163,163,163,0.85)',
+                            'rgba(212,212,212,0.85)',
+                            'rgba(229,229,229,0.85)',
+                            'rgba(245,245,245,0.85)'
+                        ],
+                        borderColor: 'white',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `${ctx.label}: ${ctx.parsed}%`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateTable() {
+            const totalBudget = parseFloat(document.getElementById('totalBudget').textContent.replace(/[$M]/g, ''));
+            const tbody = document.getElementById('spendTableBody');
+            const channelNames = ['Advertising', 'Hospitality', 'Retail', 'Digital/Social', 'Events', 'Measurement'];
+
+            tbody.innerHTML = '';
+            channels.forEach((channel, index) => {
+                const percent = parseInt(document.getElementById(channel).value);
+                const amount = (totalBudget * percent / 100).toFixed(2);
+                const row = tbody.insertRow();
+                row.innerHTML = `<td>${channelNames[index]}</td><td>${percent}%</td><td>$${amount}M</td>`;
+            });
+        }
+
+        function updateInsights() {
+            const category = document.getElementById('categoryFocus').value;
+            const benchmark = benchmarks[category];
+            const categoryName = category === 'mass' ? 'Mass Market' : category === 'premium' ? 'Premium' : 'Digital-First';
+
+            let totalDiff = 0;
+            let insights = [];
+
+            channels.forEach(channel => {
+                const current = parseInt(document.getElementById(channel).value);
+                const expected = benchmark[channel];
+                const diff = Math.abs(current - expected);
+                totalDiff += diff;
+
+                if (diff > 10) {
+                    const direction = current < expected ? 'increase' : 'decrease';
+                    const channelName = channel.charAt(0).toUpperCase() + channel.slice(1);
+                    insights.push(`${channelName}: ${direction} by ${diff}%`);
+                }
+            });
+
+            const fitScore = Math.max(0, 100 - totalDiff);
+            document.getElementById('fitScore').textContent = `Benchmark Alignment: ${fitScore}/100`;
+
+            let insightText = `Your allocation `;
+            if (fitScore >= 85) {
+                insightText += `closely resembles common ${categoryName} patterns. `;
+            } else if (fitScore >= 70) {
+                insightText += `is reasonably similar to typical ${categoryName} allocations. `;
+            } else {
+                insightText += `differs from typical ${categoryName} allocations. `;
+            }
+
+            if (insights.length > 0) {
+                insightText += `Gaps vs. benchmark: ${insights.slice(0, 2).join('; ')}. `;
+            } else {
+                insightText += `Your mix resembles common patterns in this category. `;
+            }
+
+            // Add innovation framing
+            insightText += `Note: Deviating from benchmarks can signal either inefficiency or intentional strategic differentiation.`;
+
+            document.getElementById('insightText').textContent = insightText;
+        }
+
+        function exportData() {
+            const totalBudget = parseFloat(document.getElementById('totalBudget').textContent.replace(/[$M]/g, ''));
+            const channelNames = ['Advertising', 'Hospitality', 'Retail', 'Digital/Social', 'Events', 'Measurement'];
+
+            const rows = [
+                'Activation Budget Builder - Export',
+                `Timestamp,${new Date().toISOString()}`,
+                '',
+                'CONFIGURATION',
+                `Rights Fee,$${document.getElementById('rightsFee').value}M`,
+                `Activation Multiplier,${document.getElementById('multiplierValue').textContent}`,
+                `Total Budget,${document.getElementById('totalBudget').textContent}`,
+                `Category Focus,${document.getElementById('categoryFocus').selectedOptions[0].text}`,
+                '',
+                'ALLOCATION',
+                'Channel,Percentage,Spend'
+            ];
+
+            channels.forEach((channel, index) => {
+                const percent = parseInt(document.getElementById(channel).value);
+                const amount = (totalBudget * percent / 100).toFixed(2);
+                rows.push(`${channelNames[index]},${percent}%,$${amount}M`);
+            });
+
+            rows.push('', `Benchmark Alignment,${document.getElementById('fitScore').textContent}`);
+
+            const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `activation-budget-${Date.now()}.csv`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        function resetBuilder() {
+            document.getElementById('rightsFee').value = 5;
+            document.getElementById('activationMultiplier').value = 2.5;
+            document.getElementById('categoryFocus').value = 'mass';
+
+            document.getElementById('advertising').value = 30;
+            document.getElementById('hospitality').value = 15;
+            document.getElementById('retail').value = 20;
+            document.getElementById('digital').value = 20;
+            document.getElementById('events').value = 10;
+            document.getElementById('measurement').value = 5;
+
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            updateBudget();
+        }
+
+        window.addEventListener('DOMContentLoaded', updateBudget);
+    </script>
+</body>
+</html>

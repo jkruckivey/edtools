@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Athlete Brand Pre-Assessment - Athlete Brand Knowledge Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-error: #ef4444;
+            --color-success: #c0d1cd;
+            --color-warning: #f0ede0;
+            --color-info: #bfe5e7;
+            --color-purple: #d5cae0;
+            --color-green: #c0d1cd;
+            --color-turquoise: #bfe5e7;
+            --color-sand: #f0ede0;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--color-neutral-300);
+            padding: 40px;
+        }
+
+        /* Screen Management */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Screen 1: Challenge Preview */
+        .challenge-preview {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background: var(--color-turquoise);
+            border-left: 4px solid var(--color-neutral-800);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            font-size: 14px;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+        }
+
+        .challenge-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: var(--color-neutral-50);
+            border-radius: 8px;
+            border: 1px solid var(--color-neutral-200);
+        }
+
+        .challenge-section h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 15px;
+        }
+
+        .challenge-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-neutral-700);
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .challenge-section p {
+            margin-bottom: 15px;
+            color: var(--color-neutral-700);
+        }
+
+        .challenge-section ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            color: var(--color-neutral-700);
+        }
+
+        .challenge-section li {
+            margin-bottom: 8px;
+        }
+
+        .cta-button {
+            display: block;
+            margin: 40px auto 0;
+            padding: 10px 24px;
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-align: center;
+        }
+
+        .cta-button:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .cta-button:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        /* Screen 2: Quiz */
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--color-neutral-300);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.completed {
+            background: var(--color-success);
+        }
+
+        .progress-dot.active {
+            background: var(--color-neutral-800);
+        }
+
+        .question-container {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: var(--color-neutral-50);
+            border-radius: 8px;
+            border: 1px solid var(--color-neutral-200);
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--color-neutral-800);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .question-type {
+            font-size: 12px;
+            color: var(--color-neutral-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px 20px;
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option:hover {
+            border-color: var(--color-neutral-500);
+            background: var(--color-neutral-50);
+        }
+
+        .option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .option.selected {
+            border-color: var(--color-neutral-800);
+            background: var(--color-neutral-100);
+        }
+
+        .option.correct {
+            border-color: var(--color-success);
+            background: #f0fdf4;
+        }
+
+        .option.incorrect {
+            border-color: var(--color-error);
+            background: #fef2f2;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #f0fdf4;
+            border-left: 4px solid var(--color-success);
+            color: var(--color-neutral-900);
+        }
+
+        .feedback.incorrect {
+            background: #fef2f2;
+            border-left: 4px solid var(--color-error);
+            color: var(--color-neutral-900);
+        }
+
+        .feedback strong {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 40px;
+            gap: 10px;
+        }
+
+        .submit-btn-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+
+        .submit-btn, .next-btn {
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .submit-btn:hover, .next-btn:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .submit-btn:focus, .next-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .submit-btn:disabled, .next-btn:disabled {
+            background: var(--color-neutral-400);
+            cursor: not-allowed;
+        }
+
+        .next-btn {
+            margin-left: auto;
+        }
+
+        /* Screen 3: Results */
+        .results-container {
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            border: 8px solid var(--color-neutral-200);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .score-label {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--color-neutral-600);
+            margin-top: 5px;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .level-badge.foundation {
+            background: var(--color-neutral-200);
+            color: var(--color-neutral-900);
+        }
+
+        .level-badge.intuition {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .level-badge.advanced {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .level-badge.master {
+            background: var(--color-neutral-100);
+            color: #92400e;
+        }
+
+        .learning-path {
+            background: var(--color-neutral-50);
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .learning-path h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--color-neutral-900);
+        }
+
+        .learning-path p {
+            margin-bottom: 20px;
+            color: var(--color-neutral-700);
+        }
+
+        .learning-path ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .learning-path li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            color: var(--color-neutral-700);
+        }
+
+        .learning-path li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--color-neutral-500);
+            font-weight: bold;
+        }
+
+        .outcome-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .outcome-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--color-neutral-200);
+        }
+
+        .outcome-card h4 {
+            font-size: 14px;
+            color: var(--color-neutral-600);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .outcome-score {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--color-neutral-200);
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-neutral-900);
+            transition: width 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .question-text {
+                font-size: 16px;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+
+            .next-btn {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Screen 1: Challenge Preview -->
+        <div id="screen-1" class="screen active challenge-preview">
+            <header>
+                <h1>Can You Solve These Athlete Brand Problems?</h1>
+                <p class="subtitle">Elite athletes face unique strategic challenges that traditional business frameworks don't fully address. This week tests whether you can apply brand strategy thinking to individuals whose 'product' is themselves.</p>
+                <div class="info-box">
+                    This week tests whether you can apply advanced strategic thinking to an industry where the rules are different. Before you dive into the content, test your current knowledge to discover where to focus your energy.
+                </div>
+            </header>
+
+            <div class="challenge-section">
+                <h2>Challenge 1: Map the Five Athlete Revenue Streams</h2>
+                <p><strong>The Problem:</strong> A sports agent asks you: "My client just won Olympic gold. Where should we focus to build long-term wealth?" Can you map the five major athlete revenue streams and explain which create equity versus income?</p>
+
+                <h3>What you'll need to know:</h3>
+                <ul>
+                    <li>Endorsements, owned businesses, investments, media/content, licensing</li>
+                    <li>Fee-based income vs. equity-based wealth</li>
+                    <li>Strategic timing: when to prioritize each stream</li>
+                </ul>
+
+                <p><strong>Test yourself:</strong> Can you name all five revenue streams and explain which ones build generational wealth?</p>
+            </div>
+
+            <div class="challenge-section">
+                <h2>Challenge 2: Analyze Owned Assets vs. Endorsement Strategy</h2>
+                <p><strong>The Problem:</strong> Your client has two offers: (A) $10M to endorse Nike, or (B) $2M investment to launch her own athletic wear line. Which creates more value over 20 years? Can you calculate the trade-offs?</p>
+
+                <h3>What you'll need to know:</h3>
+                <ul>
+                    <li>Equity value creation vs. fee income</li>
+                    <li>Why Michael Jordan makes more from Nike royalties than he earned playing basketball</li>
+                    <li>When endorsements make sense vs. when owned businesses are better</li>
+                    <li>Capital requirements and risk profiles</li>
+                </ul>
+
+                <p><strong>Test yourself:</strong> Would you advise taking the $10M endorsement or investing in an owned business? Why?</p>
+            </div>
+
+            <div class="challenge-section">
+                <h2>Challenge 3: Evaluate Women's Sports Investment Thesis</h2>
+                <p><strong>The Problem:</strong> An investor asks: "Why should I invest in women's sports when viewership is 1/10th of men's?" Can you articulate the strategic opportunity?</p>
+
+                <h3>What you'll need to know:</h3>
+                <ul>
+                    <li>Growth rate vs. absolute size (women's sports growing 300% faster)</li>
+                    <li>Valuation gaps creating investment opportunities</li>
+                    <li>Why first movers capture disproportionate returns</li>
+                    <li>Examples: NWSL, WNBA, women's soccer, women's tennis</li>
+                </ul>
+
+                <p><strong>Test yourself:</strong> Can you explain three reasons why women's sports represent better ROI than investing in established men's leagues?</p>
+            </div>
+
+            <div class="challenge-section">
+                <h2>Challenge 4: Design Post-Career Transition Strategy</h2>
+                <p><strong>The Problem:</strong> Serena Williams retires at 41. She has $350M in career earnings. Her agent asks: "What should she do with the next 40 years?" Can you design a strategy that maximizes her brand value post-retirement?</p>
+
+                <h3>What you'll need to know:</h3>
+                <ul>
+                    <li>How athlete brand value changes post-retirement (typically declines 60-80%)</li>
+                    <li>Which assets maintain value (owned businesses, investments)</li>
+                    <li>Which assets lose value (endorsements tied to playing career)</li>
+                    <li>Case study: How Serena built Serena Ventures ($111M investment fund)</li>
+                </ul>
+
+                <p><strong>Test yourself:</strong> Can you identify two assets Serena built DURING her playing career that generate value AFTER retirement?</p>
+            </div>
+
+            <button class="cta-button" onclick="goToQuiz()">Take the Pre-Assessment Quiz</button>
+        </div>
+
+        <!-- Screen 2: Quiz -->
+        <div id="screen-2" class="screen">
+            <div class="quiz-header">
+                <h1>Legacy & Innovation Knowledge Quiz</h1>
+                <p class="subtitle">10 questions covering heritage property strategy</p>
+                <div class="progress-indicator" id="progress-dots"></div>
+                <div class="info-box">
+                    <strong>This quiz is not graded.</strong> Answer honestly to identify your knowledge gaps and get a personalized learning path for Week 5.
+                </div>
+            </div>
+
+            <div id="quiz-container">
+                <!-- Questions will be rendered here -->
+            </div>
+
+            <div class="nav-buttons">
+                <button class="next-btn" id="next-btn" onclick="nextQuestion()" disabled>Next Question</button>
+            </div>
+        </div>
+
+        <!-- Screen 3: Results -->
+        <div id="screen-3" class="screen">
+            <div class="results-container">
+                <div class="score-circle">
+                    <div>
+                        <span id="score-number">0</span>/10
+                        <div class="score-label">Your Score</div>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="level-badge" id="level-badge">Foundation Builder</span>
+                    <h2 id="level-title"></h2>
+                </div>
+
+                <div class="outcome-breakdown">
+                    <div class="outcome-card">
+                        <h4>MLO 5.1: Heritage as Revenue Asset</h4>
+                        <div class="outcome-score" id="outcome-5-1">0/3</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-5-1" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="outcome-card">
+                        <h4>MLO 5.2: Tradition vs Innovation</h4>
+                        <div class="outcome-score" id="outcome-5-2">0/3</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-5-2" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="outcome-card">
+                        <h4>MLO 5.3: Future Trends</h4>
+                        <div class="outcome-score" id="outcome-5-3">0/2</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-5-3" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="outcome-card">
+                        <h4>MLO 5.4: Strategic Vision Integration</h4>
+                        <div class="outcome-score" id="outcome-5-4">0/4</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-5-4" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="learning-path">
+                    <h3>Your Personalized Learning Path</h3>
+                    <p id="path-description"></p>
+                    <ul id="path-recommendations"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz data
+        const quizData = [
+            {
+                number: 1,
+                outcome: 'MLO5.1',
+                type: 'Multiple Choice',
+                question: 'Which revenue stream typically accounts for the LARGEST percentage of total revenue for heritage sports properties like halls of fame?',
+                options: [
+                    { value: 'A', text: 'A) Admissions/Ticketing (40-50%)' },
+                    { value: 'B', text: 'B) Events & Venue Rentals (25-35%)' },
+                    { value: 'C', text: 'C) Retail & Merchandise (10-20%)' },
+                    { value: 'D', text: 'D) Sponsorships & Partnerships (5-15%)' }
+                ],
+                correct: 'A',
+                points: 1,
+                feedback: {
+                    correct: "Correct! Admissions and ticketing typically account for 40-50% of revenue for heritage properties like the Hockey Hall of Fame, Baseball Hall of Fame, and Olympic Museums. Unlike professional sports teams (where media rights dominate at 40-60%), heritage properties rely heavily on in-person visitation because their core product is the physical experience of history. This creates a strategic challenge: You can't grow infinitely by raising prices (price elasticity) or building bigger venues (contradicts intimate experience).",
+                    incorrect: "Not quite. While [selected answer] is important, admissions/ticketing actually account for the largest share (40-50%) of heritage property revenue. Unlike professional sports teams where media rights dominate, heritage properties rely on in-person visitation as their core product. This creates unique strategic constraints—you can't just optimize for revenue growth without considering experience quality and visitor capacity limits."
+                }
+            },
+            {
+                number: 2,
+                outcome: 'MLO5.1',
+                type: 'Multiple Choice',
+                question: 'The Hockey Hall of Fame faces declining domestic attendance (-8% annually). Which strategy would BEST address this while preserving brand authenticity?',
+                options: [
+                    { value: 'A', text: 'A) Lower admission prices to attract price-sensitive visitors' },
+                    { value: 'B', text: 'B) Partner with sports betting companies for in-venue betting lounges' },
+                    { value: 'C', text: 'C) Launch VR/digital experiences for remote fans who can\'t visit Toronto' },
+                    { value: 'D', text: 'D) Host non-hockey events (concerts, corporate parties) to diversify revenue' }
+                ],
+                correct: 'C',
+                points: 1,
+                feedback: {
+                    correct: "Correct! Digital/VR experiences allow HHOF to reach fans who can't physically visit Toronto (international, younger demographics) WITHOUT compromising the in-person museum experience. This is 'innovation that extends reach' rather than 'innovation that changes core product.' Comparable example: The Baseball Hall of Fame launched a digital membership ($25/year) that provides virtual tours, exclusive content, and streaming access to 200K+ members who never visit Cooperstown. Result: +$5M annual revenue with no impact on physical museum operations.",
+                    incorrect: "Consider the trade-offs. [Selected answer] might generate short-term revenue but could undermine brand authenticity. Lowering prices signals declining value. Betting lounges risk 'Disneyfication' backlash. Non-hockey events dilute brand focus. The best strategy EXTENDS reach (digital/VR) without changing core product (physical museum experience). Think: How can we serve fans we're NOT reaching currently, without compromising what makes us valuable?"
+                }
+            },
+            {
+                number: 3,
+                outcome: 'MLO5.2',
+                type: 'True/False',
+                question: 'True or False: Heritage properties should apply the same revenue optimization frameworks (from Weeks 1-4) as professional sports teams.',
+                options: [
+                    { value: 'True', text: 'True' },
+                    { value: 'False', text: 'False' }
+                ],
+                correct: 'False',
+                points: 1,
+                feedback: {
+                    correct: "Correct! Heritage properties require a modified strategic approach. Revenue matters (Week 1 frameworks still apply), but brand authenticity creates constraints. You can't just maximize every revenue stream—some innovations would generate short-term revenue but destroy long-term credibility. This week, you'll learn frameworks for evaluating which innovations preserve authenticity vs. which cross the line into 'Disneyfication.'",
+                    incorrect: "Not quite! While Week 1-4 revenue frameworks are useful, heritage properties face an additional constraint: Brand authenticity is as valuable as profit. Professional teams can aggressively monetize without existential risk, but heritage properties risk losing credibility (and thus their entire value proposition) if they over-commercialize. This week, you'll learn how to balance revenue optimization with authenticity preservation."
+                }
+            },
+            {
+                number: 4,
+                outcome: 'MLO5.2',
+                type: 'Multiple Choice',
+                question: 'You\'re designing a VR experience for the Hockey Hall of Fame. Which feature would be MOST likely to cross the line into "Disneyfication"?',
+                options: [
+                    { value: 'A', text: 'A) Virtual tour of the Great Hall with 360-degree views of actual exhibits' },
+                    { value: 'B', text: 'B) AI-powered Q&A with archival footage of legendary players' },
+                    { value: 'C', text: 'C) VR game where users play hockey AS Wayne Gretzky against cartoon opponents' },
+                    { value: 'D', text: 'D) Interactive timeline exploring hockey\'s evolution with primary source documents' }
+                ],
+                correct: 'C',
+                points: 1,
+                feedback: {
+                    correct: "Correct! Option C crosses into 'Disneyfication' because it gamifies hockey history and prioritizes entertainment over education/preservation. Cartoon opponents trivialize the sport's heritage. Playing 'AS Gretzky' shifts from honoring his legacy to exploiting it for engagement metrics. Boundary-setting principle: Innovation that EXTENDS your core mission (preservation, education, celebration) is acceptable. Innovation that REPLACES your core mission with entertainment is 'Disneyfication.'",
+                    incorrect: "Think about mission alignment. [Selected answer] uses technology to extend the HHOF's core mission (preservation, education, celebration). Option C crosses the line because it prioritizes entertainment over education—playing hockey as Gretzky against cartoon opponents trivializes history. The boundary is: Does this innovation SERVE the heritage mission, or does it EXPLOIT the heritage for engagement metrics? Acceptable innovation = serve. Disneyfication = exploit."
+                }
+            },
+            {
+                number: 5,
+                outcome: 'MLO5.2',
+                type: 'Multiple Choice',
+                question: 'Where should a heritage sports property draw the line between acceptable innovation and "Disneyfication"?',
+                options: [
+                    { value: 'A', text: 'A) Any digital innovation risks Disneyfication - stick to traditional museum exhibits only' },
+                    { value: 'B', text: 'B) Innovation that serves the heritage mission (preservation, education) is acceptable; innovation that replaces the mission with entertainment crosses the line' },
+                    { value: 'C', text: 'C) All innovation is acceptable as long as revenue increases - the mission evolves with market demand' },
+                    { value: 'D', text: 'D) Innovation is acceptable only if approved unanimously by curatorial staff and historians' }
+                ],
+                correct: 'B',
+                points: 1,
+                feedback: {
+                    correct: "Correct! The boundary is mission alignment: Innovation that EXTENDS the core mission (preservation, education, celebration of heritage) is acceptable. Innovation that REPLACES the mission with entertainment is Disneyfication. Examples: VR tours that increase access = acceptable. Gamification that trivializes history = Disneyfication. The test: Does this innovation serve our heritage mission or exploit it for engagement metrics?",
+                    incorrect: "Think about mission alignment. [Selected answer] is too extreme. The key criterion is whether innovation SERVES the heritage mission (preservation, education) or REPLACES it with entertainment. Digital tools like VR tours, AI-powered guides, and digital archives can EXTEND access and education. But gamification that trivializes history or sponsorships that undermine credibility cross into Disneyfication. The boundary isn't about technology—it's about whether innovation honors or exploits the heritage."
+                }
+            },
+            {
+                number: 6,
+                outcome: 'MLO5.3',
+                type: 'Ranking',
+                question: 'Rank these 4 trends by their likely impact on heritage sports properties over the next 5 years (1 = highest impact, 4 = lowest impact):',
+                isRanking: true,
+                items: [
+                    'AI-powered personalization (customized tours, content recommendations)',
+                    'VR/AR experiences (immersive historical recreations)',
+                    'International expansion (pop-up exhibits, digital reach to global markets)',
+                    'Gen Z engagement strategies (social media, gamification, short-form content)'
+                ],
+                correct: ['AI-powered personalization (customized tours, content recommendations)', 'International expansion (pop-up exhibits, digital reach to global markets)', 'Gen Z engagement strategies (social media, gamification, short-form content)', 'VR/AR experiences (immersive historical recreations)'],
+                points: 1,
+                feedback: "Correct ranking! 1) AI-powered personalization (Highest impact): AI enhances EVERY visitor experience without requiring new infrastructure. Cost: Low. Reach: Everyone. Museums implementing AI see 25-40% increases in visitor engagement. 2) International expansion (High impact): Heritage properties are inherently LOCAL, but digital and pop-up exhibits can reach global markets, doubling addressable market. 3) Gen Z engagement (Medium-high impact): Critical for long-term sustainability. 4) VR/AR experiences (Medium impact): High wow-factor but expensive ($500K-$2M), requires hardware maintenance, appeals to tech-enthusiast niche more than broad audiences."
+            },
+            {
+                number: 7,
+                outcome: 'MLO5.3',
+                type: 'Multiple Choice',
+                question: 'Which future trend poses the BIGGEST RISK to heritage sports properties if they ignore it?',
+                options: [
+                    { value: 'A', text: 'A) Decline of traditional TV viewership (cord-cutting)' },
+                    { value: 'B', text: 'B) Generational shift in how younger audiences consume content (TikTok, Instagram, short-form)' },
+                    { value: 'C', text: 'C) Rise of sports betting and gambling normalization' },
+                    { value: 'D', text: 'D) Increased competition from streaming entertainment (Netflix, gaming)' }
+                ],
+                correct: 'B',
+                points: 1,
+                feedback: {
+                    correct: "Correct! Generational shift in content consumption is the existential threat. Heritage properties rely on FUTURE visitors to remain relevant. If Gen Z and Gen Alpha (ages 0-27) never develop the habit of visiting museums, your institution dies when Boomers and Gen X age out. Data point: Only 23% of Gen Z visit museums annually (vs. 54% of Boomers). Strategic implication: Invest in Gen Z engagement NOW (social media content, TikTok partnerships, interactive exhibits) or accept irrelevance in 20 years.",
+                    incorrect: "Think about existential vs. incremental threats. [Selected answer] affects heritage properties, but the BIGGEST risk is losing the next generation of visitors entirely. Gen Z (ages 12-27) visits museums at HALF the rate of Boomers and consumes content in 8-second TikTok clips, not 90-minute museum visits. If you don't adapt to generational shifts in content consumption, your institution becomes irrelevant in 20 years when current audiences age out."
+                }
+            },
+            {
+                number: 8,
+                outcome: 'MLO5.4',
+                type: 'Ranking',
+                question: 'You\'re creating a 5-year strategic vision for the Hockey Hall of Fame that integrates Weeks 1-5 frameworks. Rank these initiatives by implementation sequence (what to tackle first → last):',
+                isRanking: true,
+                items: [
+                    'Digital transformation (AI-powered tours, VR experiences, digital memberships)',
+                    'Stakeholder engagement (rebuilding trust with donors, curatorial staff, NHL partnerships)',
+                    'International expansion (pop-up exhibits in Asia, Europe)',
+                    'Revenue model diversification (reducing reliance on admissions, growing events/sponsorships)'
+                ],
+                correct: ['Stakeholder engagement (rebuilding trust with donors, curatorial staff, NHL partnerships)', 'Revenue model diversification (reducing reliance on admissions, growing events/sponsorships)', 'Digital transformation (AI-powered tours, VR experiences, digital memberships)', 'International expansion (pop-up exhibits in Asia, Europe)'],
+                points: 2,
+                feedback: "Correct sequencing! Year 1: Stakeholder Engagement (Foundation) - Before ANY innovation, rebuild trust with stakeholders who enable your success. Years 1-2: Revenue Model Diversification (Financial Stability) - Reduce dependence on declining admissions. Years 2-4: Digital Transformation (Growth Driver) - With stakeholder buy-in and financial stability, invest in digital initiatives. Years 3-5: International Expansion (Scale) - Requires strong brand reputation, financial cushion, and proven digital capabilities. Strategic principle: Build foundation before growth."
+            },
+            {
+                number: 9,
+                outcome: 'MLO5.4',
+                type: 'Multiple Choice',
+                question: 'A 5-year strategic vision for the Hockey Hall of Fame should integrate frameworks from Weeks 1-5. Which approach BEST demonstrates framework integration?',
+                options: [
+                    { value: 'A', text: 'A) Apply Week 1 revenue streams in Year 1, Week 2 media in Year 2, Week 3 sponsorship in Year 3, Week 4 branding in Year 4, Week 5 legacy in Year 5 (sequential application)' },
+                    { value: 'B', text: 'B) Use revenue ecosystem thinking (Week 1) to diversify streams, media strategy (Week 2) for digital content, sponsorship ROI (Week 3) for aligned partners, and legacy/innovation balance (Week 5) to set boundaries—applied together across all 5 years' },
+                    { value: 'C', text: 'C) Focus only on Week 5 frameworks since heritage properties are unique and Weeks 1-4 apply only to professional teams' },
+                    { value: 'D', text: 'D) Choose the single most important framework (e.g., revenue optimization from Week 1) and apply it consistently for 5 years' }
+                ],
+                correct: 'B',
+                points: 2,
+                feedback: {
+                    correct: "Excellent! True framework integration means applying MULTIPLE frameworks SIMULTANEOUSLY, not sequentially. Your 5-year vision should use: Revenue ecosystem thinking (Week 1) to identify stream interdependencies, media strategy (Week 2) to create digital content, sponsorship ROI (Week 3) to select mission-aligned partners, and legacy/innovation balance (Week 5) to filter options that compromise authenticity. These frameworks work TOGETHER across all 5 years—that's synthesis, not just application.",
+                    incorrect: "Think about synthesis vs. sequential application. [Selected answer] misses the point of integration. You don't apply frameworks ONE AT A TIME (sequential) or choose ONE framework to the exclusion of others. True strategic thinking integrates MULTIPLE frameworks SIMULTANEOUSLY: Use revenue ecosystem (Week 1) to diversify streams, media strategy (Week 2) for content, sponsorship ROI (Week 3) for partners, and legacy/innovation (Week 5) as a filter. They work together, not in isolation."
+                }
+            },
+            {
+                number: 10,
+                outcome: 'MLO5.4',
+                type: 'Multiple Choice',
+                question: 'Which statement BEST describes the role of Week 5 (Legacy & Innovation) frameworks in a comprehensive sports business strategy?',
+                options: [
+                    { value: 'A', text: 'A) Week 5 replaces Week 1-4 frameworks when working with heritage properties' },
+                    { value: 'B', text: 'B) Week 5 adds a constraint filter to Week 1-4 frameworks: "Does this compromise authenticity?"' },
+                    { value: 'C', text: 'C) Week 5 only applies to museums and halls of fame, not professional teams or leagues' },
+                    { value: 'D', text: 'D) Week 5 is the capstone summary of Weeks 1-4, reviewing concepts without adding new ones' }
+                ],
+                correct: 'B',
+                points: 1,
+                feedback: {
+                    correct: "Correct! Week 5 frameworks don't REPLACE Weeks 1-4—they ADD A FILTER. Revenue streams still matter (Week 1), media strategy still applies (Week 2), sponsorships still drive growth (Week 3), brand positioning still matters (Week 4). BUT: For heritage properties, brand authenticity creates constraints. Mental model: Week 1-4 frameworks generate strategic OPTIONS. Week 5 framework FILTERS those options, eliminating strategies that compromise authenticity regardless of revenue potential. This is ADDITIVE strategic thinking.",
+                    incorrect: "Think about framework integration. Week 5 doesn't replace (A), only apply to heritage properties (C), or just summarize (D) previous weeks—it ADDS a strategic filter. Revenue optimization frameworks from Weeks 1-4 still apply, but heritage properties must ask an additional question: 'Does this strategy compromise authenticity?' Some high-revenue strategies fail this test and must be rejected. This is why heritage property strategy is MORE complex than professional team strategy—you're optimizing TWO variables (revenue AND authenticity), not just one (revenue)."
+                }
+            }
+        ];
+
+        // State
+        let currentScreen = 1;
+        let currentQuestion = 0;
+        let answers = {};
+        let outcomeScores = {
+            'MLO5.1': { correct: 0, total: 3, maxPoints: 2 },
+            'MLO5.2': { correct: 0, total: 4, maxPoints: 3 },
+            'MLO5.3': { correct: 0, total: 2, maxPoints: 2 },
+            'MLO5.4': { correct: 0, total: 3, maxPoints: 4 }
+        };
+
+        function goToQuiz() {
+            showScreen(2);
+            initializeQuiz();
+        }
+
+        function showScreen(screenNum) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(`screen-${screenNum}`).classList.add('active');
+            currentScreen = screenNum;
+            window.scrollTo(0, 0);
+        }
+
+        function initializeQuiz() {
+            renderProgressDots();
+            renderQuestion(0);
+        }
+
+        function renderProgressDots() {
+            const dotsContainer = document.getElementById('progress-dots');
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < quizData.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot' + (i === 0 ? ' active' : '');
+                dot.id = `dot-${i}`;
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function renderQuestion(index) {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            const q = quizData[index];
+            const qDiv = document.createElement('div');
+            qDiv.className = 'question-container active';
+            qDiv.dataset.question = q.number;
+
+            let optionsHTML = '';
+            if (q.isRanking) {
+                optionsHTML = '<div class="options" id="ranking-list">';
+                q.items.forEach((item, i) => {
+                    optionsHTML += `<div class="option ranking-item" data-index="${i}" draggable="true">
+                        <span class="rank-number">${i + 1}.</span>
+                        <span>${item}</span>
+                    </div>`;
+                });
+                optionsHTML += '</div><p style="font-size: 12px; color: var(--color-neutral-500); margin-top: 10px;">Drag and drop to reorder (1 = highest impact)</p>';
+            } else {
+                optionsHTML = '<div class="options">';
+                q.options.forEach(opt => {
+                    optionsHTML += `<label class="option">
+                        <input type="radio" name="q${q.number}" value="${opt.value}">
+                        <span>${opt.text}</span>
+                    </label>`;
+                });
+                optionsHTML += '</div>';
+            }
+
+            qDiv.innerHTML = `
+                <div class="question-header">
+                    <span class="question-number">Question ${q.number} of 10</span>
+                    <span class="question-type">${q.type}</span>
+                </div>
+                <div class="question-text">${q.question}</div>
+                ${optionsHTML}
+                <div class="submit-btn-container">
+                    <button class="submit-btn" onclick="submitAnswer(${index})">Submit Answer</button>
+                </div>
+                <div class="feedback">
+                    <strong></strong>
+                    <p></p>
+                </div>
+            `;
+
+            container.appendChild(qDiv);
+
+            // Add event listeners
+            if (!q.isRanking) {
+                qDiv.querySelectorAll('.option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        const radio = this.querySelector('input');
+                        radio.checked = true;
+                        this.parentElement.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                        this.classList.add('selected');
+                    });
+                });
+            }
+
+            if (q.isRanking) {
+                setupDragAndDrop();
+            }
+
+            currentQuestion = index;
+        }
+
+        function setupDragAndDrop() {
+            const items = document.querySelectorAll('.ranking-item');
+            let draggedItem = null;
+
+            items.forEach(item => {
+                item.addEventListener('dragstart', function() {
+                    draggedItem = this;
+                    setTimeout(() => this.style.opacity = '0.5', 0);
+                });
+
+                item.addEventListener('dragend', function() {
+                    setTimeout(() => this.style.opacity = '1', 0);
+                    draggedItem = null;
+                    updateRankNumbers();
+                });
+
+                item.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                });
+
+                item.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    if (this !== draggedItem) {
+                        const allItems = [...this.parentNode.children];
+                        const draggedIndex = allItems.indexOf(draggedItem);
+                        const droppedIndex = allItems.indexOf(this);
+
+                        if (draggedIndex < droppedIndex) {
+                            this.parentNode.insertBefore(draggedItem, this.nextSibling);
+                        } else {
+                            this.parentNode.insertBefore(draggedItem, this);
+                        }
+                    }
+                });
+
+                item.addEventListener('dragenter', function(e) {
+                    e.preventDefault();
+                    this.style.borderColor = 'var(--color-neutral-800)';
+                });
+
+                item.addEventListener('dragleave', function() {
+                    this.style.borderColor = 'var(--color-neutral-300)';
+                });
+            });
+        }
+
+        function updateRankNumbers() {
+            const items = document.querySelectorAll('.ranking-item');
+            items.forEach((item, index) => {
+                item.querySelector('.rank-number').textContent = `${index + 1}.`;
+            });
+        }
+
+        function submitAnswer(index) {
+            const q = quizData[index];
+            const container = document.querySelector(`[data-question="${q.number}"]`);
+
+            let isCorrect = false;
+            let userAnswer = '';
+            let pointsEarned = 0;
+
+            if (q.isRanking) {
+                const items = [...container.querySelectorAll('.ranking-item')];
+                const userOrder = items.map(item => quizData[index].items[parseInt(item.dataset.index)]);
+                const correctOrder = q.correct;
+
+                let correctPositions = 0;
+                userOrder.forEach((item, i) => {
+                    if (item === correctOrder[i]) correctPositions++;
+                });
+
+                if (correctPositions === 4) {
+                    pointsEarned = q.points;
+                    isCorrect = true;
+                } else if (correctPositions >= 2) {
+                    pointsEarned = Math.floor(q.points / 2);
+                    isCorrect = true;
+                }
+
+                items.forEach(item => item.draggable = false);
+            } else {
+                const selectedInput = container.querySelector('input:checked');
+                if (!selectedInput) {
+                    alert('Please select an answer before submitting.');
+                    return;
+                }
+
+                userAnswer = selectedInput.value;
+                isCorrect = userAnswer === q.correct;
+                pointsEarned = isCorrect ? q.points : 0;
+
+                container.querySelectorAll('.option').forEach(opt => {
+                    const input = opt.querySelector('input');
+                    if (input.value === q.correct) {
+                        opt.classList.add('correct');
+                    } else if (input.value === userAnswer && !isCorrect) {
+                        opt.classList.add('incorrect');
+                    }
+                    opt.style.pointerEvents = 'none';
+                });
+            }
+
+            // Store answer
+            answers[q.number] = {
+                correct: isCorrect,
+                outcome: q.outcome,
+                points: pointsEarned
+            };
+
+            // Update outcome scores
+            outcomeScores[q.outcome].correct += pointsEarned;
+
+            // Show feedback
+            const feedbackDiv = container.querySelector('.feedback');
+            const feedbackStrong = feedbackDiv.querySelector('strong');
+            const feedbackP = feedbackDiv.querySelector('p');
+
+            feedbackDiv.classList.remove('correct', 'incorrect');
+            feedbackDiv.classList.add(isCorrect ? 'correct' : 'incorrect', 'show');
+
+            if (q.isRanking) {
+                feedbackStrong.textContent = isCorrect ? 'Correct!' : 'Partial credit';
+                feedbackP.textContent = q.feedback;
+            } else {
+                feedbackStrong.textContent = isCorrect ? 'Correct!' : 'Not quite.';
+                feedbackP.textContent = isCorrect ? q.feedback.correct : q.feedback.incorrect;
+            }
+
+            // Disable submit button
+            container.querySelector('.submit-btn').disabled = true;
+            container.querySelector('.submit-btn').textContent = 'Answer Submitted';
+
+            // Update progress dots
+            document.getElementById(`dot-${index}`).classList.remove('active');
+            document.getElementById(`dot-${index}`).classList.add('completed');
+
+            // Enable next button
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                // Update progress dots
+                document.getElementById(`dot-${currentQuestion + 1}`).classList.add('active');
+
+                // Render next question
+                renderQuestion(currentQuestion + 1);
+
+                // Disable next button until answer submitted
+                document.getElementById('next-btn').disabled = true;
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+            } else {
+                // Show results
+                showResults();
+            }
+        }
+
+        function showResults() {
+            showScreen(3);
+
+            const totalPoints = Object.values(answers).reduce((sum, a) => sum + a.points, 0);
+            document.getElementById('score-number').textContent = totalPoints;
+
+            // Determine level
+            let level, levelClass, levelTitle, pathDescription, recommendations;
+
+            if (totalPoints <= 3) {
+                level = 'Foundation Builder';
+                levelClass = 'foundation';
+                levelTitle = 'You\'re starting fresh with heritage property strategy!';
+                pathDescription = "Focus heavily on Module 3's core frameworks and all interactive widgets. Spend extra time with the Legacy vs Innovation Matrix and Hockey Hall of Fame case. Don't skip the Details accordions—they'll build your foundation.";
+                recommendations = [
+                    'Consider spending extra time on Module 3: Legacy vs. Innovation Matrix framework',
+                    'You might find the interactive widgets helpful for hands-on learning',
+                    'Try reading the Hockey Hall of Fame case study (Module 5) carefully',
+                    'Consider taking notes on concepts that feel unfamiliar'
+                ];
+            } else if (totalPoints <= 6) {
+                level = 'Strategic Intuition';
+                levelClass = 'intuition';
+                levelTitle = 'You have good business thinking that partially transfers to heritage contexts!';
+                pathDescription = "Focus on Module 3's boundary-setting concepts and the Hockey Hall of Fame case in Module 5. Your challenge: Understanding WHERE traditional revenue frameworks apply vs. where brand authenticity constraints override them.";
+                recommendations = [
+                    'You might focus on Module 3: Boundary-setting between innovation and Disneyfication',
+                    'Consider applying your frameworks to the Hockey Hall of Fame case (Module 5)',
+                    'The HHOF Transformation Simulation (Module 4) could help test trade-off analysis',
+                    'Try comparing heritage properties to professional teams from earlier weeks'
+                ];
+            } else if (totalPoints <= 8) {
+                level = 'Advanced Strategist';
+                levelClass = 'advanced';
+                levelTitle = 'Strong baseline knowledge!';
+                pathDescription = "Challenge yourself with the HHOF Transformation Simulation in Module 4 and the Strategic Vision Memo in Module 6. Your focus: Synthesizing Weeks 1-5 into cohesive strategic plans, not just understanding individual frameworks.";
+                recommendations = [
+                    'Consider challenging yourself with the HHOF Transformation Simulation (Module 4)',
+                    'You might explore the Strategic Vision Memo (Module 6) as a synthesis challenge',
+                    'Try applying all frameworks to the Hockey Hall of Fame case (Module 5)',
+                    'Consider explaining concepts in your own words to reinforce learning'
+                ];
+            } else {
+                level = 'Strategic Master';
+                levelClass = 'master';
+                levelTitle = 'You already understand heritage property strategy well!';
+                pathDescription = "Speed through Modules 2-3, then dive deep into the Hockey Hall of Fame case (Module 5) and Strategic Vision Memo (Module 6). Consider: How would YOU innovate the model beyond what's taught in the course?";
+                recommendations = [
+                    'Consider a deep strategic analysis of the Hockey Hall of Fame case (Module 5)',
+                    'You might use the Strategic Vision Memo (Module 6) to showcase your expertise',
+                    'Try connecting this week\'s concepts to your own professional experience',
+                    'Consider where you might disagree with the frameworks and why'
+                ];
+            }
+
+            // Update results display
+            document.getElementById('level-badge').textContent = level;
+            document.getElementById('level-badge').className = `level-badge ${levelClass}`;
+            document.getElementById('level-title').textContent = levelTitle;
+            document.getElementById('path-description').textContent = pathDescription;
+
+            const recList = document.getElementById('path-recommendations');
+            recList.innerHTML = '';
+            recommendations.forEach(rec => {
+                const li = document.createElement('li');
+                li.textContent = rec;
+                recList.appendChild(li);
+            });
+
+            // Update outcome breakdown
+            updateOutcomeBreakdown();
+        }
+
+        function updateOutcomeBreakdown() {
+            Object.keys(outcomeScores).forEach(outcome => {
+                const score = outcomeScores[outcome].correct;
+                const total = outcomeScores[outcome].maxPoints;
+                const outcomeNum = outcome.replace('MLO', '');
+
+                document.getElementById(`outcome-${outcomeNum}`).textContent = `${score}/${total}`;
+                document.getElementById(`progress-${outcomeNum}`).style.width = `${(score / total) * 100}%`;
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serena Williams: Building an Empire</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Bangers&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            --color-serena: #7c3aed;
+            --color-serena-light: #ede9fe;
+            --color-gold: #f59e0b;
+            --color-gold-light: #fef3c7;
+            --color-money: #10b981;
+            --color-money-light: #d1fae5;
+            --color-danger: #ef4444;
+            --color-danger-light: #fee2e2;
+
+            --panel-border: 3px solid var(--color-neutral-900);
+            --bubble-shadow: 2px 2px 0 var(--color-neutral-900);
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: var(--color-neutral-100);
+            color: var(--color-neutral-900);
+            padding: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Comic Title */
+        .comic-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, var(--color-serena) 0%, #9333ea 100%);
+            color: white;
+            border-radius: 8px;
+            border: var(--panel-border);
+        }
+
+        .comic-title h1 {
+            font-family: 'Bangers', cursive;
+            font-size: 2.25rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+        }
+
+        .comic-title p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--color-neutral-200);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-serena);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+            text-align: center;
+            margin-top: 0.25rem;
+        }
+
+        /* Comic Panel */
+        .comic-panel {
+            background: white;
+            border: var(--panel-border);
+            border-radius: 4px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            min-height: 380px;
+            display: none;
+            animation: panelReveal 0.3s ease;
+        }
+
+        .comic-panel.active {
+            display: block;
+        }
+
+        @keyframes panelReveal {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Panel Header */
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px dashed var(--color-neutral-200);
+        }
+
+        .panel-location {
+            font-family: 'Bangers', cursive;
+            font-size: 1.1rem;
+            color: var(--color-neutral-600);
+            letter-spacing: 0.05em;
+        }
+
+        .panel-year {
+            background: var(--color-neutral-900);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Scene */
+        .scene {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .scene-visual {
+            flex: 0 0 120px;
+            text-align: center;
+        }
+
+        .character-icon {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 0.5rem;
+            border: 3px solid var(--color-neutral-900);
+        }
+
+        .character-icon.serena {
+            background: var(--color-serena-light);
+        }
+
+        .character-icon.trophy {
+            background: var(--color-gold-light);
+        }
+
+        .character-icon.money {
+            background: var(--color-money-light);
+        }
+
+        .character-icon.danger {
+            background: var(--color-danger-light);
+        }
+
+        .character-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .scene-content {
+            flex: 1;
+        }
+
+        /* Speech Bubbles */
+        .speech-bubble {
+            background: white;
+            border: 2px solid var(--color-neutral-900);
+            border-radius: 12px;
+            padding: 1rem;
+            position: relative;
+            margin-bottom: 1rem;
+            box-shadow: var(--bubble-shadow);
+        }
+
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            left: -12px;
+            top: 20px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-right-color: var(--color-neutral-900);
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            left: -7px;
+            top: 22px;
+            width: 0;
+            height: 0;
+            border: 8px solid transparent;
+            border-right-color: white;
+        }
+
+        .speech-bubble.serena-voice {
+            border-color: var(--color-serena);
+        }
+        .speech-bubble.serena-voice::before {
+            border-right-color: var(--color-serena);
+        }
+
+        .thought-bubble {
+            background: var(--color-neutral-50);
+            border: 2px dashed var(--color-neutral-400);
+            border-radius: 20px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-style: italic;
+            color: var(--color-neutral-600);
+            position: relative;
+        }
+
+        .narrator-box {
+            background: var(--color-neutral-900);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Data Cards */
+        .data-card {
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .data-card h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-neutral-500);
+            margin-bottom: 0.5rem;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.35rem 0;
+            border-bottom: 1px solid var(--color-neutral-200);
+            font-size: 0.9rem;
+        }
+
+        .data-row:last-child {
+            border-bottom: none;
+        }
+
+        .data-value {
+            font-weight: 700;
+        }
+
+        .data-value.positive { color: var(--color-money); }
+        .data-value.negative { color: var(--color-danger); }
+        .data-value.highlight { color: var(--color-serena); }
+
+        /* Dramatic Reveals */
+        .dramatic-text {
+            font-family: 'Bangers', cursive;
+            font-size: 1.75rem;
+            text-align: center;
+            letter-spacing: 0.05em;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+
+        .dramatic-text.victory {
+            background: var(--color-serena-light);
+            color: var(--color-serena);
+        }
+
+        .dramatic-text.money {
+            background: var(--color-money-light);
+            color: #059669;
+        }
+
+        .dramatic-text.warning {
+            background: var(--color-danger-light);
+            color: var(--color-danger);
+        }
+
+        .dramatic-text.gold {
+            background: var(--color-gold-light);
+            color: #b45309;
+        }
+
+        /* Trophy Row */
+        .trophy-row {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 2rem;
+            padding: 1rem;
+        }
+
+        /* Insight Box */
+        .insight-box {
+            background: linear-gradient(135deg, var(--color-serena) 0%, #9333ea 100%);
+            color: white;
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 2px solid var(--color-neutral-900);
+        }
+
+        .insight-box h4 {
+            font-family: 'Bangers', cursive;
+            font-size: 1.1rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-box p {
+            font-size: 0.95rem;
+        }
+
+        /* Timeline */
+        .timeline-visual {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .timeline-visual::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: var(--color-neutral-300);
+            z-index: 0;
+        }
+
+        .timeline-point {
+            background: white;
+            border: 3px solid var(--color-neutral-900);
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            z-index: 1;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        /* Comparison */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .comparison-card {
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .comparison-card.good {
+            background: var(--color-money-light);
+            border: 2px solid #10b981;
+        }
+
+        .comparison-card.bad {
+            background: var(--color-danger-light);
+            border: 2px solid var(--color-danger);
+        }
+
+        .comparison-card h5 {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .comparison-card .amount {
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+        }
+
+        /* Investment Grid */
+        .investment-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .investment-chip {
+            background: var(--color-serena-light);
+            border: 1px solid var(--color-serena);
+            border-radius: 6px;
+            padding: 0.5rem;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+
+        .investment-chip .return {
+            font-weight: 700;
+            color: var(--color-money);
+            display: block;
+            font-size: 0.85rem;
+        }
+
+        /* Navigation */
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .nav-btn {
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-family: 'Geist', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .nav-btn:disabled {
+            background: var(--color-neutral-300);
+            cursor: not-allowed;
+        }
+
+        .nav-btn:focus {
+            outline: 2px solid var(--color-serena);
+            outline-offset: 2px;
+        }
+
+        .panel-indicator {
+            font-size: 0.9rem;
+            color: var(--color-neutral-500);
+        }
+
+        /* Revenue Stream Icons */
+        .revenue-streams {
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 0;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .stream-icon {
+            text-align: center;
+            padding: 0.5rem;
+        }
+
+        .stream-icon .icon {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .stream-icon .label {
+            font-size: 0.7rem;
+            color: var(--color-neutral-600);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .scene {
+                flex-direction: column;
+            }
+
+            .scene-visual {
+                margin-bottom: 1rem;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .investment-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .comic-title h1 {
+                font-size: 1.75rem;
+            }
+
+            .dramatic-text {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Title -->
+        <div class="comic-title">
+            <h1>Serena Williams: Building an Empire</h1>
+            <p>From Grand Slam Champion to $500 Million Mogul</p>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 7.14%"></div>
+            </div>
+            <div class="progress-text" id="progressText">Panel 1 of 14</div>
+        </div>
+
+        <!-- Panel 1: Opening -->
+        <div class="comic-panel active" data-panel="1">
+            <div class="panel-header">
+                <span class="panel-location">The Question</span>
+                <span class="panel-year">2023</span>
+            </div>
+            <div class="narrator-box">
+                Serena Williams retired in 2022 as the greatest female tennis player of all time.
+            </div>
+            <div class="trophy-row">
+                🏆🏆🏆🏆🏆🏆🏆🏆🏆🏆🏆🏆🏆🏆🏆🏆🏆🏆🏆🏆🏆🏆🏆
+            </div>
+            <div style="text-align: center; margin-bottom: 1rem;">
+                <strong>23 Grand Slam singles titles</strong> — the most in the Open Era
+            </div>
+            <div class="data-card">
+                <h4>The Numbers That Don't Add Up</h4>
+                <div class="data-row">
+                    <span>Career Prize Money</span>
+                    <span class="data-value">$94 million</span>
+                </div>
+                <div class="data-row">
+                    <span>Career Endorsements</span>
+                    <span class="data-value">~$350 million</span>
+                </div>
+                <div class="data-row">
+                    <span>Estimated Brand Value</span>
+                    <span class="data-value highlight">$500+ million</span>
+                </div>
+            </div>
+            <div class="thought-bubble">
+                Wait... where did the extra $150-200 million come from? She didn't just cash endorsement checks. She built something bigger.
+            </div>
+        </div>
+
+        <!-- Panel 2: Compton -->
+        <div class="comic-panel" data-panel="2">
+            <div class="panel-header">
+                <span class="panel-location">Compton, California</span>
+                <span class="panel-year">1991</span>
+            </div>
+            <div class="scene">
+                <div class="scene-visual">
+                    <div class="character-icon serena">🎾</div>
+                    <div class="character-name">Young Serena</div>
+                </div>
+                <div class="scene-content">
+                    <div class="narrator-box">
+                        Richard Williams had a plan. He'd teach his daughters tennis—in one of America's toughest neighborhoods.
+                    </div>
+                    <div class="speech-bubble">
+                        "Daddy says we're going to be the best in the world. People think he's crazy..."
+                    </div>
+                    <div class="thought-bubble">
+                        Richard wasn't just coaching tennis. He was teaching business. He famously rejected early endorsement deals, waiting for the right moment.
+                    </div>
+                </div>
+            </div>
+            <div class="insight-box">
+                <h4>Lesson 1: Strategic Patience</h4>
+                <p>Richard turned down early deals that would have paid immediate money. He was building leverage—waiting until Serena's value was undeniable.</p>
+            </div>
+        </div>
+
+        <!-- Panel 3: First Big Deal -->
+        <div class="comic-panel" data-panel="3">
+            <div class="panel-header">
+                <span class="panel-location">Nike Headquarters</span>
+                <span class="panel-year">2003</span>
+            </div>
+            <div class="scene">
+                <div class="scene-visual">
+                    <div class="character-icon" style="background: #111;">👟</div>
+                    <div class="character-name">Nike</div>
+                </div>
+                <div class="scene-content">
+                    <div class="dramatic-text gold">
+                        $40 MILLION DEAL
+                    </div>
+                    <div class="speech-bubble serena-voice">
+                        "This is more than just endorsement money. I want creative control. I want to design my own looks. I want to be a partner, not just a billboard."
+                    </div>
+                    <div class="data-card">
+                        <h4>The Nike Deal Structure</h4>
+                        <div class="data-row">
+                            <span>Guaranteed Base</span>
+                            <span class="data-value">$40M over 5 years</span>
+                        </div>
+                        <div class="data-row">
+                            <span>Creative Input</span>
+                            <span class="data-value positive">Yes</span>
+                        </div>
+                        <div class="data-row">
+                            <span>Equity Stake</span>
+                            <span class="data-value negative">No</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="thought-bubble">
+                Great deal... but Serena was already thinking ahead. Endorsements are renting your brand. She wanted to OWN.
+            </div>
+        </div>
+
+        <!-- Panel 4: Dominance -->
+        <div class="comic-panel" data-panel="4">
+            <div class="panel-header">
+                <span class="panel-location">Centre Court, Wimbledon</span>
+                <span class="panel-year">2002-2017</span>
+            </div>
+            <div class="narrator-box">
+                For 15 years, Serena dominated tennis like no one before her.
+            </div>
+            <div class="timeline-visual">
+                <div class="timeline-point">2002<br>🏆×3</div>
+                <div class="timeline-point">2008<br>🏆×9</div>
+                <div class="timeline-point">2015<br>🏆×21</div>
+                <div class="timeline-point">2017<br>🏆×23</div>
+            </div>
+            <div class="data-card">
+                <h4>Peak Serena: Revenue Streams</h4>
+                <div class="data-row">
+                    <span>Prize Money (annual peak)</span>
+                    <span class="data-value">$12.5M</span>
+                </div>
+                <div class="data-row">
+                    <span>Endorsements (annual peak)</span>
+                    <span class="data-value">$25M+</span>
+                </div>
+                <div class="data-row">
+                    <span>Total Annual Income</span>
+                    <span class="data-value">~$35-40M</span>
+                </div>
+            </div>
+            <div class="thought-bubble">
+                Most athletes would stop here. Cash the checks, invest in real estate, retire comfortable. Serena had bigger plans.
+            </div>
+        </div>
+
+        <!-- Panel 5: The Pivot -->
+        <div class="comic-panel" data-panel="5">
+            <div class="panel-header">
+                <span class="panel-location">The Strategic Pivot</span>
+                <span class="panel-year">2014</span>
+            </div>
+            <div class="narrator-box">
+                At 32, still at the top of her game, Serena made a move that changed everything.
+            </div>
+            <div class="dramatic-text victory">
+                SERENA VENTURES LAUNCHES
+            </div>
+            <div class="scene">
+                <div class="scene-visual">
+                    <div class="character-icon serena">🎾</div>
+                    <div class="character-name">Serena</div>
+                </div>
+                <div class="scene-content">
+                    <div class="speech-bubble serena-voice">
+                        "I've been watching tech founders build billion-dollar companies. I've been endorsing their products. Why am I not INVESTING in them?"
+                    </div>
+                </div>
+            </div>
+            <div class="insight-box">
+                <h4>The Big Shift: Fees → Equity</h4>
+                <p>Instead of just taking endorsement fees, Serena started taking equity stakes. Instead of renting her brand, she started building assets.</p>
+            </div>
+        </div>
+
+        <!-- Panel 6: Investment Thesis -->
+        <div class="comic-panel" data-panel="6">
+            <div class="panel-header">
+                <span class="panel-location">Serena Ventures HQ</span>
+                <span class="panel-year">2014-2023</span>
+            </div>
+            <div class="speech-bubble serena-voice">
+                "We want to invest in people who look like the world we live in. Women founders get only 2% of VC funding. That's not charity—that's an ARBITRAGE OPPORTUNITY."
+            </div>
+            <div class="data-card">
+                <h4>Serena Ventures: The Fund</h4>
+                <div class="data-row">
+                    <span>Fund Size</span>
+                    <span class="data-value">$111 million</span>
+                </div>
+                <div class="data-row">
+                    <span>Portfolio Companies</span>
+                    <span class="data-value">60+</span>
+                </div>
+                <div class="data-row">
+                    <span>Focus</span>
+                    <span class="data-value">78% women/POC founders</span>
+                </div>
+            </div>
+            <div class="investment-grid">
+                <div class="investment-chip">MasterClass<span class="return">50-100x</span></div>
+                <div class="investment-chip">Tonal<span class="return">30x</span></div>
+                <div class="investment-chip">Daily Harvest<span class="return">40x</span></div>
+                <div class="investment-chip">Impossible Foods<span class="return">TBD</span></div>
+                <div class="investment-chip">Billie<span class="return">Acquired</span></div>
+                <div class="investment-chip">NWSL Teams<span class="return">10-15x</span></div>
+            </div>
+        </div>
+
+        <!-- Panel 7: S by Serena -->
+        <div class="comic-panel" data-panel="7">
+            <div class="panel-header">
+                <span class="panel-location">The Decision</span>
+                <span class="panel-year">2018</span>
+            </div>
+            <div class="narrator-box">
+                Nike offered to extend her deal. Serena had a different idea.
+            </div>
+            <div class="comparison-grid">
+                <div class="comparison-card" style="background: var(--color-neutral-100); border: 2px solid var(--color-neutral-300);">
+                    <h5>Option A: Nike Extension</h5>
+                    <div class="amount" style="color: var(--color-neutral-600);">$10-15M/year</div>
+                    <p style="font-size: 0.8rem; margin-top: 0.5rem;">Guaranteed income<br>No ownership<br>Brand controlled by Nike</p>
+                </div>
+                <div class="comparison-card good">
+                    <h5>Option B: S by Serena ✓</h5>
+                    <div class="amount" style="color: #059669;">100% Equity</div>
+                    <p style="font-size: 0.8rem; margin-top: 0.5rem;">Own the brand<br>Creative control<br>Build lasting asset</p>
+                </div>
+            </div>
+            <div class="speech-bubble serena-voice">
+                "I'm not just an athlete who wears clothes. I'm a designer. I'm a businesswoman. It's time to build something that's MINE."
+            </div>
+        </div>
+
+        <!-- Panel 8: Women's Sports Bet -->
+        <div class="comic-panel" data-panel="8">
+            <div class="panel-header">
+                <span class="panel-location">First Mover Advantage</span>
+                <span class="panel-year">2015-2023</span>
+            </div>
+            <div class="narrator-box">
+                While others ignored women's sports, Serena saw opportunity.
+            </div>
+            <div class="data-card">
+                <h4>Women's Sports Investment Thesis</h4>
+                <div class="data-row">
+                    <span>NWSL Team Entry (2015)</span>
+                    <span class="data-value">~$3M</span>
+                </div>
+                <div class="data-row">
+                    <span>NWSL Team Value (2023)</span>
+                    <span class="data-value positive">~$40M</span>
+                </div>
+                <div class="data-row">
+                    <span>Return</span>
+                    <span class="data-value positive">13x in 8 years</span>
+                </div>
+            </div>
+            <div class="speech-bubble serena-voice">
+                "Everyone told me women's sports was a bad investment. They said there's no audience. They were looking at the wrong data."
+            </div>
+            <div class="thought-bubble">
+                She was right. NWSL, WNBA, and women's tennis viewership exploded. First movers captured the gains.
+            </div>
+        </div>
+
+        <!-- Panel 9: The Contrast -->
+        <div class="comic-panel" data-panel="9">
+            <div class="panel-header">
+                <span class="panel-location">A Tale of Two Athletes</span>
+                <span class="panel-year">The Comparison</span>
+            </div>
+            <div class="narrator-box">
+                Not all athletes build empires. Some just take checks.
+            </div>
+            <div class="comparison-grid">
+                <div class="comparison-card good">
+                    <h5>Serena Williams</h5>
+                    <div class="amount" style="color: #059669;">$500M+ Brand</div>
+                    <p style="font-size: 0.8rem; margin-top: 0.5rem;">
+                        ✓ Invested in 60+ companies<br>
+                        ✓ Built owned businesses<br>
+                        ✓ First mover in women's sports<br>
+                        ✓ Assets appreciate post-retirement
+                    </p>
+                </div>
+                <div class="comparison-card bad">
+                    <h5>Allen Iverson</h5>
+                    <div class="amount" style="color: var(--color-danger);">Bankruptcy</div>
+                    <p style="font-size: 0.8rem; margin-top: 0.5rem;">
+                        ✗ $200M+ career earnings<br>
+                        ✗ No investments<br>
+                        ✗ No owned businesses<br>
+                        ✗ When salary stops, income stops
+                    </p>
+                </div>
+            </div>
+            <div class="insight-box">
+                <h4>The Difference</h4>
+                <p>Iverson <em>earned</em> money. Serena <em>built</em> assets. When you stop playing, endorsements fade. Equity compounds.</p>
+            </div>
+        </div>
+
+        <!-- Panel 10: The Five Streams -->
+        <div class="comic-panel" data-panel="10">
+            <div class="panel-header">
+                <span class="panel-location">The Playbook</span>
+                <span class="panel-year">Five Revenue Streams</span>
+            </div>
+            <div class="narrator-box">
+                Elite athletes have five ways to generate wealth. Serena used them all.
+            </div>
+            <div class="revenue-streams">
+                <div class="stream-icon">
+                    <span class="icon">🏆</span>
+                    <span class="label">Prize Money</span>
+                </div>
+                <div class="stream-icon">
+                    <span class="icon">📝</span>
+                    <span class="label">Endorsements</span>
+                </div>
+                <div class="stream-icon">
+                    <span class="icon">🏢</span>
+                    <span class="label">Owned Business</span>
+                </div>
+                <div class="stream-icon">
+                    <span class="icon">💰</span>
+                    <span class="label">Investments</span>
+                </div>
+                <div class="stream-icon">
+                    <span class="icon">🎬</span>
+                    <span class="label">Media/Content</span>
+                </div>
+            </div>
+            <div class="data-card">
+                <h4>Serena's Estimated Allocation</h4>
+                <div class="data-row">
+                    <span>Fee-Based (Endorsements + Prize)</span>
+                    <span class="data-value">~30%</span>
+                </div>
+                <div class="data-row">
+                    <span>Equity-Based (Businesses + Investments)</span>
+                    <span class="data-value positive">~70%</span>
+                </div>
+            </div>
+            <div class="thought-bubble">
+                Most athletes are 90%+ fee-based. Serena flipped the script.
+            </div>
+        </div>
+
+        <!-- Panel 11: Post-Career -->
+        <div class="comic-panel" data-panel="11">
+            <div class="panel-header">
+                <span class="panel-location">Life After Tennis</span>
+                <span class="panel-year">2023+</span>
+            </div>
+            <div class="narrator-box">
+                Serena retired in 2022. Here's what happens to her income streams:
+            </div>
+            <div class="data-card">
+                <h4>Asset Longevity Post-Retirement</h4>
+                <div class="data-row">
+                    <span>Endorsements (Nike, Gatorade)</span>
+                    <span class="data-value negative">↓ Declining</span>
+                </div>
+                <div class="data-row">
+                    <span>Prize Money</span>
+                    <span class="data-value negative">$0</span>
+                </div>
+                <div class="data-row">
+                    <span>S by Serena (owned brand)</span>
+                    <span class="data-value positive">↑ Growing</span>
+                </div>
+                <div class="data-row">
+                    <span>Serena Ventures (investments)</span>
+                    <span class="data-value positive">↑ Compounding</span>
+                </div>
+                <div class="data-row">
+                    <span>Media/Production</span>
+                    <span class="data-value positive">↑ Growing</span>
+                </div>
+            </div>
+            <div class="speech-bubble serena-voice">
+                "I didn't retire FROM something. I retired TO something. My businesses don't care if I can still hit a forehand."
+            </div>
+        </div>
+
+        <!-- Panel 12: Fund Performance -->
+        <div class="comic-panel" data-panel="12">
+            <div class="panel-header">
+                <span class="panel-location">The Returns</span>
+                <span class="panel-year">Serena Ventures Performance</span>
+            </div>
+            <div class="dramatic-text money">
+                $111M → $500M+ (4.5x)
+            </div>
+            <div class="data-card">
+                <h4>Serena Ventures vs. Industry</h4>
+                <div class="data-row">
+                    <span>Serena Ventures IRR</span>
+                    <span class="data-value positive">25-35%</span>
+                </div>
+                <div class="data-row">
+                    <span>VC Industry Benchmark</span>
+                    <span class="data-value">15-20%</span>
+                </div>
+                <div class="data-row">
+                    <span>Outperformance</span>
+                    <span class="data-value positive">+10-15pp</span>
+                </div>
+            </div>
+            <div class="insight-box">
+                <h4>The Thesis Was Right</h4>
+                <p>Investing in underrepresented founders isn't charity—it's smart investing. Women get only 2% of VC funding despite founding 40% of companies. That's systematic undervaluation.</p>
+            </div>
+        </div>
+
+        <!-- Panel 13: The Lesson -->
+        <div class="comic-panel" data-panel="13">
+            <div class="panel-header">
+                <span class="panel-location">The Framework</span>
+                <span class="panel-year">What You Can Learn</span>
+            </div>
+            <div class="narrator-box">
+                Serena's playbook isn't just for tennis stars. It's a framework for any athlete.
+            </div>
+            <div style="padding: 0.5rem 0;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; padding: 0.75rem; background: var(--color-neutral-50); border-radius: 6px;">
+                    <span style="font-size: 1.5rem;">1️⃣</span>
+                    <span><strong>Start Early:</strong> Build businesses and investments DURING peak career, not after</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; padding: 0.75rem; background: var(--color-neutral-50); border-radius: 6px;">
+                    <span style="font-size: 1.5rem;">2️⃣</span>
+                    <span><strong>Equity > Fees:</strong> Own assets that compound, don't just collect checks</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; padding: 0.75rem; background: var(--color-neutral-50); border-radius: 6px;">
+                    <span style="font-size: 1.5rem;">3️⃣</span>
+                    <span><strong>Find Undervalued Markets:</strong> Women's sports, underrepresented founders—first movers win</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: var(--color-neutral-50); border-radius: 6px;">
+                    <span style="font-size: 1.5rem;">4️⃣</span>
+                    <span><strong>Build for Post-Career:</strong> Create assets that don't depend on athletic performance</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 14: Your Turn -->
+        <div class="comic-panel" data-panel="14">
+            <div class="panel-header">
+                <span class="panel-location">Your Turn</span>
+                <span class="panel-year">The Question</span>
+            </div>
+            <div class="dramatic-text victory">
+                WHAT WOULD YOU DO?
+            </div>
+            <div class="narrator-box">
+                You're advising a 25-year-old elite athlete with a 10-year peak career ahead. Using Serena's framework:
+            </div>
+            <div style="padding: 1rem; background: var(--color-neutral-50); border-radius: 8px; margin: 1rem 0;">
+                <p style="margin-bottom: 0.75rem;"><strong>1.</strong> How would you allocate across the five revenue streams?</p>
+                <p style="margin-bottom: 0.75rem;"><strong>2.</strong> What owned businesses should they launch?</p>
+                <p style="margin-bottom: 0.75rem;"><strong>3.</strong> Where are the undervalued investment opportunities today?</p>
+                <p><strong>4.</strong> How do you build assets that last 50 years?</p>
+            </div>
+            <div class="insight-box">
+                <h4>Serena Didn't Just Win Titles</h4>
+                <p>She built a $500M empire by thinking like an investor, not just an athlete. The question isn't "How much can I earn?" It's <strong>"What can I build?"</strong></p>
+            </div>
+            <div class="dramatic-text" style="background: var(--color-serena-light); color: var(--color-serena);">
+                THE END
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-container">
+            <button class="nav-btn" id="prevBtn" disabled>
+                <span>←</span> Previous
+            </button>
+            <span class="panel-indicator" id="panelIndicator">Panel 1 of 14</span>
+            <button class="nav-btn" id="nextBtn">
+                Next <span>→</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const totalPanels = 14;
+        let currentPanel = 1;
+
+        const panels = document.querySelectorAll('.comic-panel');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const panelIndicator = document.getElementById('panelIndicator');
+
+        function updatePanel() {
+            panels.forEach(panel => {
+                panel.classList.remove('active');
+                if (parseInt(panel.dataset.panel) === currentPanel) {
+                    panel.classList.add('active');
+                }
+            });
+
+            prevBtn.disabled = currentPanel === 1;
+            nextBtn.disabled = currentPanel === totalPanels;
+            nextBtn.innerHTML = currentPanel === totalPanels ? 'Finish' : 'Next <span>→</span>';
+
+            const progress = (currentPanel / totalPanels) * 100;
+            progressFill.style.width = progress + '%';
+            progressText.textContent = `Panel ${currentPanel} of ${totalPanels}`;
+            panelIndicator.textContent = `Panel ${currentPanel} of ${totalPanels}`;
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentPanel > 1) {
+                currentPanel--;
+                updatePanel();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentPanel < totalPanels) {
+                currentPanel++;
+                updatePanel();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentPanel < totalPanels) {
+                currentPanel++;
+                updatePanel();
+            } else if (e.key === 'ArrowLeft' && currentPanel > 1) {
+                currentPanel--;
+                updatePanel();
+            }
+        });
+
+        updatePanel();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revenue Strategy Pre-Assessment - Revenue Knowledge Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+            --color-error: #ef4444;
+            --color-success: #c0d1cd;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        *:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+            padding: 1.5rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .widget-box {
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+
+        /* Screen Management */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Screen 1: Challenge Preview */
+        .challenge-preview {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .info-box {
+            background: var(--color-neutral-100);
+            border-left: 4px solid var(--color-neutral-400);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            font-size: 14px;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+        }
+
+        .challenge-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: var(--color-neutral-50);
+            border-radius: 8px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .challenge-section h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 15px;
+        }
+
+        .challenge-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-neutral-700);
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .challenge-section p {
+            margin-bottom: 15px;
+            color: var(--color-neutral-700);
+        }
+
+        .challenge-section ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            color: var(--color-neutral-700);
+        }
+
+        .challenge-section li {
+            margin-bottom: 8px;
+        }
+
+        .cta-button {
+            display: block;
+            margin: 40px auto 0;
+            padding: 10px 24px;
+            background: #171717;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-align: center;
+        }
+
+        .cta-button:hover {
+            background: #404040;
+        }
+
+        .cta-button:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        /* Screen 2: Quiz */
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--color-neutral-300);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.completed {
+            background: var(--color-success);
+        }
+
+        .progress-dot.active {
+            background: var(--color-neutral-800);
+        }
+
+        .question-container {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: var(--color-neutral-50);
+            border-radius: 8px;
+            border: 1px solid #e5e5e5;
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--color-neutral-800);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .question-type {
+            font-size: 12px;
+            color: var(--color-neutral-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px 20px;
+            background: white;
+            border: 1px solid #d4d4d4;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option:hover {
+            border-color: var(--color-neutral-500);
+            background: var(--color-neutral-50);
+        }
+
+        .option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .option.selected {
+            border-color: var(--color-neutral-800);
+            background: var(--color-neutral-100);
+        }
+
+        .option.correct {
+            border-color: var(--color-success);
+            background: #f0fdf4;
+        }
+
+        .option.incorrect {
+            border-color: var(--color-error);
+            background: #fef2f2;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #f0fdf4;
+            border-left: 4px solid var(--color-success);
+            color: var(--color-neutral-900);
+        }
+
+        .feedback.incorrect {
+            background: #fef2f2;
+            border-left: 4px solid var(--color-error);
+            color: var(--color-neutral-900);
+        }
+
+        .feedback strong {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 40px;
+            gap: 10px;
+        }
+
+        .submit-btn-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+
+        .submit-btn, .next-btn {
+            background: #171717;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .submit-btn:hover, .next-btn:hover {
+            background: #404040;
+        }
+
+        .submit-btn:focus, .next-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .submit-btn:disabled, .next-btn:disabled {
+            background: var(--color-neutral-400);
+            cursor: not-allowed;
+        }
+
+        .next-btn {
+            margin-left: auto;
+        }
+
+        /* Screen 3: Results */
+        .results-container {
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            border: 8px solid #e5e5e5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .score-label {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--color-neutral-600);
+            margin-top: 5px;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .level-badge.foundation {
+            background: var(--color-neutral-200);
+            color: var(--color-neutral-900);
+        }
+
+        .level-badge.intuition {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .level-badge.advanced {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .level-badge.master {
+            background: var(--color-neutral-100);
+            color: #92400e;
+        }
+
+        .learning-path {
+            background: var(--color-neutral-50);
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .learning-path h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--color-neutral-900);
+        }
+
+        .learning-path p {
+            margin-bottom: 20px;
+            color: var(--color-neutral-700);
+        }
+
+        .learning-path ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .learning-path li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            color: var(--color-neutral-700);
+        }
+
+        .learning-path li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--color-neutral-500);
+            font-weight: bold;
+        }
+
+        .outcome-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .outcome-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .outcome-card h4 {
+            font-size: 14px;
+            color: var(--color-neutral-600);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .outcome-score {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e5e5;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #171717;
+            transition: width 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .question-text {
+                font-size: 16px;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+
+            .next-btn {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+        <!-- Screen 1: Challenge Preview -->
+        <div id="screen-1" class="screen active challenge-preview">
+            <header>
+                <h1>Can You Solve These Revenue Problems?</h1>
+                <p class="subtitle">Professional sport presents unique business challenges that traditional MBA frameworks don't fully address. This week tests whether you can apply strategic thinking to an industry where the rules are different.</p>
+                <div class="info-box">
+                    This week tests whether you can apply advanced strategic thinking to an industry where the rules are different. Before you dive into the content, test your current knowledge to discover where to focus your energy.
+                </div>
+            </header>
+
+            <div class="challenge-section">
+                <h2>Challenge 1: Map the Revenue Ecosystem</h2>
+                <p><strong>The Problem:</strong> A private equity firm asks you: "Where does sport revenue come from, and which streams matter most?" Can you map the five major revenue sources and explain how they interconnect?</p>
+
+                <h3>What you'll need to know:</h3>
+                <ul>
+                    <li>Media rights, ticketing, sponsorship, merchandising, betting/gaming</li>
+                    <li>Relative size and growth trajectory of each stream</li>
+                    <li>Why sport revenue streams are interdependent (ecosystem vs. portfolio)</li>
+                </ul>
+
+                <p><strong>Test yourself:</strong> Can you name all five major revenue streams and estimate their percentage of total revenue?</p>
+            </div>
+
+            <div class="challenge-section">
+                <h2>Challenge 2: Understand Sport's Unique Business Model</h2>
+                <p><strong>The Problem:</strong> Your CEO asks: "Why can't we run a sports team like we run our hotel chain?" Can you explain what makes sport economics fundamentally different?</p>
+
+                <h3>What you'll need to know:</h3>
+                <ul>
+                    <li>Why competitors must collaborate financially (revenue sharing, draft systems)</li>
+                    <li>The concept of competitive balance as an economic asset</li>
+                    <li>How sport creates value through uncertainty of outcome</li>
+                </ul>
+
+                <p><strong>Test yourself:</strong> Can you explain why the NFL shares 60% of all revenue equally, and whether that's good or bad for business?</p>
+            </div>
+
+            <div class="challenge-section">
+                <h2>Challenge 3: Evaluate Growth Potential vs. Risk</h2>
+                <p><strong>The Problem:</strong> You have $50 million to invest across five revenue streams. Some offer high growth but high risk (betting). Others offer stability but limited upside (ticketing). Can you build a portfolio that maximizes revenue while managing vulnerability?</p>
+
+                <h3>What you'll need to know:</h3>
+                <ul>
+                    <li>Which streams are capacity-constrained (ceiling effects)</li>
+                    <li>Which streams face regulatory or market uncertainty</li>
+                    <li>How to balance growth, stability, and diversification</li>
+                </ul>
+
+                <p><strong>Test yourself:</strong> Which revenue stream has the highest growth rate right now, and why?</p>
+            </div>
+
+            <div class="challenge-section">
+                <h2>Challenge 4: Analyze Revenue Sharing Models</h2>
+                <p><strong>The Problem:</strong> The Vancouver Canucks receive $X million from NHL revenue sharing but contribute $Y million to the pool. The team's owner asks: "Are we better off in a league with revenue sharing, or should we lobby to change the system?" Can you analyze the trade-offs?</p>
+
+                <h3>What you'll need to know:</h3>
+                <ul>
+                    <li>How the NHL's revenue sharing formula works</li>
+                    <li>Which teams benefit (small market) vs. which contribute (large market)</li>
+                    <li>The strategic implications for competitive balance and franchise value</li>
+                </ul>
+
+                <p><strong>Test yourself:</strong> Can you explain one advantage and one disadvantage of revenue sharing for a mid-market team?</p>
+            </div>
+
+            <button class="cta-button" onclick="goToQuiz()">Take the Pre-Assessment Quiz</button>
+        </div>
+
+        <!-- Screen 2: Quiz -->
+        <div id="screen-2" class="screen">
+            <div class="quiz-header">
+                <h1>Revenue Strategy Knowledge Quiz</h1>
+                <p class="subtitle">10 questions covering sports business revenue fundamentals</p>
+                <div class="progress-indicator" id="progress-dots"></div>
+                <div class="info-box">
+                    <strong>This quiz is not graded.</strong> Answer honestly to identify your knowledge gaps and get a personalized learning path for Week 1.
+                </div>
+            </div>
+
+            <div id="quiz-container">
+                <!-- Questions will be rendered here -->
+            </div>
+
+            <div class="nav-buttons">
+                <button class="next-btn" id="next-btn" onclick="nextQuestion()" disabled>Next Question</button>
+            </div>
+        </div>
+
+        <!-- Screen 3: Results -->
+        <div id="screen-3" class="screen">
+            <div class="results-container">
+                <div class="score-circle">
+                    <div>
+                        <span id="score-number">0</span>/10
+                        <div class="score-label">Your Score</div>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="level-badge" id="level-badge">Foundation Builder</span>
+                    <h2 id="level-title"></h2>
+                </div>
+
+                <div class="outcome-breakdown">
+                    <div class="outcome-card">
+                        <h4>WLO 1.1: Revenue Streams</h4>
+                        <div class="outcome-score" id="outcome-1-1">0/3</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-1-1" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="outcome-card">
+                        <h4>WLO 1.2: Sport Business Model</h4>
+                        <div class="outcome-score" id="outcome-1-2">0/3</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-1-2" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="outcome-card">
+                        <h4>WLO 1.3: Growth vs. Risk</h4>
+                        <div class="outcome-score" id="outcome-1-3">0/2</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-1-3" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="outcome-card">
+                        <h4>WLO 1.4: Revenue Sharing</h4>
+                        <div class="outcome-score" id="outcome-1-4">0/2</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-1-4" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="learning-path">
+                    <h3>Your Personalized Learning Path</h3>
+                    <p id="path-description"></p>
+                    <ul id="path-recommendations"></ul>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz data
+        const quizData = [
+            {
+                number: 1,
+                outcome: 'WLO1.1',
+                type: 'Multiple Choice',
+                question: 'Which revenue stream typically accounts for the LARGEST percentage of total revenue for major professional sports leagues like the NFL?',
+                options: [
+                    { value: 'A', text: 'A) Ticketing & Live Events (20-30%)' },
+                    { value: 'B', text: 'B) Media Rights (40-60%)' },
+                    { value: 'C', text: 'C) Sponsorship & Partnerships (15-25%)' },
+                    { value: 'D', text: 'D) Merchandising & Licensing (5-10%)' }
+                ],
+                correct: 'B',
+                points: 1,
+                feedback: {
+                    correct: "Correct! Media rights typically account for 40-60% of total revenue for major professional sports leagues. The NFL's current media rights deal totals $110 billion over 11 years. This dominance of media rights is a defining feature of modern sports economics and explains why leagues prioritize broadcast partnerships and streaming deals.",
+                    incorrect: "Not quite. While all revenue streams matter, media rights actually account for the largest share (40-60%) of major league revenue. The NFL's $110 billion media deal demonstrates how broadcasting and streaming have become the foundation of modern sports economics. This week, you'll learn why media rights dominate and how the other streams interconnect."
+                }
+            },
+            {
+                number: 2,
+                outcome: 'WLO1.1',
+                type: 'Multiple Choice',
+                question: 'What is the PRIMARY reason sports revenue streams are described as an "ecosystem" rather than a "portfolio"?',
+                options: [
+                    { value: 'A', text: 'A) Each stream can be optimized independently without affecting others' },
+                    { value: 'B', text: 'B) Success in one stream creates ripple effects that impact all other streams' },
+                    { value: 'C', text: 'C) Teams should diversify equally across all five streams' },
+                    { value: 'D', text: 'D) Revenue streams are regulated by different governing bodies' }
+                ],
+                correct: 'B',
+                points: 1,
+                feedback: {
+                    correct: "Correct! Sports revenue streams are deeply interconnected. A star player signing (affecting payroll) drives jersey sales (merchandising), increases TV ratings (media rights), attracts premium sponsors (sponsorship), and fills seats (ticketing). This ecosystem thinking—understanding how streams amplify or constrain each other—separates strategic sports business leaders from purely financial operators.",
+                    incorrect: "Think about interconnection. The 'ecosystem' metaphor captures how sports revenue streams are interdependent—success in one area creates ripple effects across all others. A star player doesn't just affect one revenue line; they drive jersey sales, TV ratings, sponsor interest, and ticket demand simultaneously. This week, you'll explore these connections in depth."
+                }
+            },
+            {
+                number: 3,
+                outcome: 'WLO1.1',
+                type: 'Multiple Choice',
+                question: 'Which revenue stream has shown the HIGHEST growth rate in professional sports over the past 5 years?',
+                options: [
+                    { value: 'A', text: 'A) Ticketing & Live Events' },
+                    { value: 'B', text: 'B) Traditional Merchandising' },
+                    { value: 'C', text: 'C) Betting & Gaming' },
+                    { value: 'D', text: 'D) Stadium Naming Rights' }
+                ],
+                correct: 'C',
+                points: 1,
+                feedback: {
+                    correct: "Correct! Betting and gaming has been the fastest-growing revenue stream in sports, expanding rapidly since the 2018 U.S. Supreme Court decision allowing states to legalize sports betting. While still a smaller percentage of total revenue (2-8%), the growth trajectory and partnership opportunities have made it a strategic priority for leagues and teams.",
+                    incorrect: "Consider recent industry changes. Betting and gaming has been the fastest-growing stream since the 2018 legalization of sports betting in the U.S. While it's still a smaller portion of total revenue, the growth rate and strategic partnerships in this space have been remarkable. This week, you'll learn about both mature streams and emerging opportunities."
+                }
+            },
+            {
+                number: 4,
+                outcome: 'WLO1.2',
+                type: 'Multiple Choice',
+                question: 'Why do professional sports leagues require competitors to collaborate financially (through revenue sharing, salary caps, and draft systems)?',
+                options: [
+                    { value: 'A', text: 'A) Government regulations require equal distribution of sports revenue' },
+                    { value: 'B', text: 'B) Competitive balance creates uncertainty of outcome, which is the core product fans pay for' },
+                    { value: 'C', text: 'C) Owners prefer cooperation over competition for personal relationships' },
+                    { value: 'D', text: 'D) Smaller market teams would otherwise relocate to larger markets' }
+                ],
+                correct: 'B',
+                points: 1,
+                feedback: {
+                    correct: "Correct! Unlike traditional businesses where crushing competitors is the goal, sports leagues need competitive balance because uncertainty of outcome IS the product. If one team won every game, fans would lose interest. Revenue sharing, salary caps, and draft systems exist to maintain enough parity that games remain compelling—this is what makes sports economics fundamentally different from other industries.",
+                    incorrect: "Think about what fans are actually paying for. Sports is unique because the 'product' is uncertainty of outcome—the excitement of not knowing who will win. If one team dominated every season, fan interest (and revenue) would collapse. Revenue sharing and salary caps aren't about fairness or regulation; they're strategic tools to maintain competitive balance and protect the core product."
+                }
+            },
+            {
+                number: 5,
+                outcome: 'WLO1.2',
+                type: 'True/False',
+                question: 'True or False: A sports team can maximize long-term value by focusing solely on winning championships, even if it means operating at a financial loss.',
+                options: [
+                    { value: 'True', text: 'True' },
+                    { value: 'False', text: 'False' }
+                ],
+                correct: 'False',
+                points: 1,
+                feedback: {
+                    correct: "Correct! While winning matters, sustainable sports business requires balancing competitive success with financial health. Teams that overspend on players may win short-term but face salary cap penalties, reduced investment capacity, and potential ownership instability. The most valuable franchises (Cowboys, Yankees, Lakers) have found ways to be both competitive AND profitable.",
+                    incorrect: "Consider sustainability. While winning drives fan engagement, teams that consistently operate at losses face real consequences: reduced ability to invest in facilities, player development, and fan experience; potential ownership changes; and salary cap constraints in leagues that penalize overspending. Successful sports businesses balance competitive ambition with financial discipline."
+                }
+            },
+            {
+                number: 6,
+                outcome: 'WLO1.2',
+                type: 'Multiple Choice',
+                question: 'What makes a sports franchise fundamentally different from a typical consumer goods company like Nike?',
+                options: [
+                    { value: 'A', text: 'A) Sports franchises have higher profit margins' },
+                    { value: 'B', text: 'B) Sports franchises need their competitors to succeed for the league product to have value' },
+                    { value: 'C', text: 'C) Sports franchises don\'t face competition for consumer spending' },
+                    { value: 'D', text: 'D) Sports franchises have simpler revenue models' }
+                ],
+                correct: 'B',
+                points: 1,
+                feedback: {
+                    correct: "Correct! This is the fundamental paradox of sports business: You need your competitors to be strong. If Nike crushes Adidas, Nike wins. But if the Yankees crush every other MLB team, the entire league suffers because fans lose interest. Sports franchises compete on the field but collaborate on the business of making the league valuable. This 'coopetition' model is unique to sports.",
+                    incorrect: "Think about the competitive dynamic. Nike benefits if Adidas fails. But the Yankees don't benefit if every other MLB team fails—that would make the league unwatchable and destroy the product. Sports franchises exist in a 'coopetition' model where they compete on the field but must collaborate to maintain a valuable league product. This fundamentally changes strategic thinking."
+                }
+            },
+            {
+                number: 7,
+                outcome: 'WLO1.3',
+                type: 'Multiple Choice',
+                question: 'Which revenue stream faces the MOST significant "ceiling effect" (natural limit on growth)?',
+                options: [
+                    { value: 'A', text: 'A) Media Rights' },
+                    { value: 'B', text: 'B) Ticketing & Live Events' },
+                    { value: 'C', text: 'C) Digital/Streaming Content' },
+                    { value: 'D', text: 'D) International Licensing' }
+                ],
+                correct: 'B',
+                points: 1,
+                feedback: {
+                    correct: "Correct! Ticketing faces hard physical constraints: stadiums have fixed capacity, there are only so many home games per season, and there's a limit to how much fans will pay. A 50,000-seat stadium can't become 100,000 seats. In contrast, media rights can grow with new platforms, international expansion, and cord-cutting migration to streaming. Understanding ceiling effects helps prioritize growth investments.",
+                    incorrect: "Consider physical constraints. Ticketing is limited by stadium capacity (you can't add seats indefinitely), number of home games, and price elasticity. Media rights, streaming, and international markets can scale without these physical limits. When evaluating growth potential, understanding which streams face ceiling effects helps prioritize investment decisions."
+                }
+            },
+            {
+                number: 8,
+                outcome: 'WLO1.3',
+                type: 'Multiple Choice',
+                question: 'A team is deciding whether to invest heavily in their betting/gaming partnerships. What is the PRIMARY risk they should consider?',
+                options: [
+                    { value: 'A', text: 'A) Betting revenue is too small to matter strategically' },
+                    { value: 'B', text: 'B) Regulatory uncertainty could change the landscape quickly' },
+                    { value: 'C', text: 'C) Fans universally oppose betting partnerships' },
+                    { value: 'D', text: 'D) Betting partnerships reduce media rights value' }
+                ],
+                correct: 'B',
+                points: 1,
+                feedback: {
+                    correct: "Correct! While betting/gaming offers high growth potential, it faces significant regulatory uncertainty. Laws vary by state/province, regulations continue to evolve, and public sentiment could shift. Teams investing heavily in this space must consider scenario planning: What happens if regulations tighten? Balancing growth opportunity with regulatory risk is a key strategic challenge.",
+                    incorrect: "Think about external factors beyond the team's control. Betting revenue is growing fast and fans are generally accepting, but regulatory uncertainty is the key risk. Laws differ by jurisdiction, continue to evolve, and could change direction. Smart strategy involves weighing growth potential against factors you can't control—and having contingency plans."
+                }
+            },
+            {
+                number: 9,
+                outcome: 'WLO1.4',
+                type: 'Multiple Choice',
+                question: 'The NFL shares approximately 60% of all revenue equally among teams. Which team type benefits MOST from this arrangement?',
+                options: [
+                    { value: 'A', text: 'A) Large-market teams like the Dallas Cowboys' },
+                    { value: 'B', text: 'B) Small-market teams like the Green Bay Packers' },
+                    { value: 'C', text: 'C) Teams with new stadiums' },
+                    { value: 'D', text: 'D) Teams with losing records' }
+                ],
+                correct: 'B',
+                points: 1,
+                feedback: {
+                    correct: "Correct! Revenue sharing redistributes money from large-market teams (who generate more local revenue) to small-market teams (who benefit from the shared national pool). Green Bay, the smallest market in the NFL, can remain competitive because they receive equal shares of the massive national TV contracts. Without revenue sharing, small markets couldn't afford competitive rosters.",
+                    incorrect: "Think about where money flows. Revenue sharing takes from teams that generate more (large markets like Dallas, New York) and distributes equally to all teams. Small-market teams like Green Bay, which couldn't generate comparable local revenue, benefit most from equal shares of national TV money. This is how the NFL maintains competitive balance despite market size disparities."
+                }
+            },
+            {
+                number: 10,
+                outcome: 'WLO1.4',
+                type: 'Multiple Choice',
+                question: 'A large-market NHL team owner argues against revenue sharing, saying "We earned this money, why should we subsidize smaller markets?" What is the STRONGEST counter-argument?',
+                options: [
+                    { value: 'A', text: 'A) Revenue sharing is required by the collective bargaining agreement' },
+                    { value: 'B', text: 'B) Large-market teams benefit when the overall league is strong and competitive' },
+                    { value: 'C', text: 'C) Small-market fans deserve access to winning teams too' },
+                    { value: 'D', text: 'D) Revenue sharing reduces player salaries league-wide' }
+                ],
+                correct: 'B',
+                points: 1,
+                feedback: {
+                    correct: "Correct! The strongest business argument is self-interest: large-market teams benefit from a strong league. If small-market teams fold or become permanently uncompetitive, the league product suffers—fewer compelling matchups, reduced national TV value, weaker playoffs. The Yankees need competitive opponents for their games to matter. Revenue sharing isn't charity; it's an investment in league-wide value that benefits everyone.",
+                    incorrect: "Think about enlightened self-interest. The strongest argument isn't about rules, fairness, or salaries—it's that large-market teams themselves benefit from a strong league. The Yankees need competitive opponents; a league of weak teams would reduce national TV value, playoff excitement, and ultimately franchise values. Revenue sharing protects the ecosystem that makes large-market teams valuable in the first place."
+                }
+            }
+        ];
+
+        // State
+        let currentScreen = 1;
+        let currentQuestion = 0;
+        let answers = {};
+        let outcomeScores = {
+            'WLO1.1': { correct: 0, total: 3, maxPoints: 3 },
+            'WLO1.2': { correct: 0, total: 3, maxPoints: 3 },
+            'WLO1.3': { correct: 0, total: 2, maxPoints: 2 },
+            'WLO1.4': { correct: 0, total: 2, maxPoints: 2 }
+        };
+
+        function goToQuiz() {
+            showScreen(2);
+            initializeQuiz();
+        }
+
+        function showScreen(screenNum) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(`screen-${screenNum}`).classList.add('active');
+            currentScreen = screenNum;
+            window.scrollTo(0, 0);
+        }
+
+        function initializeQuiz() {
+            renderProgressDots();
+            renderQuestion(0);
+        }
+
+        function renderProgressDots() {
+            const dotsContainer = document.getElementById('progress-dots');
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < quizData.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot' + (i === 0 ? ' active' : '');
+                dot.id = `dot-${i}`;
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function renderQuestion(index) {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            const q = quizData[index];
+            const qDiv = document.createElement('div');
+            qDiv.className = 'question-container active';
+            qDiv.dataset.question = q.number;
+
+            let optionsHTML = '';
+            if (q.isRanking) {
+                optionsHTML = '<div class="options" id="ranking-list">';
+                q.items.forEach((item, i) => {
+                    optionsHTML += `<div class="option ranking-item" data-index="${i}" draggable="true">
+                        <span class="rank-number">${i + 1}.</span>
+                        <span>${item}</span>
+                    </div>`;
+                });
+                optionsHTML += '</div><p style="font-size: 12px; color: var(--color-neutral-500); margin-top: 10px;">Drag and drop to reorder (1 = highest impact)</p>';
+            } else {
+                optionsHTML = '<div class="options">';
+                q.options.forEach(opt => {
+                    optionsHTML += `<label class="option">
+                        <input type="radio" name="q${q.number}" value="${opt.value}">
+                        <span>${opt.text}</span>
+                    </label>`;
+                });
+                optionsHTML += '</div>';
+            }
+
+            qDiv.innerHTML = `
+                <div class="question-header">
+                    <span class="question-number">Question ${q.number} of 10</span>
+                    <span class="question-type">${q.type}</span>
+                </div>
+                <div class="question-text">${q.question}</div>
+                ${optionsHTML}
+                <div class="submit-btn-container">
+                    <button class="submit-btn" onclick="submitAnswer(${index})">Submit Answer</button>
+                </div>
+                <div class="feedback">
+                    <strong></strong>
+                    <p></p>
+                </div>
+            `;
+
+            container.appendChild(qDiv);
+
+            // Add event listeners
+            if (!q.isRanking) {
+                qDiv.querySelectorAll('.option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        const radio = this.querySelector('input');
+                        radio.checked = true;
+                        this.parentElement.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                        this.classList.add('selected');
+                    });
+                });
+            }
+
+            if (q.isRanking) {
+                setupDragAndDrop();
+            }
+
+            currentQuestion = index;
+        }
+
+        function setupDragAndDrop() {
+            const items = document.querySelectorAll('.ranking-item');
+            let draggedItem = null;
+
+            items.forEach(item => {
+                item.addEventListener('dragstart', function() {
+                    draggedItem = this;
+                    setTimeout(() => this.style.opacity = '0.5', 0);
+                });
+
+                item.addEventListener('dragend', function() {
+                    setTimeout(() => this.style.opacity = '1', 0);
+                    draggedItem = null;
+                    updateRankNumbers();
+                });
+
+                item.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                });
+
+                item.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    if (this !== draggedItem) {
+                        const allItems = [...this.parentNode.children];
+                        const draggedIndex = allItems.indexOf(draggedItem);
+                        const droppedIndex = allItems.indexOf(this);
+
+                        if (draggedIndex < droppedIndex) {
+                            this.parentNode.insertBefore(draggedItem, this.nextSibling);
+                        } else {
+                            this.parentNode.insertBefore(draggedItem, this);
+                        }
+                    }
+                });
+
+                item.addEventListener('dragenter', function(e) {
+                    e.preventDefault();
+                    this.style.borderColor = 'var(--color-neutral-800)';
+                });
+
+                item.addEventListener('dragleave', function() {
+                    this.style.borderColor = 'var(--color-neutral-300)';
+                });
+            });
+        }
+
+        function updateRankNumbers() {
+            const items = document.querySelectorAll('.ranking-item');
+            items.forEach((item, index) => {
+                item.querySelector('.rank-number').textContent = `${index + 1}.`;
+            });
+        }
+
+        function submitAnswer(index) {
+            const q = quizData[index];
+            const container = document.querySelector(`[data-question="${q.number}"]`);
+
+            let isCorrect = false;
+            let userAnswer = '';
+            let pointsEarned = 0;
+
+            if (q.isRanking) {
+                const items = [...container.querySelectorAll('.ranking-item')];
+                const userOrder = items.map(item => quizData[index].items[parseInt(item.dataset.index)]);
+                const correctOrder = q.correct;
+
+                let correctPositions = 0;
+                userOrder.forEach((item, i) => {
+                    if (item === correctOrder[i]) correctPositions++;
+                });
+
+                if (correctPositions === 4) {
+                    pointsEarned = q.points;
+                    isCorrect = true;
+                } else if (correctPositions >= 2) {
+                    pointsEarned = Math.floor(q.points / 2);
+                    isCorrect = true;
+                }
+
+                items.forEach(item => item.draggable = false);
+            } else {
+                const selectedInput = container.querySelector('input:checked');
+                if (!selectedInput) {
+                    alert('Please select an answer before submitting.');
+                    return;
+                }
+
+                userAnswer = selectedInput.value;
+                isCorrect = userAnswer === q.correct;
+                pointsEarned = isCorrect ? q.points : 0;
+
+                container.querySelectorAll('.option').forEach(opt => {
+                    const input = opt.querySelector('input');
+                    if (input.value === q.correct) {
+                        opt.classList.add('correct');
+                    } else if (input.value === userAnswer && !isCorrect) {
+                        opt.classList.add('incorrect');
+                    }
+                    opt.style.pointerEvents = 'none';
+                });
+            }
+
+            // Store answer
+            answers[q.number] = {
+                correct: isCorrect,
+                outcome: q.outcome,
+                points: pointsEarned
+            };
+
+            // Update outcome scores
+            outcomeScores[q.outcome].correct += pointsEarned;
+
+            // Show feedback
+            const feedbackDiv = container.querySelector('.feedback');
+            const feedbackStrong = feedbackDiv.querySelector('strong');
+            const feedbackP = feedbackDiv.querySelector('p');
+
+            feedbackDiv.classList.remove('correct', 'incorrect');
+            feedbackDiv.classList.add(isCorrect ? 'correct' : 'incorrect', 'show');
+
+            if (q.isRanking) {
+                feedbackStrong.textContent = isCorrect ? 'Correct!' : 'Partial credit';
+                feedbackP.textContent = q.feedback;
+            } else {
+                feedbackStrong.textContent = isCorrect ? 'Correct!' : 'Not quite.';
+                feedbackP.textContent = isCorrect ? q.feedback.correct : q.feedback.incorrect;
+            }
+
+            // Disable submit button
+            container.querySelector('.submit-btn').disabled = true;
+            container.querySelector('.submit-btn').textContent = 'Answer Submitted';
+
+            // Update progress dots
+            document.getElementById(`dot-${index}`).classList.remove('active');
+            document.getElementById(`dot-${index}`).classList.add('completed');
+
+            // Enable next button
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                // Update progress dots
+                document.getElementById(`dot-${currentQuestion + 1}`).classList.add('active');
+
+                // Render next question
+                renderQuestion(currentQuestion + 1);
+
+                // Disable next button until answer submitted
+                document.getElementById('next-btn').disabled = true;
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+            } else {
+                // Show results
+                showResults();
+            }
+        }
+
+        function showResults() {
+            showScreen(3);
+
+            const totalPoints = Object.values(answers).reduce((sum, a) => sum + a.points, 0);
+            document.getElementById('score-number').textContent = totalPoints;
+
+            // Determine level
+            let level, levelClass, levelTitle, pathDescription, recommendations;
+
+            if (totalPoints <= 3) {
+                level = 'Foundation Builder';
+                levelClass = 'foundation';
+                levelTitle = 'You\'re starting fresh with sports revenue strategy!';
+                pathDescription = "Focus heavily on Module 3's Five Revenue Streams content and all interactive widgets. Spend extra time with the Revenue Mix Slider and Ecosystem Cascade infographic. Don't skip the Details accordions—they'll build your foundation.";
+                recommendations = [
+                    'Consider spending extra time on Module 3: Five Revenue Streams framework',
+                    'You might find the Revenue Mix Slider widget helpful for experimenting with allocations',
+                    'Explore the Ecosystem Cascade infographic to see how streams interconnect',
+                    'Consider taking notes on concepts that feel unfamiliar'
+                ];
+            } else if (totalPoints <= 6) {
+                level = 'Strategic Intuition';
+                levelClass = 'intuition';
+                levelTitle = 'You have good business instincts that apply to sports!';
+                pathDescription = "Focus on understanding the ecosystem connections between revenue streams and the unique aspects of sports economics (competitive balance, revenue sharing). The simulators will help you see these dynamics in action.";
+                recommendations = [
+                    'You might focus on Module 3: Revenue ecosystem and interdependencies',
+                    'Consider exploring the Dynamic Pricing Simulator for ticketing strategy',
+                    'The Revenue Empire Builder could help test your strategic thinking',
+                    'Try comparing different league revenue sharing models'
+                ];
+            } else if (totalPoints <= 8) {
+                level = 'Advanced Strategist';
+                levelClass = 'advanced';
+                levelTitle = 'Strong baseline knowledge!';
+                pathDescription = "Challenge yourself with the Revenue Empire Builder simulation and focus on the nuances of growth vs. risk trade-offs. Your focus: Applying frameworks to real strategic decisions, not just understanding concepts.";
+                recommendations = [
+                    'Consider challenging yourself with the Revenue Empire Builder simulation',
+                    'You might explore emerging revenue streams in the Betting Market Comparison',
+                    'Module 5 could help you apply concepts to real-world analysis',
+                    'Try explaining concepts in your own words to reinforce learning'
+                ];
+            } else {
+                level = 'Strategic Master';
+                levelClass = 'master';
+                levelTitle = 'You already understand sports revenue strategy well!';
+                pathDescription = "Speed through the foundational content and dive deep into the strategic simulations. Consider: How would YOU build a revenue strategy for a new expansion franchise? What trade-offs would you prioritize?";
+                recommendations = [
+                    'Consider pushing for advanced strategies in the Revenue Empire Builder',
+                    'You might start thinking about your CFL Expansion Project city selection',
+                    'Try connecting this week\'s concepts to your own professional experience',
+                    'Consider where current league strategies might fall short'
+                ];
+            }
+
+            // Update results display
+            document.getElementById('level-badge').textContent = level;
+            document.getElementById('level-badge').className = `level-badge ${levelClass}`;
+            document.getElementById('level-title').textContent = levelTitle;
+            document.getElementById('path-description').textContent = pathDescription;
+
+            const recList = document.getElementById('path-recommendations');
+            recList.innerHTML = '';
+            recommendations.forEach(rec => {
+                const li = document.createElement('li');
+                li.textContent = rec;
+                recList.appendChild(li);
+            });
+
+            // Update outcome breakdown
+            updateOutcomeBreakdown();
+        }
+
+        function updateOutcomeBreakdown() {
+            Object.keys(outcomeScores).forEach(outcome => {
+                const score = outcomeScores[outcome].correct;
+                const total = outcomeScores[outcome].maxPoints;
+                const outcomeNum = outcome.replace('WLO', '').replace('.', '-');
+
+                document.getElementById(`outcome-${outcomeNum}`).textContent = `${score}/${total}`;
+                document.getElementById(`progress-${outcomeNum}`).style.width = `${(score / total) * 100}%`;
+            });
+        }
+    </script>
+</body>
+</html>

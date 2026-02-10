@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streaming Platform Builder - 5-Year Strategy Simulator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+            --color-positive: #059669;
+            --color-negative: #dc2626;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+        body { font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: white; color: var(--color-neutral-800); padding: 1.5rem; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .widget-box { background: var(--color-neutral-50); border: 2px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.5rem; }
+        .widget-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--color-neutral-800); color: white; padding: 0.25rem 0.75rem; border-radius: var(--border-radius-sm); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+        .widget-badge::before { content: ''; width: 6px; height: 6px; background: #22c55e; border-radius: 50%; }
+        .widget-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.25rem; }
+        .widget-subtitle { font-size: 0.85rem; color: var(--color-neutral-600); margin-bottom: 0.5rem; }
+        .widget-disclaimer { font-size: 0.75rem; color: var(--color-neutral-500); font-style: italic; margin-bottom: 0.75rem; }
+        .key-simplifications { background: var(--color-neutral-100); border-radius: var(--border-radius-sm); padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.75rem; }
+        .key-simplifications-title { font-weight: 600; color: var(--color-neutral-700); margin-bottom: 0.5rem; }
+        .key-simplifications ul { margin: 0; padding-left: 1.25rem; color: var(--color-neutral-600); }
+        .key-simplifications li { margin-bottom: 0.25rem; }
+
+        /* Splash page styles */
+        .splash-screen { text-align: center; }
+        .splash-scenario { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-neutral-800); padding: 1.25rem; border-radius: var(--border-radius-sm); margin-bottom: 1.25rem; text-align: left; }
+        .splash-scenario-label { font-size: 0.7rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .splash-scenario-text { font-size: 0.9rem; color: var(--color-neutral-700); line-height: 1.7; }
+        .splash-scenario-text strong { color: var(--color-neutral-900); }
+        .splash-simplifications { background: var(--color-neutral-100); border-radius: var(--border-radius-sm); padding: 1.25rem; margin-bottom: 1.5rem; text-align: left; }
+        .splash-simplifications-title { font-size: 0.85rem; font-weight: 700; color: var(--color-neutral-800); margin-bottom: 0.75rem; }
+        .splash-simplifications-subtitle { font-size: 0.75rem; color: var(--color-neutral-500); font-style: italic; margin-bottom: 0.75rem; }
+        .splash-simplifications ul { margin: 0; padding-left: 1.25rem; color: var(--color-neutral-600); font-size: 0.85rem; }
+        .splash-simplifications li { margin-bottom: 0.5rem; line-height: 1.5; }
+        .splash-simplifications li strong { color: var(--color-neutral-700); }
+        .splash-disclaimer { font-size: 0.85rem; color: var(--color-neutral-600); font-style: italic; margin-bottom: 1.5rem; }
+        .start-btn { background: var(--color-neutral-800); color: white; border: none; padding: 0.875rem 2rem; font-size: 0.95rem; font-weight: 600; border-radius: var(--border-radius-sm); cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .start-btn:hover { background: var(--color-neutral-700); }
+        .start-btn-hint { font-size: 0.75rem; color: var(--color-neutral-500); margin-top: 0.75rem; }
+        .simulator-screen { display: none; }
+
+        /* Scenario box */
+        .scenario-box { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); padding: 1rem; border-radius: var(--border-radius-sm); margin-bottom: 1rem; }
+        .scenario-label { font-size: 0.7rem; font-weight: 600; color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem; }
+        .scenario-text { font-size: 0.85rem; color: var(--color-neutral-700); }
+
+        /* Setup panels */
+        .setup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        .setup-panel { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; }
+        .panel-title { font-size: 0.8rem; font-weight: 700; color: var(--color-neutral-800); margin-bottom: 0.75rem; border-bottom: 1px solid var(--color-neutral-200); padding-bottom: 0.5rem; }
+
+        /* Rights selection */
+        .rights-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--color-neutral-100); }
+        .rights-row:last-child { border-bottom: none; }
+        .rights-info { flex: 1; }
+        .rights-name { font-size: 0.8rem; font-weight: 600; color: var(--color-neutral-800); }
+        .rights-cost { font-size: 0.65rem; color: var(--color-neutral-500); }
+        .rights-toggle { display: flex; gap: 0.25rem; }
+        .toggle-btn { padding: 0.2rem 0.4rem; font-size: 0.6rem; font-weight: 600; border: 1px solid var(--color-neutral-300); background: white; border-radius: var(--border-radius-sm); cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .toggle-btn:hover { border-color: var(--color-neutral-500); }
+        .toggle-btn.active { background: var(--color-neutral-800); color: white; border-color: var(--color-neutral-800); }
+        .toggle-btn.exclusive.active { background: var(--color-accent); border-color: var(--color-accent); }
+
+        /* Budget display */
+        .budget-bar { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--color-neutral-200); }
+        .budget-label { font-size: 0.7rem; color: var(--color-neutral-600); margin-bottom: 0.25rem; }
+        .budget-track { height: 6px; background: var(--color-neutral-200); border-radius: 3px; overflow: hidden; }
+        .budget-fill { height: 100%; background: var(--color-accent); transition: width 0.3s; }
+        .budget-fill.over { background: var(--color-negative); }
+        .budget-text { display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--color-neutral-500); margin-top: 0.25rem; }
+
+        /* Pricing */
+        .pricing-display { text-align: center; margin-bottom: 0.5rem; }
+        .price-value { font-size: 1.5rem; font-weight: 700; color: var(--color-neutral-900); }
+        .price-label { font-size: 0.65rem; color: var(--color-neutral-500); }
+        input[type="range"] { width: 100%; height: 6px; border-radius: 3px; background: var(--color-neutral-300); -webkit-appearance: none; appearance: none; margin-bottom: 0.5rem; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--color-neutral-800); cursor: pointer; }
+        input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--color-neutral-800); cursor: pointer; border: none; }
+        .price-hints { display: flex; justify-content: space-between; font-size: 0.6rem; color: var(--color-neutral-500); }
+
+        /* Buttons */
+        .btn { padding: 0.625rem 1.25rem; border: none; border-radius: var(--border-radius-sm); font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .btn-primary { background: var(--color-neutral-800); color: white; width: 100%; }
+        .btn-primary:hover:not(:disabled) { background: var(--color-neutral-700); }
+        .btn-primary:disabled { background: var(--color-neutral-400); cursor: not-allowed; }
+        .btn-secondary { background: var(--color-neutral-200); color: var(--color-neutral-700); }
+        .btn-secondary:hover { background: var(--color-neutral-300); }
+
+        /* Results section */
+        .results-section { display: none; }
+        .results-section.visible { display: block; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Scenario tabs */
+        .scenario-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .scenario-tab { background: white; border: 1px solid var(--color-neutral-300); border-radius: var(--border-radius-sm); padding: 0.375rem 0.75rem; font-size: 0.75rem; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .scenario-tab:hover { border-color: var(--color-neutral-500); }
+        .scenario-tab.active { background: var(--color-neutral-800); color: white; border-color: var(--color-neutral-800); }
+
+        /* Metrics row */
+        .metrics-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+        .metric-card { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 0.75rem; text-align: center; }
+        .metric-label { font-size: 0.6rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem; }
+        .metric-value { font-size: 1rem; font-weight: 700; color: var(--color-neutral-900); }
+        .metric-value.positive { color: var(--color-positive); }
+        .metric-value.negative { color: var(--color-negative); }
+
+        /* Chart */
+        .chart-container { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; margin-bottom: 1rem; }
+        .chart-wrapper { height: 200px; }
+
+        /* Analysis box */
+        .analysis-box { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); padding: 1rem; border-radius: var(--border-radius-sm); margin-bottom: 1rem; }
+        .analysis-title { font-size: 0.85rem; font-weight: 600; color: var(--color-neutral-800); margin-bottom: 0.5rem; }
+        .analysis-text { font-size: 0.8rem; color: var(--color-neutral-600); line-height: 1.6; }
+        .analysis-text strong { color: var(--color-neutral-800); }
+
+        /* Action row */
+        .action-row { display: flex; justify-content: space-between; gap: 0.5rem; }
+
+        /* Summary box */
+        .summary-box { background: var(--color-neutral-100); border-radius: var(--border-radius-sm); padding: 0.75rem; margin-bottom: 1rem; font-size: 0.8rem; }
+        .summary-title { font-weight: 600; color: var(--color-neutral-800); margin-bottom: 0.5rem; }
+        .summary-item { display: flex; justify-content: space-between; padding: 0.25rem 0; border-bottom: 1px solid var(--color-neutral-200); }
+        .summary-item:last-child { border-bottom: none; }
+        .summary-label { color: var(--color-neutral-600); }
+        .summary-value { font-weight: 600; color: var(--color-neutral-800); }
+
+        /* Tooltips */
+        .tooltip-wrapper { position: relative; display: inline-flex; align-items: center; gap: 0.25rem; }
+        .tooltip-icon { width: 14px; height: 14px; border-radius: 50%; background: var(--color-neutral-300); color: var(--color-neutral-600); font-size: 0.65rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; cursor: help; flex-shrink: 0; }
+        .tooltip-icon:hover { background: var(--color-neutral-400); color: white; }
+        .tooltip-content { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: var(--color-neutral-800); color: white; padding: 0.5rem 0.75rem; border-radius: var(--border-radius-sm); font-size: 0.75rem; font-weight: 400; line-height: 1.5; width: 220px; text-align: left; opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .tooltip-content::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--color-neutral-800); }
+        .tooltip-wrapper:hover .tooltip-content, .tooltip-wrapper:focus-within .tooltip-content { opacity: 1; visibility: visible; }
+
+        /* Strategy presets */
+        .presets-section { margin-bottom: 1rem; }
+        .presets-label { font-size: 0.7rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .presets-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .preset-btn { background: white; border: 1px solid var(--color-neutral-300); border-radius: var(--border-radius-sm); padding: 0.375rem 0.75rem; font-size: 0.7rem; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.2s; color: var(--color-neutral-600); }
+        .preset-btn:hover { border-color: var(--color-neutral-500); color: var(--color-neutral-800); }
+        .preset-btn.active { background: var(--color-accent); border-color: var(--color-accent); color: white; }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            .widget-box { padding: 1rem; }
+            .setup-grid { grid-template-columns: 1fr; }
+            .metrics-row { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; animation: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+            <!-- SPLASH SCREEN -->
+            <div class="splash-screen" id="splash-screen">
+                <div class="widget-badge">Interactive Simulator</div>
+                <h1 class="widget-title">Streaming Platform Builder</h1>
+                <p class="widget-subtitle">Build a content portfolio under budget constraints and see how your strategy performs across market scenarios.</p>
+
+                <div class="splash-scenario">
+                    <div class="splash-scenario-label">Your Role</div>
+                    <p class="splash-scenario-text">You're the <strong>VP of Content Strategy</strong> launching a Canadian sports streaming service. You have a <strong>$100M annual content budget</strong>. Choose which sports rights to acquire, decide on exclusivity levels, set your subscription price — then see how your platform performs over 5 years under different market conditions.</p>
+                </div>
+
+                <div class="splash-simplifications">
+                    <div class="splash-simplifications-title">Before You Start: What This Model Simplifies</div>
+                    <div class="splash-simplifications-subtitle">These assumptions make the model explorable but less realistic:</div>
+                    <ul>
+                        <li><strong>Additive appeal:</strong> Content categories are summed — real content impact is nonlinear (a hit show can outweigh an entire category)</li>
+                        <li><strong>No bidding wars:</strong> Rights costs are fixed — in reality, competitors bid up prices for premium content</li>
+                        <li><strong>Single-platform consumers:</strong> Model ignores subscription stacking (most households have 3-4 services)</li>
+                        <li><strong>Exogenous scenarios:</strong> "Boom" and "downturn" apply uniformly — real macro conditions interact differently with each strategy</li>
+                        <li><strong>Equal capital:</strong> All platforms are treated as financially comparable, even though real-world players differ dramatically in capital and ecosystem power</li>
+                    </ul>
+                </div>
+
+                <p class="splash-disclaimer">The numbers are illustrative, not forecasts. Company names are used for context; scenarios are hypothetical and do not represent real financial data. In reality, streaming outcomes are highly nonlinear: a few hits or strategic moves can dominate results.</p>
+
+                <button class="start-btn" id="start-btn">I Understand — Start Building</button>
+                <p class="start-btn-hint">You can adjust all assumptions once inside the simulator.</p>
+            </div>
+
+            <!-- SIMULATOR SCREEN -->
+            <div class="simulator-screen" id="simulator-screen">
+                <div class="widget-badge">Interactive Simulator</div>
+                <h1 class="widget-title">Streaming Platform Builder</h1>
+
+            <!-- Setup Phase -->
+            <div id="setup-phase">
+                <div class="scenario-box">
+                    <div class="scenario-label">Your Role: VP of Content Strategy</div>
+                    <p class="scenario-text">You're launching a Canadian sports streaming service with a $100M annual content budget. Choose your rights portfolio, set exclusivity levels, and pricing—then see how your platform performs over 5 years.</p>
+                </div>
+
+                <div class="presets-section">
+                    <div class="presets-label">Quick Start: Strategy Templates</div>
+                    <div class="presets-row">
+                        <button class="preset-btn" data-preset="netflix">Scale Strategy (Netflix-style)</button>
+                        <button class="preset-btn" data-preset="apple">Premium Exclusive (Apple-style)</button>
+                        <button class="preset-btn" data-preset="dazn">Lean Sports (DAZN-style)</button>
+                        <button class="preset-btn" data-preset="niche">Niche Focus</button>
+                    </div>
+                </div>
+
+                <div class="setup-grid">
+                    <div class="setup-panel">
+                        <div class="panel-title">Content Portfolio ($100M Budget)</div>
+
+                        <div class="rights-row" data-right="hockey">
+                            <div class="rights-info">
+                                <div class="rights-name">NHL Hockey</div>
+                                <div class="rights-cost">$40M base / $100M exclusive (2.5× illustrative premium)</div>
+                            </div>
+                            <div class="rights-toggle">
+                                <button class="toggle-btn" data-mode="none">Skip</button>
+                                <button class="toggle-btn active" data-mode="shared">Shared</button>
+                                <button class="toggle-btn exclusive" data-mode="exclusive">Exclusive</button>
+                            </div>
+                        </div>
+
+                        <div class="rights-row" data-right="basketball">
+                            <div class="rights-info">
+                                <div class="rights-name">NBA Basketball</div>
+                                <div class="rights-cost">$25M base / $62.5M exclusive</div>
+                            </div>
+                            <div class="rights-toggle">
+                                <button class="toggle-btn" data-mode="none">Skip</button>
+                                <button class="toggle-btn active" data-mode="shared">Shared</button>
+                                <button class="toggle-btn exclusive" data-mode="exclusive">Exclusive</button>
+                            </div>
+                        </div>
+
+                        <div class="rights-row" data-right="soccer">
+                            <div class="rights-info">
+                                <div class="rights-name">MLS/EPL Soccer</div>
+                                <div class="rights-cost">$15M base / $37.5M exclusive</div>
+                            </div>
+                            <div class="rights-toggle">
+                                <button class="toggle-btn" data-mode="none">Skip</button>
+                                <button class="toggle-btn active" data-mode="shared">Shared</button>
+                                <button class="toggle-btn exclusive" data-mode="exclusive">Exclusive</button>
+                            </div>
+                        </div>
+
+                        <div class="rights-row" data-right="emerging">
+                            <div class="rights-info">
+                                <div class="rights-name">Emerging Sports</div>
+                                <div class="rights-cost">$5M base / $12.5M exclusive</div>
+                            </div>
+                            <div class="rights-toggle">
+                                <button class="toggle-btn" data-mode="none">Skip</button>
+                                <button class="toggle-btn active" data-mode="shared">Shared</button>
+                                <button class="toggle-btn exclusive" data-mode="exclusive">Exclusive</button>
+                            </div>
+                        </div>
+
+                        <div class="budget-bar">
+                            <div class="budget-label">Annual Content Spend</div>
+                            <div class="budget-track"><div class="budget-fill" id="budget-fill"></div></div>
+                            <div class="budget-text">
+                                <span id="budget-spent">$85M</span>
+                                <span>$100M budget</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setup-panel">
+                        <div class="panel-title">Subscription Pricing</div>
+                        <div class="pricing-display">
+                            <div class="price-value" id="price-display">$19.99</div>
+                            <div class="price-label">per month</div>
+                        </div>
+                        <input type="range" id="price-slider" min="9.99" max="29.99" step="1" value="19.99" aria-label="Monthly subscription price">
+                        <div class="price-hints">
+                            <span>$9.99 (Mass market)</span>
+                            <span>$29.99 (Premium)</span>
+                        </div>
+
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--color-neutral-200);">
+                            <div class="panel-title" style="border: none; padding: 0; margin-bottom: 0.5rem;">Strategy Preview</div>
+                            <div style="font-size: 0.75rem; color: var(--color-neutral-600);">
+                                <div style="margin-bottom: 0.25rem;">
+                                    <span class="tooltip-wrapper">
+                                        <strong>Content Appeal:</strong>
+                                        <span class="tooltip-icon" tabindex="0" role="button" aria-label="More info">?</span>
+                                        <span class="tooltip-content">How attractive your content portfolio is to potential subscribers. More sports + exclusive rights = higher appeal = more initial subscribers and faster growth.</span>
+                                    </span>
+                                    <span id="appeal-preview">High</span>
+                                </div>
+                                <div style="margin-bottom: 0.25rem;">
+                                    <span class="tooltip-wrapper">
+                                        <strong>Expected Churn:</strong>
+                                        <span class="tooltip-icon" tabindex="0" role="button" aria-label="More info">?</span>
+                                        <span class="tooltip-content">Monthly cancellation rate. Strong content reduces churn; high prices increase it. At 5% churn, you lose half your subscribers in ~14 months if you don't acquire new ones.</span>
+                                    </span>
+                                    <span id="churn-preview">5%/month</span>
+                                </div>
+                                <div>
+                                    <span class="tooltip-wrapper">
+                                        <strong>Market Position:</strong>
+                                        <span class="tooltip-icon" tabindex="0" role="button" aria-label="More info">?</span>
+                                        <span class="tooltip-content">How your platform competes. "Exclusive destination" commands premium pricing. "Value multi-sport" competes on breadth. "Niche player" serves a smaller but loyal audience.</span>
+                                    </span>
+                                    <span id="position-preview">Premium multi-sport</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" id="launch-btn">Launch Platform & See 5-Year Projection</button>
+            </div>
+
+            <!-- Results Phase -->
+            <div class="results-section" id="results-section">
+                <div class="summary-box">
+                    <div class="summary-title">Your Platform Configuration</div>
+                    <div class="summary-item">
+                        <span class="summary-label">Content Portfolio</span>
+                        <span class="summary-value" id="summary-content">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Annual Content Cost</span>
+                        <span class="summary-value" id="summary-cost">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Subscription Price</span>
+                        <span class="summary-value" id="summary-price">-</span>
+                    </div>
+                </div>
+
+                <div class="scenario-tabs" role="tablist" aria-label="Market scenarios">
+                    <button class="scenario-tab active" role="tab" data-scenario="base">Base Case</button>
+                    <button class="scenario-tab" role="tab" data-scenario="boom">Streaming Boom</button>
+                    <button class="scenario-tab" role="tab" data-scenario="downturn">Market Downturn</button>
+                </div>
+
+                <div class="metrics-row">
+                    <div class="metric-card">
+                        <div class="metric-label">Year 5 Subscribers</div>
+                        <div class="metric-value" id="metric-subs">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Cumulative P/L</div>
+                        <div class="metric-value" id="metric-pl">$0M</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Break-Even Year</div>
+                        <div class="metric-value" id="metric-breakeven">-</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Final Churn Rate</div>
+                        <div class="metric-value" id="metric-churn">0%</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-wrapper">
+                        <canvas id="projection-chart" role="img" aria-label="5-year financial projection chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="analysis-box">
+                    <div class="analysis-title">Strategic Analysis</div>
+                    <div class="analysis-text" id="analysis-text"></div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-secondary" id="back-btn">Modify Strategy</button>
+                    <button class="btn btn-secondary" id="export-btn">Export Results</button>
+                </div>
+            </div>
+            </div><!-- end simulator-screen -->
+        </div>
+    </div>
+
+    <script>
+        // Rights data
+        const rightsData = {
+            hockey: { name: 'NHL Hockey', baseCost: 40, appeal: 0.35, churnReduction: 0.015 },
+            basketball: { name: 'NBA Basketball', baseCost: 25, appeal: 0.25, churnReduction: 0.01 },
+            soccer: { name: 'MLS/EPL Soccer', baseCost: 15, appeal: 0.15, churnReduction: 0.008 },
+            emerging: { name: 'Emerging Sports', baseCost: 5, appeal: 0.08, churnReduction: 0.005 }
+        };
+
+        // Strategy presets
+        const strategyPresets = {
+            netflix: {
+                name: 'Netflix-Style Scale',
+                description: 'Broad content, aggressive pricing to maximize subscribers',
+                selections: { hockey: 'shared', basketball: 'shared', soccer: 'shared', emerging: 'shared' },
+                price: 12.99
+            },
+            apple: {
+                name: 'Apple Exclusivity',
+                description: 'Premium exclusive content, premium pricing',
+                selections: { hockey: 'exclusive', basketball: 'none', soccer: 'none', emerging: 'none' },
+                price: 24.99
+            },
+            dazn: {
+                name: 'DAZN Lean',
+                description: 'Focused content, moderate pricing, controlled costs',
+                selections: { hockey: 'shared', basketball: 'none', soccer: 'shared', emerging: 'none' },
+                price: 14.99
+            },
+            niche: {
+                name: 'Niche Focus',
+                description: 'Own one category completely with exclusive rights',
+                selections: { hockey: 'none', basketball: 'none', soccer: 'exclusive', emerging: 'exclusive' },
+                price: 19.99
+            }
+        };
+
+        // State
+        let selections = {
+            hockey: 'shared',
+            basketball: 'shared',
+            soccer: 'shared',
+            emerging: 'shared'
+        };
+        let price = 19.99;
+        let currentScenario = 'base';
+        let chart = null;
+        let projectionData = null;
+        let activePreset = null;
+
+        // DOM elements
+        const priceSlider = document.getElementById('price-slider');
+        const priceDisplay = document.getElementById('price-display');
+        const budgetFill = document.getElementById('budget-fill');
+        const budgetSpent = document.getElementById('budget-spent');
+        const launchBtn = document.getElementById('launch-btn');
+        const setupPhase = document.getElementById('setup-phase');
+        const resultsSection = document.getElementById('results-section');
+        const scenarioTabs = document.querySelectorAll('.scenario-tab');
+        const backBtn = document.getElementById('back-btn');
+        const exportBtn = document.getElementById('export-btn');
+
+        // Initialize toggle buttons
+        document.querySelectorAll('.rights-row').forEach(row => {
+            const rightId = row.dataset.right;
+            row.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    row.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    selections[rightId] = btn.dataset.mode;
+                    updateBudget();
+                    updatePreview();
+                });
+            });
+        });
+
+        // Price slider
+        priceSlider.addEventListener('input', () => {
+            price = parseFloat(priceSlider.value);
+            priceDisplay.textContent = '$' + price.toFixed(2);
+            updatePreview();
+        });
+
+        // Calculate content cost
+        function calculateCost() {
+            let total = 0;
+            for (const [id, mode] of Object.entries(selections)) {
+                if (mode === 'shared') total += rightsData[id].baseCost;
+                else if (mode === 'exclusive') total += rightsData[id].baseCost * 2.5;
+            }
+            return total;
+        }
+
+        // Calculate appeal
+        function calculateAppeal() {
+            let total = 0;
+            for (const [id, mode] of Object.entries(selections)) {
+                if (mode === 'shared') total += rightsData[id].appeal;
+                else if (mode === 'exclusive') total += rightsData[id].appeal * 1.5;
+            }
+            return total;
+        }
+
+        // Calculate base churn
+        function calculateBaseChurn() {
+            let reduction = 0;
+            for (const [id, mode] of Object.entries(selections)) {
+                if (mode === 'shared') reduction += rightsData[id].churnReduction;
+                else if (mode === 'exclusive') reduction += rightsData[id].churnReduction * 1.5;
+            }
+            // Base churn of 8%, reduced by content
+            let churn = 0.08 - reduction;
+            // Price affects churn
+            if (price > 24.99) churn += 0.02;
+            else if (price > 19.99) churn += 0.01;
+            else if (price < 14.99) churn -= 0.01;
+            return Math.max(0.02, Math.min(0.12, churn));
+        }
+
+        // Update budget display
+        function updateBudget() {
+            const cost = calculateCost();
+            const pct = Math.min(100, (cost / 100) * 100);
+            budgetFill.style.width = pct + '%';
+            budgetFill.classList.toggle('over', cost > 100);
+            budgetSpent.textContent = '$' + cost + 'M';
+            launchBtn.disabled = cost > 100;
+            if (cost > 100) {
+                launchBtn.textContent = 'Over Budget - Reduce Content';
+            } else {
+                launchBtn.textContent = 'Launch Platform & See 5-Year Projection';
+            }
+        }
+
+        // Update preview
+        function updatePreview() {
+            const appeal = calculateAppeal();
+            const churn = calculateBaseChurn();
+
+            let appealText = appeal > 0.7 ? 'Very High' : appeal > 0.5 ? 'High' : appeal > 0.3 ? 'Moderate' : 'Low';
+            document.getElementById('appeal-preview').textContent = appealText;
+            document.getElementById('churn-preview').textContent = (churn * 100).toFixed(1) + '%/month';
+
+            const exclusiveCount = Object.values(selections).filter(s => s === 'exclusive').length;
+            const contentCount = Object.values(selections).filter(s => s !== 'none').length;
+            let position = '';
+            if (exclusiveCount >= 2) position = 'Exclusive destination';
+            else if (contentCount >= 3 && price > 19.99) position = 'Premium multi-sport';
+            else if (contentCount >= 3) position = 'Value multi-sport';
+            else if (contentCount <= 1) position = 'Niche player';
+            else position = 'Balanced competitor';
+            document.getElementById('position-preview').textContent = position;
+        }
+
+        // Run 5-year projection
+        function runProjection(scenario) {
+            const contentCost = calculateCost();
+            const appeal = calculateAppeal();
+            let baseChurn = calculateBaseChurn();
+
+            // Scenario modifiers
+            const scenarioMods = {
+                base: { growthMod: 1.0, churnMod: 1.0 },
+                boom: { growthMod: 1.4, churnMod: 0.7 },
+                downturn: { growthMod: 0.6, churnMod: 1.4 }
+            };
+            const mod = scenarioMods[scenario];
+
+            // Initial subscribers based on appeal and price
+            let baseSubs = appeal * 800000; // Base potential
+            if (price < 14.99) baseSubs *= 1.3;
+            else if (price > 24.99) baseSubs *= 0.6;
+
+            const years = [];
+            let subs = baseSubs * mod.growthMod;
+            let cumulativePL = 0;
+            let breakEvenYear = null;
+
+            for (let y = 1; y <= 5; y++) {
+                // Monthly calculations for the year
+                let yearRevenue = 0;
+                let yearCost = contentCost;
+
+                for (let m = 1; m <= 12; m++) {
+                    // Churn
+                    const monthlyChurn = baseChurn * mod.churnMod;
+                    subs = subs * (1 - monthlyChurn);
+
+                    // Growth (new subs)
+                    const growthRate = (appeal * 0.05 * mod.growthMod) * (1 - y * 0.15); // Slows over time
+                    subs = subs * (1 + Math.max(0, growthRate));
+
+                    yearRevenue += subs * price;
+                }
+
+                const yearPL = (yearRevenue / 1000000) - yearCost; // Convert to millions
+                cumulativePL += yearPL;
+
+                if (breakEvenYear === null && cumulativePL > 0) {
+                    breakEvenYear = y;
+                }
+
+                years.push({
+                    year: y,
+                    subs: Math.round(subs),
+                    revenue: yearRevenue / 1000000,
+                    cost: yearCost,
+                    pl: yearPL,
+                    cumulative: cumulativePL
+                });
+            }
+
+            return {
+                years,
+                finalSubs: Math.round(subs),
+                cumulativePL: cumulativePL,
+                breakEvenYear: breakEvenYear,
+                finalChurn: baseChurn * mod.churnMod
+            };
+        }
+
+        // Generate analysis text
+        function generateAnalysis(scenario, data) {
+            const cost = calculateCost();
+            const exclusiveCount = Object.values(selections).filter(s => s === 'exclusive').length;
+
+            let analysis = '';
+
+            if (scenario === 'base') {
+                if (data.cumulativePL > 50) {
+                    analysis = `<strong>Strong performance.</strong> Your platform generated $${data.cumulativePL.toFixed(0)}M cumulative profit over 5 years. `;
+                } else if (data.cumulativePL > 0) {
+                    analysis = `<strong>Modest success.</strong> Your platform turned profitable with $${data.cumulativePL.toFixed(0)}M cumulative gain. `;
+                } else {
+                    analysis = `<strong>Challenging economics.</strong> Your platform lost $${Math.abs(data.cumulativePL).toFixed(0)}M over 5 years. `;
+                }
+
+                if (exclusiveCount >= 2 && data.cumulativePL < 0) {
+                    analysis += `Exclusive rights drove subscriber acquisition but the premium cost (${cost}M annually) was difficult to recover. This raises questions about whether exclusivity justified the premium.`;
+                } else if (price > 24.99 && data.finalSubs < 200000) {
+                    analysis += `Premium pricing limited your subscriber base. At $${price}/month, you're competing with Rogers Sportsnet NOW ($27.99) for a smaller addressable market.`;
+                } else if (cost < 50 && data.cumulativePL > 0) {
+                    analysis += `Your lean content strategy kept costs manageable while still attracting subscribers. This mirrors DAZN's early approach—controlled spending while building audience.`;
+                } else {
+                    analysis += `Your balanced approach navigated the streaming economics challenge. The key is whether this trajectory is sustainable as competition intensifies.`;
+                }
+            } else if (scenario === 'boom') {
+                analysis = `<strong>Streaming boom scenario:</strong> Cord-cutting accelerates and streaming adoption surges. `;
+                if (data.cumulativePL > 100) {
+                    analysis += `Your platform captures significant upside with $${data.cumulativePL.toFixed(0)}M profit. ${exclusiveCount >= 2 ? 'Exclusive content differentiates you in a crowded market.' : 'Even shared rights grow in value as the market expands.'}`;
+                } else {
+                    analysis += `Even with favorable conditions, your configuration generated only $${data.cumulativePL.toFixed(0)}M. In boom times, aggressive investment often outperforms conservative approaches.`;
+                }
+            } else {
+                analysis = `<strong>Market downturn scenario:</strong> Economic pressure increases churn and slows growth. `;
+                if (data.cumulativePL > 0) {
+                    analysis += `Your platform survives the downturn with $${data.cumulativePL.toFixed(0)}M cumulative profit. ${price < 19.99 ? 'Lower pricing provides resilience.' : 'Strong content keeps subscribers despite economic pressure.'}`;
+                } else {
+                    analysis += `Challenging conditions expose vulnerabilities—$${Math.abs(data.cumulativePL).toFixed(0)}M in losses. ${cost > 80 ? 'High content costs become unsustainable when growth stalls.' : 'Even moderate spending struggles when subscribers churn faster than expected.'}`;
+                }
+            }
+
+            return analysis;
+        }
+
+        // Update results display
+        function updateResults() {
+            const data = runProjection(currentScenario);
+            projectionData = data;
+
+            // Update metrics
+            document.getElementById('metric-subs').textContent = (data.finalSubs / 1000).toFixed(0) + 'K';
+
+            const plEl = document.getElementById('metric-pl');
+            plEl.textContent = (data.cumulativePL >= 0 ? '+$' : '-$') + Math.abs(data.cumulativePL).toFixed(0) + 'M';
+            plEl.className = 'metric-value ' + (data.cumulativePL >= 0 ? 'positive' : 'negative');
+
+            document.getElementById('metric-breakeven').textContent = data.breakEvenYear ? 'Year ' + data.breakEvenYear : 'Never';
+            document.getElementById('metric-churn').textContent = (data.finalChurn * 100).toFixed(1) + '%';
+
+            // Update analysis
+            document.getElementById('analysis-text').innerHTML = generateAnalysis(currentScenario, data);
+
+            // Update chart
+            updateChart(data.years);
+        }
+
+        // Chart
+        function updateChart(years) {
+            const ctx = document.getElementById('projection-chart').getContext('2d');
+            if (chart) chart.destroy();
+
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years.map(y => 'Year ' + y.year),
+                    datasets: [{
+                        label: 'Cumulative P/L ($M)',
+                        data: years.map(y => y.cumulative),
+                        borderColor: '#6b9085',
+                        backgroundColor: 'rgba(107, 144, 133, 0.2)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: v => (v >= 0 ? '+$' : '-$') + Math.abs(v) + 'M'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Launch button
+        launchBtn.addEventListener('click', () => {
+            // Build summary
+            const contentList = [];
+            for (const [id, mode] of Object.entries(selections)) {
+                if (mode !== 'none') {
+                    contentList.push(rightsData[id].name + (mode === 'exclusive' ? ' (Excl)' : ''));
+                }
+            }
+            document.getElementById('summary-content').textContent = contentList.join(', ') || 'None';
+            document.getElementById('summary-cost').textContent = '$' + calculateCost() + 'M/year';
+            document.getElementById('summary-price').textContent = '$' + price.toFixed(2) + '/month';
+
+            setupPhase.style.display = 'none';
+            resultsSection.classList.add('visible');
+            updateResults();
+        });
+
+        // Scenario tabs
+        scenarioTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                scenarioTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentScenario = tab.dataset.scenario;
+                updateResults();
+            });
+        });
+
+        // Back button
+        backBtn.addEventListener('click', () => {
+            resultsSection.classList.remove('visible');
+            setupPhase.style.display = 'block';
+        });
+
+        // Export
+        exportBtn.addEventListener('click', () => {
+            const contentList = [];
+            for (const [id, mode] of Object.entries(selections)) {
+                if (mode !== 'none') {
+                    contentList.push(rightsData[id].name + (mode === 'exclusive' ? ' (Exclusive)' : ' (Shared)'));
+                }
+            }
+
+            let content = `STREAMING PLATFORM BUILDER - RESULTS
+${'='.repeat(45)}
+
+PLATFORM CONFIGURATION
+${'─'.repeat(25)}
+Content Portfolio: ${contentList.join(', ')}
+Annual Content Cost: $${calculateCost()}M
+Subscription Price: $${price.toFixed(2)}/month
+
+5-YEAR PROJECTION (${currentScenario.toUpperCase()} SCENARIO)
+${'─'.repeat(25)}
+Final Subscribers: ${(projectionData.finalSubs / 1000).toFixed(0)}K
+Cumulative P/L: ${projectionData.cumulativePL >= 0 ? '+' : ''}$${projectionData.cumulativePL.toFixed(0)}M
+Break-Even: ${projectionData.breakEvenYear ? 'Year ' + projectionData.breakEvenYear : 'Never achieved'}
+Final Churn Rate: ${(projectionData.finalChurn * 100).toFixed(1)}%/month
+
+YEAR-BY-YEAR
+${'─'.repeat(25)}
+`;
+            projectionData.years.forEach(y => {
+                content += `Year ${y.year}: ${(y.subs / 1000).toFixed(0)}K subs, ${y.pl >= 0 ? '+' : ''}$${y.pl.toFixed(0)}M P/L\n`;
+            });
+
+            content += `
+Generated: ${new Date().toLocaleString()}
+Business of Sports Marketing - Week 2
+`;
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'streaming-platform-results.txt';
+            a.click();
+            URL.revokeObjectURL(a.href);
+        });
+
+        // Preset buttons
+        const presetBtns = document.querySelectorAll('.preset-btn');
+        presetBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const presetId = btn.dataset.preset;
+                const preset = strategyPresets[presetId];
+                if (!preset) return;
+
+                // Update active state
+                presetBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activePreset = presetId;
+
+                // Apply selections
+                selections = { ...preset.selections };
+                price = preset.price;
+
+                // Update UI - rights toggles
+                document.querySelectorAll('.rights-row').forEach(row => {
+                    const rightId = row.dataset.right;
+                    const mode = selections[rightId];
+                    row.querySelectorAll('.toggle-btn').forEach(b => {
+                        b.classList.toggle('active', b.dataset.mode === mode);
+                    });
+                });
+
+                // Update UI - price slider
+                priceSlider.value = price;
+                priceDisplay.textContent = '$' + price.toFixed(2);
+
+                // Update displays
+                updateBudget();
+                updatePreview();
+            });
+        });
+
+        // Clear preset when user manually changes settings
+        function clearActivePreset() {
+            presetBtns.forEach(b => b.classList.remove('active'));
+            activePreset = null;
+        }
+
+        // Modify existing toggle listeners to clear preset
+        document.querySelectorAll('.rights-row .toggle-btn').forEach(btn => {
+            btn.addEventListener('click', clearActivePreset);
+        });
+        priceSlider.addEventListener('input', clearActivePreset);
+
+        // Splash screen handler
+        document.getElementById('start-btn').addEventListener('click', () => {
+            document.getElementById('splash-screen').style.display = 'none';
+            document.getElementById('simulator-screen').style.display = 'block';
+        });
+
+        // Initialize
+        updateBudget();
+        updatePreview();
+    </script>
+</body>
+</html>

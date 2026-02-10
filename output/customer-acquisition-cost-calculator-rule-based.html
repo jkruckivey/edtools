@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Acquisition Cost Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Neutral Color Scale (Geist-inspired) */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Semantic Colors */
+            --color-success: #22c55e;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-info: #3b82f6;
+
+            /* Primary Color */
+            --color-primary: #6b9085;
+            --color-primary-dark: #5a7a70;
+
+            /* Typography */
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+            /* Spacing Scale (8px base) */
+            --spacing-1: 8px;
+            --spacing-2: 16px;
+            --spacing-3: 24px;
+            --spacing-4: 32px;
+            --spacing-5: 40px;
+
+            /* Border */
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+            --border-radius-lg: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: white;
+            color: var(--color-neutral-900);
+            padding: var(--spacing-3);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: var(--spacing-1);
+            color: var(--color-neutral-900);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--color-neutral-600);
+            margin-bottom: var(--spacing-3);
+            font-size: 0.95rem;
+        }
+
+        .widget-box {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-3);
+            margin-bottom: var(--spacing-3);
+        }
+
+        /* Two-column layout */
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-3);
+        }
+
+        .input-group {
+            background: var(--color-neutral-50);
+            padding: var(--spacing-2);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--color-neutral-200);
+        }
+
+        .input-group h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-2);
+            color: var(--color-neutral-900);
+        }
+
+        .input-field {
+            margin-bottom: var(--spacing-2);
+        }
+
+        .input-field:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            margin-bottom: 6px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            font-size: 0.95rem;
+            font-family: var(--font-family-primary);
+            background: white;
+            transition: border-color 0.2s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        input[type="number"]:disabled {
+            background: var(--color-neutral-100);
+            cursor: not-allowed;
+        }
+
+        .results-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-2);
+        }
+
+        .metric-card {
+            background: var(--color-neutral-50);
+            padding: var(--spacing-2);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--color-neutral-200);
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .metric-description {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            margin-top: 4px;
+        }
+
+        .assessment-card {
+            background: var(--color-neutral-50);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--color-neutral-400);
+            margin-top: var(--spacing-2);
+        }
+
+        .assessment-card.excellent {
+            background: #f0fdf4;
+            border-left-color: var(--color-success);
+        }
+
+        .assessment-card.good {
+            background: #dbeafe;
+            border-left-color: var(--color-info);
+        }
+
+        .assessment-card.fair {
+            background: #fef3c7;
+            border-left-color: var(--color-warning);
+        }
+
+        .assessment-card.poor {
+            background: #fef2f2;
+            border-left-color: var(--color-error);
+        }
+
+        .assessment-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-1);
+            color: var(--color-neutral-900);
+        }
+
+        .assessment-text {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+            line-height: 1.5;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 24px;
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: var(--font-family-primary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .btn:disabled {
+            background: var(--color-neutral-400);
+            cursor: not-allowed;
+        }
+
+        .info-box {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-2);
+            margin-top: var(--spacing-3);
+        }
+
+        .info-box h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-1);
+            color: var(--color-neutral-900);
+        }
+
+        .info-box p {
+            font-size: 0.85rem;
+            color: var(--color-neutral-700);
+            margin-bottom: var(--spacing-1);
+        }
+
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-2);
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metric-value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Customer Acquisition Cost Calculator</h1>
+        <p class="subtitle">Calculate CAC, LTV, and assess the health of your customer acquisition strategy</p>
+
+        <div class="calculator-grid">
+            <!-- Left Column: Inputs -->
+            <div class="input-section">
+                <div class="input-group">
+                    <h3>Marketing Spend</h3>
+                    <div class="input-field">
+                        <label for="advertising">Advertising Spend ($)</label>
+                        <input
+                            type="number"
+                            id="advertising"
+                            min="0"
+                            step="100"
+                            value="5000"
+                            aria-describedby="advertising-desc"
+                            oninput="calculateMetrics()">
+                        <span id="advertising-desc" class="sr-only">Enter total advertising costs including paid search, social media ads, and display advertising</span>
+                    </div>
+
+                    <div class="input-field">
+                        <label for="content">Content Marketing ($)</label>
+                        <input
+                            type="number"
+                            id="content"
+                            min="0"
+                            step="100"
+                            value="2000"
+                            aria-describedby="content-desc"
+                            oninput="calculateMetrics()">
+                        <span id="content-desc" class="sr-only">Enter content production costs including blog posts, videos, and social media content</span>
+                    </div>
+
+                    <div class="input-field">
+                        <label for="tools">Marketing Tools ($)</label>
+                        <input
+                            type="number"
+                            id="tools"
+                            min="0"
+                            step="100"
+                            value="1000"
+                            aria-describedby="tools-desc"
+                            oninput="calculateMetrics()">
+                        <span id="tools-desc" class="sr-only">Enter costs for marketing software, CRM systems, and analytics tools</span>
+                    </div>
+
+                    <div class="input-field">
+                        <label for="personnel">Personnel Costs ($)</label>
+                        <input
+                            type="number"
+                            id="personnel"
+                            min="0"
+                            step="100"
+                            value="8000"
+                            aria-describedby="personnel-desc"
+                            oninput="calculateMetrics()">
+                        <span id="personnel-desc" class="sr-only">Enter marketing team salaries and contractor costs</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <h3>Customer Metrics</h3>
+                    <div class="input-field">
+                        <label for="customers">Customers Acquired</label>
+                        <input
+                            type="number"
+                            id="customers"
+                            min="1"
+                            step="1"
+                            value="100"
+                            aria-describedby="customers-desc"
+                            oninput="calculateMetrics()">
+                        <span id="customers-desc" class="sr-only">Enter the number of new customers acquired in the period</span>
+                    </div>
+
+                    <div class="input-field">
+                        <label for="aov">Average Order Value ($)</label>
+                        <input
+                            type="number"
+                            id="aov"
+                            min="0"
+                            step="1"
+                            value="50"
+                            aria-describedby="aov-desc"
+                            oninput="calculateMetrics()">
+                        <span id="aov-desc" class="sr-only">Enter the average dollar amount per customer transaction</span>
+                    </div>
+
+                    <div class="input-field">
+                        <label for="frequency">Purchase Frequency (per year)</label>
+                        <input
+                            type="number"
+                            id="frequency"
+                            min="0"
+                            step="0.1"
+                            value="4"
+                            aria-describedby="frequency-desc"
+                            oninput="calculateMetrics()">
+                        <span id="frequency-desc" class="sr-only">Enter how many times per year a customer purchases</span>
+                    </div>
+
+                    <div class="input-field">
+                        <label for="lifespan">Customer Lifespan (years)</label>
+                        <input
+                            type="number"
+                            id="lifespan"
+                            min="0"
+                            step="0.5"
+                            value="3"
+                            aria-describedby="lifespan-desc"
+                            oninput="calculateMetrics()">
+                        <span id="lifespan-desc" class="sr-only">Enter the average number of years a customer remains active</span>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="resetCalculator()" aria-label="Reset all inputs to default values">
+                    Reset Calculator
+                </button>
+            </div>
+
+            <!-- Right Column: Results -->
+            <div class="results-section">
+                <div class="metric-card">
+                    <div class="metric-label">Customer Acquisition Cost (CAC)</div>
+                    <div class="metric-value" id="cac-value" aria-live="polite">$160.00</div>
+                    <div class="metric-description">Total marketing spend divided by customers acquired</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">Customer Lifetime Value (LTV)</div>
+                    <div class="metric-value" id="ltv-value" aria-live="polite">$600.00</div>
+                    <div class="metric-description">Average revenue per customer over their lifetime</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">LTV:CAC Ratio</div>
+                    <div class="metric-value" id="ratio-value" aria-live="polite">3.75:1</div>
+                    <div class="metric-description">Ratio of lifetime value to acquisition cost</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">Payback Period</div>
+                    <div class="metric-value" id="payback-value" aria-live="polite">9.6 months</div>
+                    <div class="metric-description">Time to recover customer acquisition cost</div>
+                </div>
+
+                <div class="assessment-card" id="assessment-card" role="status" aria-live="polite">
+                    <div class="assessment-title" id="assessment-title">Good Performance</div>
+                    <div class="assessment-text" id="assessment-text">
+                        Your LTV:CAC ratio is healthy. You're generating solid returns on your customer acquisition investments. Consider opportunities to scale your marketing efforts while maintaining efficiency.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h4>Understanding the Metrics</h4>
+            <p><strong>CAC (Customer Acquisition Cost):</strong> Total marketing and sales expenses divided by the number of new customers acquired. Lower is better, but must be balanced with growth goals.</p>
+            <p><strong>LTV (Lifetime Value):</strong> The total revenue a business can expect from a single customer over their entire relationship. Calculated as: Average Order Value × Purchase Frequency × Customer Lifespan.</p>
+            <p><strong>LTV:CAC Ratio:</strong> A key metric for business sustainability. Ratios above 3:1 are generally considered healthy, while ratios below 1:1 indicate unprofitable customer acquisition.</p>
+            <p><strong>Payback Period:</strong> The time required to recover the cost of acquiring a customer. Shorter payback periods improve cash flow and reduce risk.</p>
+        </div>
+    </div>
+
+    <script>
+        // Calculate all metrics
+        function calculateMetrics() {
+            // Get marketing spend inputs
+            const advertising = parseFloat(document.getElementById('advertising').value) || 0;
+            const content = parseFloat(document.getElementById('content').value) || 0;
+            const tools = parseFloat(document.getElementById('tools').value) || 0;
+            const personnel = parseFloat(document.getElementById('personnel').value) || 0;
+
+            // Get customer metrics
+            const customers = parseFloat(document.getElementById('customers').value) || 1;
+            const aov = parseFloat(document.getElementById('aov').value) || 0;
+            const frequency = parseFloat(document.getElementById('frequency').value) || 0;
+            const lifespan = parseFloat(document.getElementById('lifespan').value) || 0;
+
+            // Calculate total marketing spend
+            const totalSpend = advertising + content + tools + personnel;
+
+            // Calculate CAC
+            const cac = customers > 0 ? totalSpend / customers : 0;
+
+            // Calculate LTV
+            const ltv = aov * frequency * lifespan;
+
+            // Calculate LTV:CAC ratio
+            const ratio = cac > 0 ? ltv / cac : 0;
+
+            // Calculate payback period (in months)
+            const monthlyRevenue = aov * frequency / 12;
+            const paybackMonths = monthlyRevenue > 0 ? cac / monthlyRevenue : 0;
+
+            // Update display
+            document.getElementById('cac-value').textContent = `$${cac.toFixed(2)}`;
+            document.getElementById('ltv-value').textContent = `$${ltv.toFixed(2)}`;
+            document.getElementById('ratio-value').textContent = `${ratio.toFixed(2)}:1`;
+            document.getElementById('payback-value').textContent = `${paybackMonths.toFixed(1)} months`;
+
+            // Update assessment
+            updateAssessment(ratio, paybackMonths);
+
+            // Announce to screen readers
+            announceToScreenReader(`Metrics updated. LTV to CAC ratio is now ${ratio.toFixed(2)} to 1`);
+        }
+
+        // Update assessment based on ratio
+        function updateAssessment(ratio, paybackMonths) {
+            const card = document.getElementById('assessment-card');
+            const title = document.getElementById('assessment-title');
+            const text = document.getElementById('assessment-text');
+
+            // Remove all assessment classes
+            card.classList.remove('excellent', 'good', 'fair', 'poor');
+
+            if (ratio >= 5) {
+                card.classList.add('excellent');
+                title.textContent = 'Excellent Performance';
+                text.textContent = 'Outstanding! Your LTV:CAC ratio indicates highly efficient customer acquisition. You have significant room to scale marketing investments while maintaining profitability. Consider aggressive growth strategies.';
+            } else if (ratio >= 3) {
+                card.classList.add('good');
+                title.textContent = 'Good Performance';
+                text.textContent = 'Your LTV:CAC ratio is healthy. You\'re generating solid returns on your customer acquisition investments. Consider opportunities to scale your marketing efforts while maintaining efficiency.';
+            } else if (ratio >= 1) {
+                card.classList.add('fair');
+                title.textContent = 'Fair Performance';
+                text.textContent = 'Your LTV:CAC ratio indicates marginal profitability. Focus on improving customer retention, increasing purchase frequency, or reducing acquisition costs to improve sustainability.';
+            } else {
+                card.classList.add('poor');
+                title.textContent = 'Needs Improvement';
+                text.textContent = 'Warning: Your acquisition costs exceed customer lifetime value. This is not sustainable. Immediate action needed to either reduce CAC through more efficient marketing or increase LTV through better retention and upselling.';
+            }
+
+            // Add payback period context if relevant
+            if (paybackMonths > 18) {
+                text.textContent += ` Note: Your payback period of ${paybackMonths.toFixed(1)} months is quite long, which may strain cash flow.`;
+            }
+        }
+
+        // Reset calculator to default values
+        function resetCalculator() {
+            document.getElementById('advertising').value = 5000;
+            document.getElementById('content').value = 2000;
+            document.getElementById('tools').value = 1000;
+            document.getElementById('personnel').value = 8000;
+            document.getElementById('customers').value = 100;
+            document.getElementById('aov').value = 50;
+            document.getElementById('frequency').value = 4;
+            document.getElementById('lifespan').value = 3;
+
+            calculateMetrics();
+            announceToScreenReader('Calculator reset to default values');
+        }
+
+        // Screen reader announcements
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'sr-only';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+            setTimeout(() => announcement.remove(), 1000);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateMetrics();
+        });
+
+        // Keyboard accessibility for reset button
+        document.querySelector('.btn').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                resetCalculator();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revenue Ecosystem Cascade</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: white;
+            color: var(--color-neutral-800);
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .widget-box {
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: var(--color-neutral-900);
+        }
+
+        .subtitle {
+            color: var(--color-neutral-600);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Scenario Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--color-neutral-600);
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            border-color: var(--color-neutral-500);
+            background: var(--color-neutral-50);
+        }
+
+        .tab.active {
+            background: var(--color-neutral-900);
+            color: white;
+            border-color: var(--color-neutral-900);
+        }
+
+        .tab:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        /* Scenario Content */
+        .scenario {
+            display: none;
+        }
+
+        .scenario.active {
+            display: block;
+        }
+
+        /* Investment Box */
+        .investment-box {
+            background: var(--color-neutral-900);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .investment-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+
+        .investment-amount {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .investment-desc {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        /* Flow Arrow */
+        .flow-arrow {
+            text-align: center;
+            color: var(--color-neutral-400);
+            font-size: 1.5rem;
+            margin: 12px 0;
+        }
+
+        /* Effects Section */
+        .effects-section {
+            margin-bottom: 16px;
+        }
+
+        .effects-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--color-neutral-100);
+            border-radius: 8px 8px 0 0;
+            border: 1px solid var(--color-neutral-200);
+            border-bottom: none;
+        }
+
+        .effects-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--color-neutral-700);
+        }
+
+        .effects-total {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--color-neutral-900);
+        }
+
+        .effects-list {
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 0 0 8px 8px;
+        }
+
+        .effect-item {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 16px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--color-neutral-100);
+            align-items: center;
+        }
+
+        .effect-item:last-child {
+            border-bottom: none;
+        }
+
+        .effect-name {
+            font-weight: 500;
+            color: var(--color-neutral-800);
+        }
+
+        .effect-desc {
+            font-size: 0.8rem;
+            color: var(--color-neutral-500);
+            margin-top: 2px;
+        }
+
+        .effect-timeline {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+            background: var(--color-neutral-100);
+            padding: 4px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .effect-value {
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            white-space: nowrap;
+        }
+
+        /* Net Result */
+        .net-result {
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-800);
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .net-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-neutral-500);
+            margin-bottom: 8px;
+        }
+
+        .net-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .net-roi {
+            display: inline-block;
+            background: var(--color-neutral-200);
+            color: var(--color-neutral-700);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+
+        /* Key Insight */
+        .key-insight {
+            background: var(--color-neutral-50);
+            border-left: 4px solid var(--color-accent);
+            padding: 16px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .key-insight-title {
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 6px;
+        }
+
+        .key-insight-text {
+            font-size: 0.9rem;
+            color: var(--color-neutral-600);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .effect-item {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .effect-timeline, .effect-value {
+                justify-self: start;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+        <h1>Revenue Ecosystem Cascade</h1>
+        <p class="subtitle">How one strategic investment amplifies across all revenue streams</p>
+
+        <div class="tabs" role="tablist">
+            <button class="tab active" role="tab" aria-selected="true" onclick="showScenario('mcdavid')">Superstar Signing</button>
+            <button class="tab" role="tab" aria-selected="false" onclick="showScenario('arena')">New Arena</button>
+            <button class="tab" role="tab" aria-selected="false" onclick="showScenario('betting')">Betting Partnership</button>
+        </div>
+
+        <!-- McDavid Scenario -->
+        <div id="mcdavid" class="scenario active">
+            <div class="investment-box">
+                <div class="investment-label">Annual Investment</div>
+                <div class="investment-amount">$12.5M</div>
+                <div class="investment-desc">Superstar player salary (e.g., Connor McDavid)</div>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <div class="effects-section">
+                <div class="effects-header">
+                    <span class="effects-title">Direct Effects</span>
+                    <span class="effects-total">+$9.5M/year</span>
+                </div>
+                <div class="effects-list">
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Ticket Sales Increase</div>
+                            <div class="effect-desc">15-20% attendance boost, premium pricing</div>
+                        </div>
+                        <span class="effect-timeline">Year 1</span>
+                        <span class="effect-value">+$5.0M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Merchandise Spike</div>
+                            <div class="effect-desc">Jersey sales, fan gear demand</div>
+                        </div>
+                        <span class="effect-timeline">Year 1</span>
+                        <span class="effect-value">+$3.0M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Digital Engagement</div>
+                            <div class="effect-desc">Social media, app downloads, highlights</div>
+                        </div>
+                        <span class="effect-timeline">Year 1-2</span>
+                        <span class="effect-value">+$1.5M</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <div class="effects-section">
+                <div class="effects-header">
+                    <span class="effects-title">Indirect Effects (Cascade)</span>
+                    <span class="effects-total">+$35.5M/year</span>
+                </div>
+                <div class="effects-list">
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Playoff Revenue</div>
+                            <div class="effect-desc">Additional home games, premium pricing</div>
+                        </div>
+                        <span class="effect-timeline">Years 2-5</span>
+                        <span class="effect-value">+$15.0M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Media Rights Value</div>
+                            <div class="effect-desc">National TV games, playoff appearances</div>
+                        </div>
+                        <span class="effect-timeline">Years 3-5</span>
+                        <span class="effect-value">+$10.0M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Sponsorship Renewals</div>
+                            <div class="effect-desc">Premium pricing, new category partners</div>
+                        </div>
+                        <span class="effect-timeline">Years 2-4</span>
+                        <span class="effect-value">+$5.0M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">International Expansion</div>
+                            <div class="effect-desc">Global jersey sales, exhibition games</div>
+                        </div>
+                        <span class="effect-timeline">Years 2-5</span>
+                        <span class="effect-value">+$3.5M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Betting Engagement</div>
+                            <div class="effect-desc">Increased wagers on star-driven games</div>
+                        </div>
+                        <span class="effect-timeline">Year 1-2</span>
+                        <span class="effect-value">+$2.0M</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <div class="net-result">
+                <div class="net-label">Total Ecosystem Value</div>
+                <div class="net-value">+$32.5M/year</div>
+                <div class="net-roi">260% ROI</div>
+            </div>
+
+            <div class="key-insight">
+                <div class="key-insight-title">Why Teams "Overpay" for Stars</div>
+                <div class="key-insight-text">Conventional analysis only considers direct revenue (tickets + merch = $8M). Ecosystem thinking reveals the cascade: media rights, sponsorships, and playoff multipliers justify the $12.5M salary. The indirect effects ($35.5M) dwarf the direct effects ($9.5M)—but take 2-5 years to fully materialize.</div>
+            </div>
+        </div>
+
+        <!-- Arena Scenario -->
+        <div id="arena" class="scenario">
+            <div class="investment-box">
+                <div class="investment-label">Annual Investment</div>
+                <div class="investment-amount">$50M</div>
+                <div class="investment-desc">Amortized construction cost (20-year bond)</div>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <div class="effects-section">
+                <div class="effects-header">
+                    <span class="effects-title">Direct Effects</span>
+                    <span class="effects-total">+$45M/year</span>
+                </div>
+                <div class="effects-list">
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Premium Seating Revenue</div>
+                            <div class="effect-desc">Luxury suites, club seats (40-50% of ticket revenue)</div>
+                        </div>
+                        <span class="effect-timeline">Year 1 (post-opening)</span>
+                        <span class="effect-value">+$25.0M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Non-Game Events</div>
+                            <div class="effect-desc">Concerts, corporate events (100+ dates/year)</div>
+                        </div>
+                        <span class="effect-timeline">Year 1+</span>
+                        <span class="effect-value">+$12.0M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Concession Upgrades</div>
+                            <div class="effect-desc">Premium F&B, experiential dining</div>
+                        </div>
+                        <span class="effect-timeline">Year 1+</span>
+                        <span class="effect-value">+$8.0M</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <div class="effects-section">
+                <div class="effects-header">
+                    <span class="effects-title">Indirect Effects (Cascade)</span>
+                    <span class="effects-total">+$80M/year</span>
+                </div>
+                <div class="effects-list">
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Real Estate Development</div>
+                            <div class="effect-desc">Adjacent mixed-use development revenue</div>
+                        </div>
+                        <span class="effect-timeline">Years 3-20</span>
+                        <span class="effect-value">+$30.0M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Naming Rights Deal</div>
+                            <div class="effect-desc">20-year partnership ($400M total)</div>
+                        </div>
+                        <span class="effect-timeline">Years 1-20</span>
+                        <span class="effect-value">+$20.0M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Sponsorship Inventory</div>
+                            <div class="effect-desc">New signage, activation spaces, digital displays</div>
+                        </div>
+                        <span class="effect-timeline">Year 1+</span>
+                        <span class="effect-value">+$15.0M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Season Ticket Waitlist</div>
+                            <div class="effect-desc">Increased demand, PSL revenue</div>
+                        </div>
+                        <span class="effect-timeline">Years 1-5</span>
+                        <span class="effect-value">+$10.0M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Media Production Value</div>
+                            <div class="effect-desc">Better broadcast aesthetics, technology</div>
+                        </div>
+                        <span class="effect-timeline">Year 1+</span>
+                        <span class="effect-value">+$5.0M</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <div class="net-result">
+                <div class="net-label">Total Ecosystem Value</div>
+                <div class="net-value">+$75M/year</div>
+                <div class="net-roi">150% ROI</div>
+            </div>
+
+            <div class="key-insight">
+                <div class="key-insight-title">Arenas Are Real Estate Plays</div>
+                <div class="key-insight-text">Modern arenas anchor $500M-$1B mixed-use developments. The real estate appreciation ($30M/year) often exceeds sports revenue. Key insight: 10-15% of seats (luxury suites, club) generate 40-50% of ticket revenue—new arenas prioritize premium inventory over raw capacity. Construction takes 3-5 years, but benefits last 20-30 years.</div>
+            </div>
+        </div>
+
+        <!-- Betting Scenario -->
+        <div id="betting" class="scenario">
+            <div class="investment-box">
+                <div class="investment-label">Annual Investment</div>
+                <div class="investment-amount">$8M</div>
+                <div class="investment-desc">Partnership investment and platform integration</div>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <div class="effects-section">
+                <div class="effects-header">
+                    <span class="effects-title">Direct Effects</span>
+                    <span class="effects-total">+$9M/year</span>
+                </div>
+                <div class="effects-list">
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Partnership Fees</div>
+                            <div class="effect-desc">Annual guaranteed minimum from betting operator</div>
+                        </div>
+                        <span class="effect-timeline">Year 1</span>
+                        <span class="effect-value">+$5.0M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Data Licensing</div>
+                            <div class="effect-desc">Real-time stats, official data feeds</div>
+                        </div>
+                        <span class="effect-timeline">Year 1</span>
+                        <span class="effect-value">+$2.5M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">In-App Advertising</div>
+                            <div class="effect-desc">Platform promotion during broadcasts</div>
+                        </div>
+                        <span class="effect-timeline">Year 1</span>
+                        <span class="effect-value">+$1.5M</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <div class="effects-section">
+                <div class="effects-header">
+                    <span class="effects-title">Indirect Effects (Cascade)</span>
+                    <span class="effects-total">+$22M/year</span>
+                </div>
+                <div class="effects-list">
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Media Rights Boost</div>
+                            <div class="effect-desc">Live betting drives viewership retention (+18-25%)</div>
+                        </div>
+                        <span class="effect-timeline">Years 2-5</span>
+                        <span class="effect-value">+$8.0M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">New Sponsorship Category</div>
+                            <div class="effect-desc">Betting sponsor tier (previously unavailable)</div>
+                        </div>
+                        <span class="effect-timeline">Year 1-2</span>
+                        <span class="effect-value">+$5.0M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Cross-Promotion Value</div>
+                            <div class="effect-desc">Joint marketing, fan engagement campaigns</div>
+                        </div>
+                        <span class="effect-timeline">Year 1+</span>
+                        <span class="effect-value">+$4.0M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Attendance Increase</div>
+                            <div class="effect-desc">In-stadium betting terminals, lounges</div>
+                        </div>
+                        <span class="effect-timeline">Years 1-3</span>
+                        <span class="effect-value">+$3.0M</span>
+                    </div>
+                    <div class="effect-item">
+                        <div>
+                            <div class="effect-name">Younger Demographics</div>
+                            <div class="effect-desc">18-34 audience growth, lifetime value</div>
+                        </div>
+                        <span class="effect-timeline">Years 2-5</span>
+                        <span class="effect-value">+$2.0M</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <div class="net-result">
+                <div class="net-label">Total Ecosystem Value</div>
+                <div class="net-value">+$23M/year</div>
+                <div class="net-roi">288% ROI</div>
+            </div>
+
+            <div class="key-insight">
+                <div class="key-insight-title">Fastest-Growing Revenue Stream (With Risk)</div>
+                <div class="key-insight-text">Betting revenue grew 40% annually (2020-2024). The media synergy is key: live betting increases broadcast viewing time by 18-25%, which networks pay premium for. However, regulatory risk is real—38 US states have legalized, but federal regulation remains uncertain. Early movers secured $5-20M annual deals before market saturation.</div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        function showScenario(scenarioId) {
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+                tab.setAttribute('aria-selected', 'false');
+            });
+            event.target.classList.add('active');
+            event.target.setAttribute('aria-selected', 'true');
+
+            // Update scenarios
+            document.querySelectorAll('.scenario').forEach(scenario => {
+                scenario.classList.remove('active');
+            });
+            document.getElementById(scenarioId).classList.add('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CFL League Expansion Project - Week 4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-success: #c0d1cd;
+            --color-turquoise: #bfe5e7;
+            --color-sand: #f0ede0;
+            --color-purple: #d5cae0;
+            --color-project: #6b9085;
+            --color-project-light: #c0d1cd;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+        body { font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: white; color: var(--color-neutral-800); padding: 1.5rem; line-height: 1.6; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .project-box { background: var(--color-neutral-50); border: 2px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.75rem; }
+        .project-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+        .project-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--color-neutral-800); color: white; padding: 0.375rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+        .project-badge::before { content: ''; width: 8px; height: 8px; background: var(--color-project); border-radius: 50%; }
+        .project-title { font-size: 1.375rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.75rem; }
+        .project-description { font-size: 0.95rem; color: var(--color-neutral-600); margin-bottom: 1.25rem; line-height: 1.65; }
+        .challenge-section { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-project); padding: 1rem 1.25rem; border-radius: var(--border-radius-sm); margin-bottom: 1.5rem; }
+        .challenge-label { font-size: 0.8rem; font-weight: 600; color: var(--color-project); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .challenge-text { font-size: 0.95rem; color: var(--color-neutral-700); line-height: 1.6; }
+        .milestone-table { width: 100%; border-collapse: collapse; margin-bottom: 1.25rem; background: white; border-radius: var(--border-radius); overflow: hidden; border: 1px solid var(--color-neutral-200); }
+        .milestone-table th { background: var(--color-neutral-100); color: var(--color-neutral-700); padding: 0.875rem 1rem; text-align: left; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--color-neutral-200); }
+        .milestone-table td { padding: 0.875rem 1rem; border-bottom: 1px solid var(--color-neutral-100); font-size: 0.9rem; color: var(--color-neutral-700); }
+        .milestone-table tbody tr:last-child td { border-bottom: none; }
+        .milestone-table tbody tr:hover { background: var(--color-neutral-50); }
+        .milestone-table td:first-child { font-weight: 600; color: var(--color-neutral-800); white-space: nowrap; }
+        .milestone-complete { background: var(--color-neutral-50) !important; }
+        .milestone-complete td { color: var(--color-neutral-500); }
+        .milestone-complete td:first-child::after { content: ' ✓'; color: var(--color-project); }
+        .milestone-current { background: var(--color-project-light) !important; }
+        .milestone-current td { color: var(--color-neutral-800); }
+        .milestone-current td:first-child { position: relative; }
+        .milestone-current td:first-child::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--color-project); }
+        /* Removed .milestone-link styles - milestones are not clickable */
+        .this-week-section { background: white; border: 1px solid var(--color-neutral-200); padding: 1rem 1.25rem; border-radius: var(--border-radius-sm); }
+        .this-week-label { font-size: 0.8rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .this-week-text { font-size: 0.95rem; color: var(--color-neutral-700); line-height: 1.6; }
+        .this-week-text strong { color: var(--color-neutral-800); font-weight: 600; }
+        @media (max-width: 640px) { body { padding: 1rem; } .project-box { padding: 1.25rem; } .project-title { font-size: 1.2rem; } .milestone-table th, .milestone-table td { padding: 0.75rem; font-size: 0.85rem; } .milestone-table th:last-child, .milestone-table td:last-child { display: none; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="project-box">
+            <div class="project-header">
+                <span class="project-badge">Course Project</span>
+            </div>
+            <h2 class="project-title">CFL League Expansion Project</h2>
+            <p class="project-description">A course-long project where you'll develop a comprehensive expansion proposal for a new Canadian Football League franchise.</p>
+            <div class="challenge-section">
+                <div class="challenge-label">Your Challenge</div>
+                <p class="challenge-text">The CFL is considering expansion. You'll propose an expansion city (Halifax? Quebec City? Your choice!) and build a complete business case across all 5 weeks.</p>
+            </div>
+            <table class="milestone-table" role="table" aria-label="Project milestones across 5 weeks">
+                <thead><tr><th scope="col">Week</th><th scope="col">Milestone</th><th scope="col">Deliverable</th></tr></thead>
+                <tbody id="milestone-body"></tbody>
+            </table>
+            <div class="this-week-section">
+                <div class="this-week-label">This Week</div>
+                <p class="this-week-text" id="this-week-text"></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const currentWeek = 4;
+        const milestones = [
+            { week: 1, milestone: 'Market Selection & Revenue Projections', deliverable: 'Market Analysis Brief (2-3 pages)', thisWeekText: 'Choose your expansion city and project 5-year revenue across all streams. The frameworks you learn about <strong>revenue ecosystems</strong> will directly inform your market analysis.' },
+            { week: 2, milestone: 'Media & Content Strategy', deliverable: 'Media Strategy Memo (3-4 pages)', thisWeekText: 'Develop your franchise\'s <strong>media strategy</strong>. How will you maximize media value and build fans before the first game?' },
+            { week: 3, milestone: 'Sponsorship & Betting Strategy', deliverable: 'Sponsorship Acquisition Plan (3-4 pages)', thisWeekText: 'Design your <strong>sponsorship tiers</strong> and betting partnerships. How will you attract corporate partners to a new market?' },
+            { week: 4, milestone: 'Sponsor, Ambassador & Launch Strategy', deliverable: 'Launch Strategy Plan (2-3 pages)', thisWeekText: 'Identify your <strong>founding sponsor partner</strong>, design your franchise <strong>brand identity</strong>, and select <strong>athlete ambassadors</strong> for your launch campaign. How will you build credibility and excitement before the first game?' },
+            { week: 5, milestone: 'Final Expansion Proposal', deliverable: 'Board-Ready Expansion Pitch', thisWeekText: 'Synthesize all milestones into your <strong>final expansion proposal</strong>. Present as if pitching to the CFL Board of Governors.' }
+        ];
+        const tableBody = document.getElementById('milestone-body');
+        milestones.forEach(m => {
+            const row = document.createElement('tr');
+            if (m.week < currentWeek) row.className = 'milestone-complete';
+            else if (m.week === currentWeek) row.className = 'milestone-current';
+            const weekCell = document.createElement('td');
+            weekCell.textContent = `Week ${m.week}`;
+            const milestoneCell = document.createElement('td');
+            milestoneCell.textContent = m.milestone;
+            const deliverableCell = document.createElement('td');
+            deliverableCell.textContent = m.deliverable;
+            row.appendChild(weekCell); row.appendChild(milestoneCell); row.appendChild(deliverableCell);
+            tableBody.appendChild(row);
+        });
+        const thisWeekEl = document.getElementById('this-week-text');
+        const currentMilestone = milestones.find(m => m.week === currentWeek);
+        if (currentMilestone) thisWeekEl.innerHTML = currentMilestone.thisWeekText;
+    </script>
+</body>
+</html>

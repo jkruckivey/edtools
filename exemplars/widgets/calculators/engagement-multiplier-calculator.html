@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bettor Engagement Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: white; color: var(--color-neutral-800); padding: 1.5rem; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .widget-box { background: var(--color-neutral-50); border: 2px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.5rem; }
+        .widget-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--color-neutral-600); color: white; padding: 0.25rem 0.75rem; border-radius: var(--border-radius-sm); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+        .widget-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.5rem; }
+        .widget-subtitle { font-size: 0.85rem; color: var(--color-neutral-600); margin-bottom: 1.25rem; }
+
+        .formula-box { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.25rem; margin-bottom: 1rem; }
+        .formula-label { font-size: 0.7rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; text-align: center; }
+        .formula { font-size: 1rem; font-weight: 600; color: var(--color-neutral-800); display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+        .formula-part { background: var(--color-neutral-100); padding: 0.5rem 0.75rem; border-radius: var(--border-radius-sm); }
+        .formula-result { background: var(--color-accent-light); padding: 0.5rem 0.75rem; border-radius: var(--border-radius-sm); }
+
+        .definitions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; font-size: 0.75rem; color: var(--color-neutral-600); }
+        .definition { display: flex; gap: 0.5rem; }
+        .definition-term { font-weight: 600; color: var(--color-neutral-700); }
+
+        .comparison-table { width: 100%; border-collapse: collapse; margin-bottom: 0.75rem; background: white; border-radius: var(--border-radius-sm); overflow: hidden; border: 1px solid var(--color-neutral-200); }
+        .comparison-table th { text-align: left; padding: 0.6rem 0.5rem; background: var(--color-neutral-800); color: white; font-weight: 600; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .comparison-table td { padding: 0.6rem 0.5rem; border-bottom: 1px solid var(--color-neutral-200); font-size: 0.8rem; color: var(--color-neutral-700); }
+        .comparison-table tr:last-child td { border-bottom: none; }
+        .comparison-table .league-name { font-weight: 600; color: var(--color-neutral-800); }
+        .comparison-table .highlight-row { background: var(--color-accent-light); }
+        .comparison-table .highlight-row td { color: var(--color-neutral-800); }
+        .comparison-table .value-large { font-weight: 700; color: var(--color-neutral-900); }
+        .comparison-table .range { font-size: 0.75rem; }
+
+        .table-note { font-size: 0.7rem; color: var(--color-neutral-500); font-style: italic; text-align: center; margin-bottom: 1.25rem; }
+
+        .explanatory-box { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-neutral-500); padding: 0.75rem 1rem; border-radius: var(--border-radius-sm); margin-bottom: 1.25rem; font-size: 0.8rem; color: var(--color-neutral-600); }
+
+        .visual-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+        .comparison-card { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1rem; text-align: center; }
+        .comparison-card.highlight { border-color: var(--color-neutral-400); background: var(--color-neutral-50); }
+        .comparison-card-label { font-size: 0.7rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .comparison-card-value { font-size: 1.5rem; font-weight: 700; color: var(--color-neutral-900); }
+        .comparison-card-subtext { font-size: 0.75rem; color: var(--color-neutral-600); margin-top: 0.25rem; }
+
+        .insight-section { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1rem; margin-bottom: 1.25rem; }
+        .insight-title { font-size: 0.8rem; font-weight: 600; color: var(--color-neutral-700); margin-bottom: 0.75rem; }
+        .insight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+        .insight-item { text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--border-radius-sm); }
+        .insight-item-value { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-800); }
+        .insight-item-label { font-size: 0.7rem; color: var(--color-neutral-500); margin-top: 0.25rem; }
+
+        .takeaway-box { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); padding: 1rem; border-radius: var(--border-radius-sm); }
+        .takeaway-title { font-size: 0.7rem; font-weight: 600; color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .takeaway-text { font-size: 0.875rem; color: var(--color-neutral-700); }
+        .takeaway-text strong { color: var(--color-neutral-800); }
+
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            .widget-box { padding: 1rem; }
+            .definitions { grid-template-columns: 1fr; }
+            .formula { font-size: 0.85rem; }
+            .visual-comparison { grid-template-columns: 1fr; }
+            .insight-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+            <div class="widget-badge">Reference Infographic</div>
+            <h1 class="widget-title">The Bettor Engagement Premium</h1>
+            <p class="widget-subtitle">Why a small segment of betting fans drives outsized viewership value</p>
+
+            <div class="formula-box">
+                <div class="formula-label">The Core Insight</div>
+                <div class="formula">
+                    <span class="formula-part">Bettors</span>
+                    <span>watch</span>
+                    <span class="formula-result">30-50% more games</span>
+                    <span>than non-bettors</span>
+                </div>
+                <div class="definitions">
+                    <div class="definition"><span class="definition-term">Why:</span> Financial stakes increase attention and commitment</div>
+                    <div class="definition"><span class="definition-term">Effect:</span> Small % of fans → disproportionate viewership share</div>
+                </div>
+                <p style="font-size: 0.7rem; color: var(--color-neutral-500); font-style: italic; text-align: center; margin-top: 0.75rem;">The size of this premium is debated and varies widely across studies.</p>
+            </div>
+
+            <div class="visual-comparison">
+                <div class="comparison-card">
+                    <div class="comparison-card-label">Fan Composition</div>
+                    <div class="comparison-card-value">~12%</div>
+                    <div class="comparison-card-subtext">of fans actively bet (illustrative)</div>
+                </div>
+                <div class="comparison-card highlight">
+                    <div class="comparison-card-label">Viewership Contribution</div>
+                    <div class="comparison-card-value">~17%</div>
+                    <div class="comparison-card-subtext">of total viewership (illustrative)</div>
+                </div>
+            </div>
+
+            <p class="table-note">The engagement premium means bettors contribute ~5 percentage points more viewership than their share of the fan base.</p>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>League</th>
+                        <th>Bettor %</th>
+                        <th>Est. Engagement Diff.</th>
+                        <th>Viewership Premium</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="highlight-row">
+                        <td class="league-name">NFL</td>
+                        <td class="range">~15%</td>
+                        <td class="range">+40%</td>
+                        <td class="value-large">~6 pts</td>
+                    </tr>
+                    <tr>
+                        <td class="league-name">NBA</td>
+                        <td class="range">~12%</td>
+                        <td class="range">+50%</td>
+                        <td class="value-large">~6 pts</td>
+                    </tr>
+                    <tr>
+                        <td class="league-name">NHL</td>
+                        <td class="range">~10%</td>
+                        <td class="range">+35%</td>
+                        <td class="value-large">~4 pts</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="table-note">Figures are illustrative estimates based on industry research. Actual rates vary by market and measurement methodology.</p>
+
+            <div class="explanatory-box">
+                <strong>Why this matters for media rights:</strong> Rights holders value bettor-heavy audiences because each bettor viewer generates more total viewership than a non-bettor. This helps explain why betting partnerships command premium prices — they help attract and retain the highest-engagement segment. It is also possible that highly engaged fans are more likely to become bettors, rather than betting causing engagement.
+            </div>
+
+            <div class="insight-section">
+                <div class="insight-title">Revenue Implications (Illustrative NFL Example)</div>
+                <div class="insight-grid">
+                    <div class="insight-item">
+                        <div class="insight-item-value">15%</div>
+                        <div class="insight-item-label">Bettors in audience</div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-item-value">21%</div>
+                        <div class="insight-item-label">Viewership from bettors</div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-item-value">1.4×</div>
+                        <div class="insight-item-label">Value per bettor vs. non-bettor</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="takeaway-box">
+                <div class="takeaway-title">Key Takeaway</div>
+                <p class="takeaway-text"><strong>The engagement premium helps explain one reason why betting has become strategically valuable in media rights negotiations.</strong> A small percentage of betting fans generates disproportionate viewership, making sports content more valuable to broadcasters and streamers. However, the precise magnitude of this effect varies by sport, market, and measurement method. While commercially attractive, betting-driven engagement also raises regulatory and ethical questions that are not captured in this model.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

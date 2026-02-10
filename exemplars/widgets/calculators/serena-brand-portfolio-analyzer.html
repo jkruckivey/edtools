@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serena Williams: Brand Portfolio Analyzer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-error: #ef4444;
+            --color-success: #c0d1cd;
+            --color-warning: #f0ede0;
+            --color-info: #bfe5e7;
+            --color-purple: #d5cae0;
+            --color-green: #c0d1cd;
+            --color-turquoise: #bfe5e7;
+            --color-sand: #f0ede0;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: white;
+            color: #2d3748;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--color-neutral-50);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--color-neutral-200);
+        }
+
+        h1 {
+            color: #1f2937;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        #sr-live-region {
+            position: absolute;
+            left: -10000px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+
+        /* Info Panel */
+        .info-panel {
+            background: white;
+            border: 2px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .info-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .info-icon {
+            font-size: 2rem;
+        }
+
+        .info-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 12px 0;
+        }
+
+        .info-list li {
+            padding: 4px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .info-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            font-weight: 700;
+            color: var(--color-neutral-600);
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--color-neutral-200);
+            margin: 16px 0;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e5e7eb;
+            background: white;
+            padding: 4px 4px 0 4px;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 12px 16px;
+            background: transparent;
+            color: #6b7280;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .tab-btn:hover {
+            background: #f9fafb;
+            color: #2d3748;
+        }
+
+        .tab-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: -2px;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: #171717;
+            font-weight: 600;
+            border-bottom-color: #171717;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Section Styles */
+        .section {
+            background: white;
+            padding: 24px;
+            border-radius: var(--border-radius);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            color: #1f2937;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 6px;
+            border-left: 4px solid #6b7280;
+        }
+
+        .metric-label {
+            color: #6b7280;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+
+        .metric-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .metric-unit {
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-weight: 400;
+        }
+
+        /* Chart */
+        .chart-container {
+            position: relative;
+            height: 350px;
+            margin-bottom: 16px;
+            padding: 16px;
+            background: white;
+            border-radius: var(--border-radius);
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Alternative Scenarios */
+        .scenario-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .scenario-btn {
+            padding: 16px;
+            background: white;
+            border: 2px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .scenario-btn:hover {
+            border-color: var(--color-neutral-500);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .scenario-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .scenario-btn.active {
+            background: var(--color-neutral-900);
+            color: white;
+            border-color: var(--color-neutral-900);
+        }
+
+        .scenario-name {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .scenario-desc {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .scenario-btn.active .scenario-desc {
+            color: var(--color-neutral-200);
+        }
+
+        /* Portfolio Deep Dive */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .portfolio-card {
+            background: #f9fafb;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 16px;
+        }
+
+        .portfolio-card-header {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .portfolio-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.9rem;
+        }
+
+        .stat-label {
+            color: #6b7280;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        /* Insights */
+        .insight-box {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 16px;
+            border-radius: var(--border-radius);
+            margin-bottom: 16px;
+        }
+
+        .insight-title {
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 8px;
+        }
+
+        .insight-text {
+            color: #1e3a8a;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Sliders */
+        .slider-group {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: white;
+            border-radius: var(--border-radius);
+            border: 1px solid #e5e7eb;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .stream-name {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 0.95rem;
+        }
+
+        .stream-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .stream-description {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #d1d5db;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #6b7280;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #6b7280;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Case Study Link */
+        .case-link {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--color-neutral-900);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .case-link:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .case-link:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        /* Splash Screen Styles */
+        .splash-screen { text-align: center; padding: 2rem 1.5rem; background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius); margin-bottom: 24px; }
+        .splash-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.5rem; }
+        .splash-subtitle { font-size: 0.9rem; color: var(--color-neutral-600); margin-bottom: 1.5rem; }
+        .splash-box { background: var(--color-neutral-50); border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.25rem; margin-bottom: 1.5rem; text-align: left; }
+        .splash-box-title { font-size: 0.8rem; font-weight: 600; color: var(--color-neutral-700); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .splash-box ul { list-style: none; padding: 0; margin: 0; }
+        .splash-box li { font-size: 0.85rem; color: var(--color-neutral-600); padding: 0.4rem 0; padding-left: 1.25rem; position: relative; line-height: 1.5; }
+        .splash-box li::before { content: "•"; position: absolute; left: 0; color: var(--color-neutral-400); }
+        .splash-disclaimer { font-size: 0.75rem; color: var(--color-neutral-500); font-style: italic; margin-bottom: 1.5rem; line-height: 1.5; }
+        .splash-btn { padding: 0.75rem 2rem; background: var(--color-neutral-800); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+        .splash-btn:hover { background: var(--color-neutral-700); }
+        .splash-btn:focus { outline: 3px solid var(--color-neutral-900); outline-offset: 2px; }
+        .simulator-content { display: none; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .tab-nav {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                border-bottom: none;
+                border-left: 3px solid transparent;
+            }
+
+            .tab-btn.active {
+                border-left-color: #171717;
+            }
+
+            .metrics-grid,
+            .scenario-buttons,
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Splash Screen -->
+        <div class="splash-screen" id="splashScreen">
+            <h1 class="splash-title">Serena Williams: Brand Portfolio Analyzer</h1>
+            <p class="splash-subtitle">Explore how portfolio allocation decisions created dramatically different wealth outcomes</p>
+
+            <div class="splash-box">
+                <div class="splash-box-title">What This Tool Does</div>
+                <ul>
+                    <li>Models Serena's actual brand portfolio strategy (30% endorsements, 70% equity)</li>
+                    <li>Compares alternative strategies (100% endorsements, MJ-style, aggressive equity)</li>
+                    <li>Lets you build custom allocations to test wealth-building hypotheses</li>
+                </ul>
+            </div>
+
+            <div class="splash-box">
+                <div class="splash-box-title">Model Simplifications</div>
+                <ul>
+                    <li><strong>Serena's portfolio is estimated, not verified:</strong> The $350M endorsements, $500M net worth, and Serena Ventures returns are approximated from public reporting — not audited disclosures</li>
+                    <li><strong>Growth rates are illustrative assumptions:</strong> Owned businesses at 25% annual growth and investments at 10% are aggressive estimates — many celebrity businesses fail or underperform</li>
+                    <li><strong>Endorsement decline is a pattern, not a rule:</strong> The -8% post-retirement decline is a common trajectory, but some athletes (Jordan, Federer) maintain or grow endorsement value</li>
+                    <li><strong>"Alternative scenarios" are dramatized:</strong> The "Michael Jordan strategy" and "100% endorsements" scenarios are simplified teaching tools, not biographical reconstructions</li>
+                    <li><strong>Serena Ventures IRR is estimated:</strong> The 25-35% IRR is based on reported portfolio valuations, which may not reflect actual realized returns</li>
+                </ul>
+            </div>
+
+            <p class="splash-disclaimer">
+                This analyzer illustrates how equity vs. endorsement allocation affects long-term wealth. The scenarios are designed to teach portfolio principles, not document actual financial outcomes.
+            </p>
+
+            <button class="splash-btn" onclick="startSimulator()">I Understand — Start the Analyzer</button>
+        </div>
+
+        <!-- Main Content (hidden until splash acknowledged) -->
+        <div class="simulator-content" id="simulatorContent">
+        <h1>Serena Williams: Brand Portfolio Analyzer</h1>
+        <p class="subtitle">Explore modeled portfolio strategies and test wealth-building hypotheses</p>
+
+        <p style="font-size: 0.8rem; color: #6b7280; text-align: center; margin-bottom: 20px; font-style: italic;">Values shown are modeled estimates, not verified disclosures. Many athlete businesses fail; this model assumes successful execution.</p>
+
+        <div id="sr-live-region" aria-live="polite" aria-atomic="true"></div>
+
+        <!-- Serena Info Panel -->
+        <div class="info-panel">
+            <div class="info-header">
+                <h2 class="info-title">Modeled Serena Strategy (Illustrative)</h2>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Prize Money</span>
+                    <span class="info-value">$94M</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Endorsements</span>
+                    <span class="info-value">~$350M</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Current Brand Value</span>
+                    <span class="info-value">$500M+</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Strategic Allocation</span>
+                    <span class="info-value">70% Equity</span>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <strong style="display: block; margin-bottom: 8px; color: #1f2937;">Key Assets:</strong>
+            <ul class="info-list">
+                <li>S by Serena (clothing line) - launched 2018</li>
+                <li>Serena Ventures ($111M fund) - launched 2014</li>
+                <li>60+ portfolio companies (MasterClass, Tonal, Daily Harvest)</li>
+                <li>NWSL team stakes (women's soccer)</li>
+            </ul>
+        </div>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav" role="tablist" aria-label="Analysis sections">
+            <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="tab-serena" id="tab-btn-serena" data-tab="serena">
+                Modeled Serena Strategy
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-alternatives" id="tab-btn-alternatives" data-tab="alternatives">
+                Alternative Scenarios
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-ventures" id="tab-btn-ventures" data-tab="ventures">
+                Serena Ventures
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-custom" id="tab-btn-custom" data-tab="custom">
+                Your Custom Strategy
+            </button>
+        </nav>
+
+        <!-- Tab 1: Modeled Serena Strategy -->
+        <div class="tab-content active" id="tab-serena" role="tabpanel" aria-labelledby="tab-btn-serena">
+            <div class="section">
+                <h2 class="section-title">Modeled Serena Portfolio Allocation ($50M)</h2>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Endorsements (30%)</div>
+                        <div class="metric-value">$15<span class="metric-unit">M</span></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Owned Businesses (40%)</div>
+                        <div class="metric-value">$20<span class="metric-unit">M</span></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Investments (20%)</div>
+                        <div class="metric-value">$10<span class="metric-unit">M</span></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Media/Content (6%)</div>
+                        <div class="metric-value">$3<span class="metric-unit">M</span></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Licensing (4%)</div>
+                        <div class="metric-value">$2<span class="metric-unit">M</span></div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="wealthChart" role="img" aria-label="Wealth trajectory chart showing modeled Serena portfolio growth from Year 0 to Year 20"></canvas>
+                </div>
+
+                <div class="insight-box">
+                    <div class="insight-title">Key Insight: Why 70% Equity?</div>
+                    <div class="insight-text">
+                        Under these assumptions, equity allocation (70%) generates $189M of $287M total modeled wealth (66%). This model illustrates how prioritizing owned businesses and investments over endorsement fees
+                        enables exponential compounding—building assets that continue generating value post-retirement.
+                    </div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">20-Year Wealth</div>
+                        <div class="metric-value" id="serena-wealth">$287<span class="metric-unit">M</span></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Diversification Score</div>
+                        <div class="metric-value">68<span class="metric-unit">/100</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Alternative Scenarios -->
+        <div class="tab-content" id="tab-alternatives" role="tabpanel" aria-labelledby="tab-btn-alternatives">
+            <div class="section">
+                <h2 class="section-title">What If Serena Had Chosen Differently?</h2>
+
+                <div class="scenario-buttons">
+                    <button class="scenario-btn" data-scenario="endorsement-only">
+                        <div class="scenario-name">100% Endorsements</div>
+                        <div class="scenario-desc">Outcome: $127M (56% less)</div>
+                    </button>
+                    <button class="scenario-btn" data-scenario="conservative">
+                        <div class="scenario-name">Conservative (70% endorsements)</div>
+                        <div class="scenario-desc">Outcome: $143M (50% less)</div>
+                    </button>
+                    <button class="scenario-btn" data-scenario="more-aggressive">
+                        <div class="scenario-name">More Aggressive (80% equity)</div>
+                        <div class="scenario-desc">Outcome: $318M (11% more)</div>
+                    </button>
+                    <button class="scenario-btn" data-scenario="mj-strategy">
+                        <div class="scenario-name">Jordan-Style Ownership-Heavy</div>
+                        <div class="scenario-desc">Outcome: $356M (24% more)</div>
+                    </button>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="comparisonChart" role="img" aria-label="Comparison chart showing wealth trajectories for different allocation strategies"></canvas>
+                </div>
+
+                <div class="metrics-grid" id="scenario-metrics">
+                    <div class="metric-card">
+                        <div class="metric-label">Selected Scenario</div>
+                        <div class="metric-value" id="scenario-name">—</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">20-Year Wealth</div>
+                        <div class="metric-value" id="scenario-wealth">—</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">vs Modeled Serena</div>
+                        <div class="metric-value" id="scenario-diff">—</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Serena Ventures Deep Dive -->
+        <div class="tab-content" id="tab-ventures" role="tabpanel" aria-labelledby="tab-btn-ventures">
+            <div class="section">
+                <h2 class="section-title">Serena Ventures: Portfolio Breakdown</h2>
+
+                <div class="portfolio-grid">
+                    <div class="portfolio-card">
+                        <div class="portfolio-card-header">Fund Overview</div>
+                        <div class="portfolio-stat">
+                            <span class="stat-label">Total Invested</span>
+                            <span class="stat-value">$111M</span>
+                        </div>
+                        <div class="portfolio-stat">
+                            <span class="stat-label">Portfolio Value</span>
+                            <span class="stat-value">~$500M</span>
+                        </div>
+                        <div class="portfolio-stat">
+                            <span class="stat-label">Fund <abbr title="Internal Rate of Return - annualized percentage return on investment accounting for timing of cash flows">IRR</abbr></span>
+                            <span class="stat-value">25-35%</span>
+                        </div>
+                        <div class="portfolio-stat">
+                            <span class="stat-label">Companies</span>
+                            <span class="stat-value">60+</span>
+                        </div>
+                    </div>
+
+                    <div class="portfolio-card">
+                        <div class="portfolio-card-header">MasterClass</div>
+                        <div class="portfolio-stat">
+                            <span class="stat-label">Valuation</span>
+                            <span class="stat-value">$2.75B</span>
+                        </div>
+                        <div class="portfolio-stat">
+                            <span class="stat-label">Est. Return</span>
+                            <span class="stat-value">50-100x</span>
+                        </div>
+                    </div>
+
+                    <div class="portfolio-card">
+                        <div class="portfolio-card-header">Tonal</div>
+                        <div class="portfolio-stat">
+                            <span class="stat-label">Valuation</span>
+                            <span class="stat-value">$1.6B</span>
+                        </div>
+                        <div class="portfolio-stat">
+                            <span class="stat-label">Est. Return</span>
+                            <span class="stat-value">30x</span>
+                        </div>
+                    </div>
+
+                    <div class="portfolio-card">
+                        <div class="portfolio-card-header">Daily Harvest</div>
+                        <div class="portfolio-stat">
+                            <span class="stat-label">Valuation</span>
+                            <span class="stat-value">$1.1B</span>
+                        </div>
+                        <div class="portfolio-stat">
+                            <span class="stat-label">Est. Return</span>
+                            <span class="stat-value">40x</span>
+                        </div>
+                    </div>
+
+                    <div class="portfolio-card">
+                        <div class="portfolio-card-header">Impact Focus</div>
+                        <div class="portfolio-stat">
+                            <span class="stat-label">Women/POC Founders</span>
+                            <span class="stat-value">78%</span>
+                        </div>
+                        <div class="portfolio-stat">
+                            <span class="stat-label">vs VC Benchmark <abbr title="Internal Rate of Return - annualized percentage return on investment accounting for timing of cash flows">IRR</abbr></span>
+                            <span class="stat-value">+10-15%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insight-box" style="margin-top: 20px;">
+                    <div class="insight-title">Was the Risk Worth It?</div>
+                    <div class="insight-text">
+                        Serena Ventures' 25-35% <abbr title="Internal Rate of Return - annualized percentage return on investment accounting for timing of cash flows">IRR</abbr> significantly outperformed S&P 500 (10% IRR) and established sports properties (12% IRR).
+                        The fund's focus on women/POC founders was both financially rational and mission-aligned, proving that impact investing
+                        can generate superior returns while creating positive social change.
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <a href="#case-study" class="case-link">Read the Full Case Study</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Your Custom Strategy -->
+        <div class="tab-content" id="tab-custom" role="tabpanel" aria-labelledby="tab-btn-custom">
+            <div class="section">
+                <h2 class="section-title">Build Your Own Strategy ($50M Budget)</h2>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="stream-name">Endorsements & Sponsorships</span>
+                        <span class="stream-value" id="custom-endorsements-value">$15M</span>
+                    </div>
+                    <p class="stream-description">Fee-based income from brand partnerships</p>
+                    <input type="range" id="custom-endorsements-slider" min="0" max="50" value="15" step="0.5" aria-label="Endorsements allocation">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="stream-name">Owned Businesses</span>
+                        <span class="stream-value" id="custom-owned-value">$20M</span>
+                    </div>
+                    <p class="stream-description">Equity in your own ventures</p>
+                    <input type="range" id="custom-owned-slider" min="0" max="50" value="20" step="0.5" aria-label="Owned businesses allocation">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="stream-name">Investment Portfolio</span>
+                        <span class="stream-value" id="custom-investments-value">$10M</span>
+                    </div>
+                    <p class="stream-description">Stock market investments and VC funds</p>
+                    <input type="range" id="custom-investments-slider" min="0" max="50" value="10" step="0.5" aria-label="Investments allocation">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="stream-name">Media & Content Production</span>
+                        <span class="stream-value" id="custom-media-value">$3M</span>
+                    </div>
+                    <p class="stream-description">Production companies and IP ownership</p>
+                    <input type="range" id="custom-media-slider" min="0" max="50" value="3" step="0.5" aria-label="Media allocation">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="stream-name">Licensing & IP Rights</span>
+                        <span class="stream-value" id="custom-licensing-value">$2M</span>
+                    </div>
+                    <p class="stream-description">Royalties from name/likeness</p>
+                    <input type="range" id="custom-licensing-slider" min="0" max="50" value="2" step="0.5" aria-label="Licensing allocation">
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="customChart" role="img" aria-label="Your custom portfolio wealth trajectory compared to modeled Serena strategy"></canvas>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Your 20-Year Wealth</div>
+                        <div class="metric-value" id="custom-wealth">$287<span class="metric-unit">M</span></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">vs Modeled Serena</div>
+                        <div class="metric-value" id="custom-comparison">+$0<span class="metric-unit">M</span></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Equity Allocation</div>
+                        <div class="metric-value" id="custom-equity">70<span class="metric-unit">%</span></div>
+                    </div>
+                </div>
+
+                <div class="insight-box" id="custom-insight">
+                    <div class="insight-title">Strategic Comparison</div>
+                    <div class="insight-text" id="custom-insight-text">
+                        Your strategy closely matches Serena's balanced approach (70% equity). Proven wealth-building allocation.
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div><!-- End simulator-content -->
+    </div>
+
+    <script>
+        // Splash screen handler
+        function startSimulator() {
+            document.getElementById('splashScreen').style.display = 'none';
+            document.getElementById('simulatorContent').style.display = 'block';
+        }
+
+        // Growth rates
+        const GROWTH_RATES = {
+            endorsements_active: 0.08,
+            endorsements_retired: -0.08,
+            owned_business: 0.25,
+            investments: 0.10,
+            media_content: 0.15,
+            licensing: 0.12
+        };
+
+        // Modeled Serena allocation (estimated from public sources)
+        const SERENA_ALLOCATION = {
+            endorsements: 15,
+            owned: 20,
+            investments: 10,
+            media: 3,
+            licensing: 2
+        };
+
+        // Alternative scenarios
+        const SCENARIOS = {
+            'endorsement-only': { name: '100% Endorsements', endorsements: 50, owned: 0, investments: 0, media: 0, licensing: 0 },
+            'conservative': { name: 'Conservative', endorsements: 35, owned: 5, investments: 8, media: 2, licensing: 0 },
+            'more-aggressive': { name: 'More Aggressive', endorsements: 10, owned: 25, investments: 12, media: 3, licensing: 0 },
+            'mj-strategy': { name: 'Jordan-Style Ownership', endorsements: 5, owned: 15, investments: 5, media: 0, licensing: 25 }
+        };
+
+        let wealthChart = null;
+        let comparisonChart = null;
+        let customChart = null;
+        let currentTab = 'serena';
+        let customAllocation = {...SERENA_ALLOCATION};
+
+        // Calculate wealth trajectory
+        function calculateWealth(allocation) {
+            const wealth = [0];
+            for (let year = 1; year <= 20; year++) {
+                let yearWealth = wealth[year - 1];
+
+                if (year <= 10) {
+                    yearWealth += allocation.endorsements * Math.pow(1 + GROWTH_RATES.endorsements_active, year);
+                } else {
+                    const peak = allocation.endorsements * Math.pow(1 + GROWTH_RATES.endorsements_active, 10);
+                    yearWealth += peak * Math.pow(1 + GROWTH_RATES.endorsements_retired, year - 10);
+                }
+
+                yearWealth += allocation.owned * Math.pow(1 + GROWTH_RATES.owned_business, year);
+                yearWealth += allocation.investments * Math.pow(1 + GROWTH_RATES.investments, year);
+                yearWealth += allocation.media * Math.pow(1 + GROWTH_RATES.media_content, year);
+                yearWealth += allocation.licensing * Math.pow(1 + GROWTH_RATES.licensing, year);
+
+                wealth.push(yearWealth);
+            }
+            return wealth;
+        }
+
+        // Tab navigation
+        function setupTabs() {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const tabName = e.target.dataset.tab;
+
+                    document.querySelectorAll('.tab-btn').forEach(b => {
+                        b.classList.toggle('active', b.dataset.tab === tabName);
+                        b.setAttribute('aria-selected', b.dataset.tab === tabName);
+                    });
+
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.toggle('active', content.id === `tab-${tabName}`);
+                    });
+
+                    currentTab = tabName;
+
+                    if (tabName === 'serena' && wealthChart) wealthChart.resize();
+                    if (tabName === 'alternatives' && comparisonChart) comparisonChart.resize();
+                    if (tabName === 'custom' && customChart) customChart.resize();
+
+                    announceToScreenReader(`Switched to ${tabName} tab`);
+                });
+            });
+        }
+
+        // Initialize Modeled Serena Strategy chart
+        function initSerenaChart() {
+            const ctx = document.getElementById('wealthChart').getContext('2d');
+            const wealth = calculateWealth(SERENA_ALLOCATION);
+            const labels = Array.from({length: 21}, (_, i) => `Year ${i}`);
+
+            wealthChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Modeled Serena Strategy",
+                        data: wealth,
+                        borderColor: '#6b7280',
+                        backgroundColor: 'rgba(107, 114, 128, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => `Wealth: $${context.parsed.y.toFixed(1)}M`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { callback: (value) => `$${value}M` }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Alternative scenarios
+        function setupScenarios() {
+            document.querySelectorAll('.scenario-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const scenarioKey = e.target.closest('.scenario-btn').dataset.scenario;
+                    const scenario = SCENARIOS[scenarioKey];
+
+                    document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+                    e.target.closest('.scenario-btn').classList.add('active');
+
+                    const wealth = calculateWealth(scenario);
+                    const serenaWealth = calculateWealth(SERENA_ALLOCATION);
+
+                    if (comparisonChart) comparisonChart.destroy();
+
+                    const ctx = document.getElementById('comparisonChart').getContext('2d');
+                    const labels = Array.from({length: 21}, (_, i) => `Year ${i}`);
+
+                    comparisonChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    label: "Modeled Serena",
+                                    data: serenaWealth,
+                                    borderColor: '#6b7280',
+                                    borderWidth: 2,
+                                    tension: 0.3
+                                },
+                                {
+                                    label: scenario.name,
+                                    data: wealth,
+                                    borderColor: '#3b82f6',
+                                    borderWidth: 2,
+                                    borderDash: [5, 5],
+                                    tension: 0.3
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        label: (context) => `${context.dataset.label}: $${context.parsed.y.toFixed(1)}M`
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: { callback: (value) => `$${value}M` }
+                                }
+                            }
+                        }
+                    });
+
+                    const diff = wealth[20] - serenaWealth[20];
+                    document.getElementById('scenario-name').textContent = scenario.name;
+                    document.getElementById('scenario-wealth').innerHTML = `$${wealth[20].toFixed(0)}<span class="metric-unit">M</span>`;
+                    document.getElementById('scenario-diff').innerHTML = `${diff >= 0 ? '+' : ''}$${diff.toFixed(0)}<span class="metric-unit">M</span>`;
+
+                    announceToScreenReader(`Selected ${scenario.name} scenario. 20-year wealth: $${wealth[20].toFixed(0)} million`);
+                });
+            });
+        }
+
+        // Custom strategy sliders
+        function setupCustomSliders() {
+            const sliders = ['endorsements', 'owned', 'investments', 'media', 'licensing'];
+
+            sliders.forEach(key => {
+                const slider = document.getElementById(`custom-${key}-slider`);
+                slider.addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    customAllocation[key] = value;
+                    document.getElementById(`custom-${key}-value`).textContent = `$${value}M`;
+                    updateCustomChart();
+                });
+            });
+        }
+
+        function updateCustomChart() {
+            const customWealth = calculateWealth(customAllocation);
+            const serenaWealth = calculateWealth(SERENA_ALLOCATION);
+
+            if (customChart) customChart.destroy();
+
+            const ctx = document.getElementById('customChart').getContext('2d');
+            const labels = Array.from({length: 21}, (_, i) => `Year ${i}`);
+
+            customChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Modeled Serena",
+                            data: serenaWealth,
+                            borderColor: '#9ca3af',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            borderDash: [5, 5]
+                        },
+                        {
+                            label: 'Your Strategy',
+                            data: customWealth,
+                            borderColor: '#3b82f6',
+                            borderWidth: 3,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { callback: (value) => `$${value}M` }
+                        }
+                    }
+                }
+            });
+
+            const diff = customWealth[20] - serenaWealth[20];
+            const total = customAllocation.endorsements + customAllocation.owned + customAllocation.investments + customAllocation.media + customAllocation.licensing;
+            const equityPct = total > 0 ? ((customAllocation.owned + customAllocation.investments + customAllocation.media + customAllocation.licensing) / total * 100).toFixed(0) : 0;
+
+            document.getElementById('custom-wealth').innerHTML = `$${customWealth[20].toFixed(0)}<span class="metric-unit">M</span>`;
+            document.getElementById('custom-comparison').innerHTML = `${diff >= 0 ? '+' : ''}$${diff.toFixed(0)}<span class="metric-unit">M</span>`;
+            document.getElementById('custom-equity').innerHTML = `${equityPct}<span class="metric-unit">%</span>`;
+
+            let insightText = '';
+            if (equityPct > 80) {
+                insightText = `Your strategy is MORE aggressive than Serena's (${equityPct}% equity vs her 70%). Higher risk, higher potential reward.`;
+            } else if (equityPct < 60) {
+                insightText = `Your strategy is MORE conservative than Serena's (${equityPct}% equity vs her 70%). Lower risk, but less long-term wealth.`;
+            } else {
+                insightText = `Your strategy closely matches Serena's balanced approach (${equityPct}% equity). Proven wealth-building allocation.`;
+            }
+            document.getElementById('custom-insight-text').textContent = insightText;
+        }
+
+        function announceToScreenReader(message) {
+            document.getElementById('sr-live-region').textContent = message;
+        }
+
+        // Initialize
+        function init() {
+            setupTabs();
+            initSerenaChart();
+            setupScenarios();
+            setupCustomSliders();
+            updateCustomChart();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsorship Risk Framework</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: white; color: var(--color-neutral-800); padding: 1.5rem; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .widget-box { background: var(--color-neutral-50); border: 2px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.5rem; }
+        .widget-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--color-neutral-600); color: white; padding: 0.25rem 0.75rem; border-radius: var(--border-radius-sm); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+        .widget-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.5rem; }
+        .widget-subtitle { font-size: 0.85rem; color: var(--color-neutral-600); margin-bottom: 1.25rem; }
+
+        .framework-box { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.25rem; margin-bottom: 1rem; }
+        .framework-label { font-size: 0.7rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; text-align: center; }
+        .framework-title { font-size: 1rem; font-weight: 600; color: var(--color-neutral-800); text-align: center; margin-bottom: 1rem; }
+
+        .risk-factors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; }
+        .risk-factor { background: var(--color-neutral-50); border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; text-align: center; }
+        .risk-factor-icon { font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--color-neutral-600); }
+        .risk-factor-title { font-size: 0.8rem; font-weight: 600; color: var(--color-neutral-700); margin-bottom: 0.25rem; }
+        .risk-factor-desc { font-size: 0.7rem; color: var(--color-neutral-500); }
+
+        .risk-equation { display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; color: var(--color-neutral-700); flex-wrap: wrap; }
+        .risk-equation-part { background: var(--color-neutral-100); padding: 0.5rem 0.75rem; border-radius: var(--border-radius-sm); }
+        .risk-equation-result { background: var(--color-accent-light); padding: 0.5rem 0.75rem; border-radius: var(--border-radius-sm); }
+
+        .case-studies { margin-bottom: 1.25rem; }
+        .case-studies-title { font-size: 0.8rem; font-weight: 600; color: var(--color-neutral-700); margin-bottom: 0.75rem; text-align: center; }
+
+        .comparison-table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--border-radius-sm); overflow: hidden; border: 1px solid var(--color-neutral-200); }
+        .comparison-table th { text-align: left; padding: 0.6rem 0.5rem; background: var(--color-neutral-800); color: white; font-weight: 600; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .comparison-table td { padding: 0.6rem 0.5rem; border-bottom: 1px solid var(--color-neutral-200); font-size: 0.8rem; color: var(--color-neutral-700); }
+        .comparison-table tr:last-child td { border-bottom: none; }
+        .comparison-table .case-name { font-weight: 600; color: var(--color-neutral-800); }
+        .comparison-table .risk-high { color: var(--color-neutral-700); font-weight: 600; }
+        .comparison-table .risk-medium { color: var(--color-neutral-600); }
+        .comparison-table .risk-low { color: var(--color-neutral-500); }
+
+        .risk-level { display: inline-block; padding: 0.2rem 0.5rem; border-radius: var(--border-radius-sm); font-size: 0.7rem; font-weight: 600; }
+        .risk-level-high { background: var(--color-neutral-700); color: white; }
+        .risk-level-medium { background: var(--color-neutral-400); color: white; }
+        .risk-level-low { background: var(--color-neutral-200); color: var(--color-neutral-700); }
+
+        .table-note { font-size: 0.7rem; color: var(--color-neutral-500); font-style: italic; text-align: center; margin-top: 0.75rem; margin-bottom: 1.25rem; }
+
+        .brand-matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+        .brand-profile { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1rem; }
+        .brand-profile-title { font-size: 0.8rem; font-weight: 600; color: var(--color-neutral-800); margin-bottom: 0.5rem; }
+        .brand-profile-subtitle { font-size: 0.7rem; color: var(--color-neutral-500); margin-bottom: 0.75rem; }
+        .brand-profile-list { list-style: none; padding: 0; margin: 0; }
+        .brand-profile-list li { font-size: 0.75rem; color: var(--color-neutral-600); padding: 0.25rem 0; padding-left: 1rem; position: relative; }
+        .brand-profile-list li::before { content: "•"; position: absolute; left: 0; color: var(--color-neutral-400); }
+
+        .insight-box { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-neutral-500); padding: 0.75rem 1rem; border-radius: var(--border-radius-sm); margin-bottom: 1.25rem; font-size: 0.8rem; color: var(--color-neutral-600); }
+
+        .takeaway-box { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); padding: 1rem; border-radius: var(--border-radius-sm); }
+        .takeaway-title { font-size: 0.7rem; font-weight: 600; color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .takeaway-text { font-size: 0.875rem; color: var(--color-neutral-700); }
+        .takeaway-text strong { color: var(--color-neutral-800); }
+
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            .widget-box { padding: 1rem; }
+            .risk-factors { grid-template-columns: 1fr; }
+            .brand-matrix { grid-template-columns: 1fr; }
+            .risk-equation { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+            <div class="widget-badge">Reference Infographic</div>
+            <h1 class="widget-title">Sponsorship Risk Framework</h1>
+            <p class="widget-subtitle">Understanding how controversy affects sponsorship ROI for different brand types</p>
+
+            <div class="framework-box">
+                <div class="framework-label">The Risk Adjustment Model</div>
+                <div class="framework-title">Raw ROI alone doesn't capture reputation risk</div>
+
+                <div class="risk-factors">
+                    <div class="risk-factor">
+                        <div class="risk-factor-icon">→</div>
+                        <div class="risk-factor-title">Boycott Risk</div>
+                        <div class="risk-factor-desc">Customer defection probability</div>
+                    </div>
+                    <div class="risk-factor">
+                        <div class="risk-factor-icon">→</div>
+                        <div class="risk-factor-title">Employee Impact</div>
+                        <div class="risk-factor-desc">Morale and retention costs</div>
+                    </div>
+                    <div class="risk-factor">
+                        <div class="risk-factor-icon">→</div>
+                        <div class="risk-factor-title">Brand Damage</div>
+                        <div class="risk-factor-desc">Long-term equity erosion</div>
+                    </div>
+                </div>
+
+                <div class="risk-equation">
+                    <span class="risk-equation-part">Raw ROI</span>
+                    <span>−</span>
+                    <span class="risk-equation-part">Risk Costs</span>
+                    <span>=</span>
+                    <span class="risk-equation-result">Risk-Adjusted ROI</span>
+                </div>
+            </div>
+
+            <div class="case-studies">
+                <div class="case-studies-title">Case Comparison: Controversial Sponsorship Decisions</div>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Raw Economics</th>
+                            <th>Controversy Level</th>
+                            <th>Premium Brand Risk</th>
+                            <th>Challenger Brand Risk</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="case-name">LIV Golf</td>
+                            <td>Very attractive (Saudi funding)</td>
+                            <td><span class="risk-level risk-level-high">High</span></td>
+                            <td class="risk-high">Rolex, BMW declined</td>
+                            <td class="risk-medium">Some regional brands signed</td>
+                        </tr>
+                        <tr>
+                            <td class="case-name">FanDuel/DraftKings</td>
+                            <td>Strong (betting economics)</td>
+                            <td><span class="risk-level risk-level-medium">Medium</span></td>
+                            <td class="risk-medium">Selective adoption</td>
+                            <td class="risk-low">Widely embraced</td>
+                        </tr>
+                        <tr>
+                            <td class="case-name">Crypto Sponsors (2021)</td>
+                            <td>Attractive (high bids)</td>
+                            <td><span class="risk-level risk-level-high">High</span></td>
+                            <td class="risk-high">Most avoided</td>
+                            <td class="risk-medium">Many signed, many regretted</td>
+                        </tr>
+                        <tr>
+                            <td class="case-name">Traditional Sponsors</td>
+                            <td>Moderate</td>
+                            <td><span class="risk-level risk-level-low">Low</span></td>
+                            <td class="risk-low">Standard approach</td>
+                            <td class="risk-low">Standard approach</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="table-note">Risk profiles are illustrative. Actual decisions depend on specific brand positioning, stakeholder relationships, and market context.</p>
+            </div>
+
+            <div class="brand-matrix">
+                <div class="brand-profile">
+                    <div class="brand-profile-title">Premium Brands (High Equity)</div>
+                    <div class="brand-profile-subtitle">More to lose from controversy</div>
+                    <ul class="brand-profile-list">
+                        <li>Large customer base sensitive to values</li>
+                        <li>Employee pride tied to brand reputation</li>
+                        <li>Media scrutiny amplifies any misstep</li>
+                        <li>Decades of brand equity at risk</li>
+                        <li><strong>Result:</strong> Conservative approach justified</li>
+                    </ul>
+                </div>
+                <div class="brand-profile">
+                    <div class="brand-profile-title">Challenger Brands (Low Equity)</div>
+                    <div class="brand-profile-subtitle">Less to lose, more to gain</div>
+                    <ul class="brand-profile-list">
+                        <li>Smaller, less values-driven customer base</li>
+                        <li>Employees expect aggressive growth tactics</li>
+                        <li>Lower media attention = less amplification</li>
+                        <li>Limited existing equity to protect</li>
+                        <li><strong>Result:</strong> Higher risk tolerance rational</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="insight-box">
+                <strong>The LIV Golf Paradox:</strong> Raw ROI was positive for many potential sponsors — Saudi funding made economics attractive. But for premium brands like Rolex, BMW, and major airlines, the risk-adjusted ROI was likely negative once boycott probability, employee sentiment, and brand equity damage were factored in. This explains why high-profile brands declined despite attractive financial terms.
+            </div>
+
+            <div class="takeaway-box">
+                <div class="takeaway-title">Key Takeaway</div>
+                <p class="takeaway-text"><strong>Sponsorship ROI isn't just about the numbers on paper.</strong> Controversy costs — customer defection, employee discontent, and brand damage — can flip a profitable deal into a net loss. Premium brands rationally avoid controversial properties that challenger brands can embrace. The "right" decision depends on how much brand equity you have to protect.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

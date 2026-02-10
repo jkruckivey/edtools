@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emerging Sports Investment Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-error: #ef4444;
+            --color-success: #c0d1cd;
+            --color-warning: #f0ede0;
+            --color-info: #bfe5e7;
+            --color-purple: #d5cae0;
+            --color-green: #c0d1cd;
+            --color-turquoise: #bfe5e7;
+            --color-sand: #f0ede0;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: var(--spacing-lg);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .section {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .section h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--color-neutral-900);
+            color: white;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Investment Selection */
+        .investment-select {
+            width: 100%;
+        }
+
+        .investment-select label {
+            display: block;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            margin-bottom: var(--spacing-xs);
+            font-size: 0.9rem;
+        }
+
+        .investment-select select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            background: white;
+            font-family: inherit;
+            font-size: 1rem;
+            color: var(--color-neutral-900);
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .investment-select select:hover {
+            border-color: var(--color-neutral-400);
+        }
+
+        .investment-select select:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+            border-color: #3182ce;
+        }
+
+        .investment-info {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+
+        .investment-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        /* Sliders */
+        .slider-group {
+            display: grid;
+            gap: var(--spacing-lg);
+        }
+
+        .slider-item {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .slider-label {
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            font-size: 0.9rem;
+        }
+
+        .slider-value {
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            font-size: 0.95rem;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--color-neutral-200);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-neutral-900);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-neutral-900);
+            cursor: pointer;
+            border: none;
+            transition: transform 0.1s;
+        }
+
+        .slider::-moz-range-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        .slider:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .slider-hint {
+            font-size: 0.8rem;
+            color: var(--color-neutral-500);
+            font-style: italic;
+        }
+
+        /* Results Grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .result-card {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-md);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+
+        .result-label {
+            font-size: 0.8rem;
+            color: var(--color-neutral-600);
+            font-weight: 500;
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .result-subtext {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        th {
+            background: var(--color-neutral-50);
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--color-neutral-700);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            font-size: 0.9rem;
+            color: var(--color-neutral-900);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .positive {
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .negative {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        /* Sensitivity Analysis */
+        .sensitivity-table {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .scenario-best {
+            background: #f0fdf4;
+        }
+
+        .scenario-base {
+            background: #fafaf9;
+        }
+
+        .scenario-worst {
+            background: #fef2f2;
+        }
+
+        /* Warning */
+        .warning {
+            background: #fff7ed;
+            border: 1px solid #fb923c;
+            border-radius: var(--border-radius);
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-md);
+            display: none;
+        }
+
+        .warning.visible {
+            display: flex;
+            gap: var(--spacing-sm);
+            align-items: flex-start;
+        }
+
+        .warning-icon {
+            color: #fb923c;
+            font-size: 1.2rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .warning-content {
+            flex: 1;
+        }
+
+        .warning-title {
+            font-weight: 600;
+            color: #9a3412;
+            margin-bottom: 4px;
+        }
+
+        .warning-text {
+            font-size: 0.9rem;
+            color: #9a3412;
+        }
+
+        /* Export Button */
+        .export-btn {
+            width: 100%;
+            padding: 12px 24px;
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .export-btn:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .export-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        /* Screen Reader Only */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-md);
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .investment-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 8px 12px;
+            }
+        }
+
+        /* Splash Screen Styles */
+        .splash-screen { text-align: center; padding: 2rem 1.5rem; background: var(--color-neutral-50); border-radius: var(--border-radius); margin-bottom: var(--spacing-lg); }
+        .splash-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.5rem; }
+        .splash-subtitle { font-size: 0.9rem; color: var(--color-neutral-600); margin-bottom: 1.5rem; }
+        .splash-box { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.25rem; margin-bottom: 1.5rem; text-align: left; }
+        .splash-box-title { font-size: 0.8rem; font-weight: 600; color: var(--color-neutral-700); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .splash-box ul { list-style: none; padding: 0; margin: 0; }
+        .splash-box li { font-size: 0.85rem; color: var(--color-neutral-600); padding: 0.4rem 0; padding-left: 1.25rem; position: relative; line-height: 1.5; }
+        .splash-box li::before { content: "•"; position: absolute; left: 0; color: var(--color-neutral-400); }
+        .splash-disclaimer { font-size: 0.75rem; color: var(--color-neutral-500); font-style: italic; margin-bottom: 1.5rem; line-height: 1.5; }
+        .splash-btn { padding: 0.75rem 2rem; background: var(--color-neutral-800); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+        .splash-btn:hover { background: var(--color-neutral-700); }
+        .splash-btn:focus { outline: 3px solid var(--color-neutral-900); outline-offset: 2px; }
+        .simulator-screen { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Splash Screen -->
+        <div class="splash-screen" id="splashScreen">
+            <h1 class="splash-title">Emerging Sports Investment Tool</h1>
+            <p class="splash-subtitle">Explore the economics of investing in emerging sports properties</p>
+
+            <div class="splash-box">
+                <div class="splash-box-title">What This Tool Does</div>
+                <ul>
+                    <li>Models investment returns for emerging sports properties (NWSL, WNBA, pickleball, women's rugby, European women's soccer)</li>
+                    <li>Calculates IRR, Sharpe ratio, and break-even timelines based on your assumptions</li>
+                    <li>Compares your scenario against S&P 500 and established sports benchmarks</li>
+                    <li>Shows sensitivity analysis for best/worst case scenarios</li>
+                </ul>
+            </div>
+
+            <div class="splash-box">
+                <div class="splash-box-title">Model Simplifications</div>
+                <ul>
+                    <li><strong>Entry costs and valuations are estimates:</strong> NWSL at $40M, WNBA at $50M are approximations from public reporting — actual transaction prices vary significantly</li>
+                    <li><strong>Growth rates are highly uncertain:</strong> 20-40% annual growth for emerging sports is plausible but not guaranteed — many leagues fail or grow slowly</li>
+                    <li><strong>Exit multiples are speculative:</strong> The model assumes you can sell at a multiple — liquidity in sports ownership is limited</li>
+                    <li><strong>Risk premiums are subjective:</strong> The 8-15% risk premiums are illustrative — actual risk depends on league governance, media deals, and market conditions</li>
+                    <li><strong>Benchmarks are simplified:</strong> S&P 500 at 10% and established sports at 12% are long-term averages, not guarantees</li>
+                </ul>
+            </div>
+
+            <p class="splash-disclaimer">
+                This tool illustrates how assumptions shape investment outcomes. Emerging sports are high-risk, illiquid investments. Use this to build intuition, not to make actual investment decisions.
+            </p>
+
+            <button class="splash-btn" onclick="startSimulator()">I Understand — Explore the Tool</button>
+        </div>
+
+        <!-- Main Tool (hidden until splash acknowledged) -->
+        <div class="simulator-screen" id="simulatorScreen">
+        <div class="header">
+            <h1>Emerging Sports Investment Tool</h1>
+            <p>Evaluate investment opportunities in emerging sports properties. Adjust variables to see risk-adjusted returns, benchmark comparisons, and sensitivity analysis. All calculations use your selected time horizon (default: 10 years).</p>
+        </div>
+
+        <!-- Investment Selection -->
+        <div class="section">
+            <h2><span class="section-icon">1</span> Select Investment</h2>
+            <div class="investment-select">
+                <label for="investment-dropdown">Choose an emerging sports investment opportunity:</label>
+                <select id="investment-dropdown" aria-describedby="investment-hint">
+                    <option value="nwsl">NWSL Franchise ($40M entry)</option>
+                    <option value="wnba">WNBA Expansion Team ($50M entry)</option>
+                    <option value="womens_soccer_eu">Women's Soccer Club - European ($20M entry)</option>
+                    <option value="pickleball">Pickleball Pro League Stake ($10M entry)</option>
+                    <option value="womens_rugby">Women's Rugby Franchise ($5M entry)</option>
+                </select>
+                <p id="investment-hint" class="sr-only">Select from 5 emerging sports investment opportunities with varying risk and return profiles</p>
+            </div>
+
+            <div class="investment-info" id="investment-info" aria-live="polite">
+                <div class="investment-info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Entry Cost</span>
+                        <span class="info-value" id="info-cost">$40M</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Current Valuation</span>
+                        <span class="info-value" id="info-valuation">$40M</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Expected Growth</span>
+                        <span class="info-value" id="info-growth">25%/year</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Risk Premium</span>
+                        <span class="info-value" id="info-risk">10%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Adjustable Variables -->
+        <div class="section">
+            <h2><span class="section-icon">2</span> Adjust Assumptions</h2>
+            <div class="slider-group">
+                <div class="slider-item">
+                    <div class="slider-header">
+                        <label for="growth-slider" class="slider-label">Annual Growth Rate</label>
+                        <span class="slider-value" id="growth-value">20%</span>
+                    </div>
+                    <input type="range" id="growth-slider" class="slider" min="5" max="50" value="20" step="1"
+                           aria-valuemin="5" aria-valuemax="50" aria-valuenow="20" aria-label="Annual growth rate percentage">
+                    <span class="slider-hint">5% (conservative) to 50% (aggressive)</span>
+                </div>
+
+                <div class="slider-item">
+                    <div class="slider-header">
+                        <label for="risk-slider" class="slider-label">Risk Premium</label>
+                        <span class="slider-value" id="risk-value">8%</span>
+                    </div>
+                    <input type="range" id="risk-slider" class="slider" min="0" max="15" value="8" step="1"
+                           aria-valuemin="0" aria-valuemax="15" aria-valuenow="8" aria-label="Risk premium percentage">
+                    <span class="slider-hint">0% (low risk) to 15% (high risk)</span>
+                </div>
+
+                <div class="slider-item">
+                    <div class="slider-header">
+                        <label for="horizon-slider" class="slider-label">Time Horizon</label>
+                        <span class="slider-value" id="horizon-value">10 years</span>
+                    </div>
+                    <input type="range" id="horizon-slider" class="slider" min="5" max="20" value="10" step="1"
+                           aria-valuemin="5" aria-valuemax="20" aria-valuenow="10" aria-label="Investment time horizon in years">
+                    <span class="slider-hint">5 years (short-term) to 20 years (long-term)</span>
+                </div>
+
+                <div class="slider-item">
+                    <div class="slider-header">
+                        <label for="exit-slider" class="slider-label">Exit Multiple</label>
+                        <span class="slider-value" id="exit-value">5x</span>
+                    </div>
+                    <input type="range" id="exit-slider" class="slider" min="1" max="10" value="5" step="0.5"
+                           aria-valuemin="1" aria-valuemax="10" aria-valuenow="5" aria-label="Exit multiple">
+                    <span class="slider-hint">1x (break even) to 10x (exceptional outcome)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calculated Returns -->
+        <div class="section">
+            <h2><span class="section-icon">3</span> Investment Analysis</h2>
+
+            <div class="results-grid" aria-live="polite">
+                <div class="result-card">
+                    <span class="result-label">Future Value</span>
+                    <span class="result-value" id="result-future-value">$124M</span>
+                    <span class="result-subtext">At exit</span>
+                </div>
+                <div class="result-card">
+                    <span class="result-label">Expected IRR</span>
+                    <span class="result-value" id="result-irr">12.1%</span>
+                    <span class="result-subtext">Internal rate of return</span>
+                </div>
+                <div class="result-card">
+                    <span class="result-label">Sharpe Ratio</span>
+                    <span class="result-value" id="result-sharpe">1.14</span>
+                    <span class="result-subtext">Risk-adjusted return</span>
+                </div>
+                <div class="result-card">
+                    <span class="result-label">Break-Even</span>
+                    <span class="result-value" id="result-breakeven">3.8 years</span>
+                    <span class="result-subtext">Years to recover investment</span>
+                </div>
+            </div>
+
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Benchmark</th>
+                            <th>Annual Return (%)</th>
+                            <th>Risk (%)</th>
+                            <th>Future Value</th>
+                            <th>Outperformance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Your Investment</strong></td>
+                            <td id="comp-your-return">12.1%</td>
+                            <td id="comp-your-risk">8.0%</td>
+                            <td id="comp-your-value">$124M</td>
+                            <td>—</td>
+                        </tr>
+                        <tr>
+                            <td>S&P 500</td>
+                            <td>10.0%</td>
+                            <td>5.0%</td>
+                            <td id="comp-sp500-value">$104M</td>
+                            <td id="comp-sp500-perf" class="positive">+19%</td>
+                        </tr>
+                        <tr>
+                            <td>Established Sports (MLS/NBA)</td>
+                            <td>12.0%</td>
+                            <td>6.0%</td>
+                            <td id="comp-sports-value">$124M</td>
+                            <td id="comp-sports-perf" class="positive">+0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="warning" id="high-risk-warning">
+                <span class="warning-icon">⚠</span>
+                <div class="warning-content">
+                    <div class="warning-title">High Risk Warning</div>
+                    <div class="warning-text">Growth assumptions above 40% carry significant execution risk. Historically, 40% of high-growth sports ventures fail to meet projections.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sensitivity Analysis -->
+        <div class="section">
+            <h2><span class="section-icon">4</span> Sensitivity Analysis</h2>
+            <div class="sensitivity-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Scenario</th>
+                            <th>Assumptions</th>
+                            <th>Future Value</th>
+                            <th>IRR</th>
+                            <th>Sharpe Ratio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="scenario-best">
+                            <td><strong>Best Case</strong></td>
+                            <td id="sens-best-assumptions">+50% growth, −30% risk, +2x exit (vs. base)</td>
+                            <td id="sens-best-value">$387M</td>
+                            <td id="sens-best-irr">26.7%</td>
+                            <td id="sens-best-sharpe">3.24</td>
+                        </tr>
+                        <tr class="scenario-base">
+                            <td><strong>Base Case</strong></td>
+                            <td id="sens-base-assumptions">Current inputs</td>
+                            <td id="sens-base-value">$124M</td>
+                            <td id="sens-base-irr">12.1%</td>
+                            <td id="sens-base-sharpe">1.14</td>
+                        </tr>
+                        <tr class="scenario-worst">
+                            <td><strong>Worst Case</strong></td>
+                            <td id="sens-worst-assumptions">−50% growth, +50% risk, −50% exit (vs. base)</td>
+                            <td id="sens-worst-value">$41M</td>
+                            <td id="sens-worst-irr">0.3%</td>
+                            <td id="sens-worst-sharpe">-0.19</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Export -->
+        <div class="section">
+            <button class="export-btn" id="export-btn">Export Analysis Report (CSV)</button>
+        </div>
+        </div><!-- End simulator-screen -->
+    </div>
+
+    <!-- Screen Reader Live Region -->
+    <div id="sr-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <script>
+        function startSimulator() {
+            document.getElementById('splashScreen').style.display = 'none';
+            document.getElementById('simulatorScreen').style.display = 'block';
+        }
+
+        // Investment data
+        const investments = {
+            nwsl: {
+                name: "NWSL Franchise",
+                entry_cost: 40000000,
+                current_valuation: 40000000,
+                default_growth: 0.25,
+                default_risk: 0.10
+            },
+            wnba: {
+                name: "WNBA Expansion Team",
+                entry_cost: 50000000,
+                current_valuation: 50000000,
+                default_growth: 0.20,
+                default_risk: 0.08
+            },
+            womens_soccer_eu: {
+                name: "Women's Soccer Club (European)",
+                entry_cost: 20000000,
+                current_valuation: 20000000,
+                default_growth: 0.30,
+                default_risk: 0.12
+            },
+            pickleball: {
+                name: "Pickleball Pro League Stake",
+                entry_cost: 10000000,
+                current_valuation: 10000000,
+                default_growth: 0.40,
+                default_risk: 0.15
+            },
+            womens_rugby: {
+                name: "Women's Rugby Franchise",
+                entry_cost: 5000000,
+                current_valuation: 5000000,
+                default_growth: 0.35,
+                default_risk: 0.13
+            }
+        };
+
+        // DOM elements
+        const investmentDropdown = document.getElementById('investment-dropdown');
+        const growthSlider = document.getElementById('growth-slider');
+        const riskSlider = document.getElementById('risk-slider');
+        const horizonSlider = document.getElementById('horizon-slider');
+        const exitSlider = document.getElementById('exit-slider');
+        const exportBtn = document.getElementById('export-btn');
+
+        // Current state
+        let currentInvestment = investments.nwsl;
+        let currentGrowth = 0.20;
+        let currentRisk = 0.08;
+        let currentHorizon = 10;
+        let currentExit = 5;
+
+        // Initialize
+        function init() {
+            updateInvestmentInfo();
+            updateSliderDefaults();
+            calculate();
+            attachEventListeners();
+        }
+
+        // Update investment info display
+        function updateInvestmentInfo() {
+            const investment = investments[investmentDropdown.value];
+            currentInvestment = investment;
+
+            document.getElementById('info-cost').textContent = formatCurrency(investment.entry_cost);
+            document.getElementById('info-valuation').textContent = formatCurrency(investment.current_valuation);
+            document.getElementById('info-growth').textContent = formatPercent(investment.default_growth) + '/year';
+            document.getElementById('info-risk').textContent = formatPercent(investment.default_risk);
+
+            announceToScreenReader(`Selected ${investment.name}. Entry cost: ${formatCurrency(investment.entry_cost)}`);
+        }
+
+        // Update slider defaults based on investment
+        function updateSliderDefaults() {
+            const investment = currentInvestment;
+
+            growthSlider.value = investment.default_growth * 100;
+            riskSlider.value = investment.default_risk * 100;
+
+            currentGrowth = investment.default_growth;
+            currentRisk = investment.default_risk;
+
+            updateSliderDisplays();
+        }
+
+        // Update slider value displays
+        function updateSliderDisplays() {
+            document.getElementById('growth-value').textContent = formatPercent(currentGrowth);
+            document.getElementById('risk-value').textContent = formatPercent(currentRisk);
+            document.getElementById('horizon-value').textContent = currentHorizon + ' years';
+            document.getElementById('exit-value').textContent = currentExit + 'x';
+
+            // Update ARIA values
+            growthSlider.setAttribute('aria-valuenow', Math.round(currentGrowth * 100));
+            riskSlider.setAttribute('aria-valuenow', Math.round(currentRisk * 100));
+            horizonSlider.setAttribute('aria-valuenow', currentHorizon);
+            exitSlider.setAttribute('aria-valuenow', currentExit);
+        }
+
+        // Calculate all metrics
+        function calculate() {
+            const entryCost = currentInvestment.entry_cost;
+
+            // Future value
+            const futureValue = entryCost * Math.pow(1 + currentGrowth, currentHorizon) * currentExit;
+
+            // IRR
+            const irr = (Math.pow(futureValue / entryCost, 1 / currentHorizon) - 1);
+
+            // Sharpe ratio (risk-free rate = 3%)
+            const riskFreeRate = 0.03;
+            const sharpeRatio = (irr - riskFreeRate) / currentRisk;
+
+            // Break-even timeline (years to double investment)
+            const breakEven = Math.log(2) / Math.log(1 + currentGrowth);
+
+            // Benchmark comparisons
+            const sp500Value = entryCost * Math.pow(1.10, currentHorizon);
+            const establishedSportsValue = entryCost * Math.pow(1.12, currentHorizon);
+
+            const sp500Outperformance = ((futureValue - sp500Value) / sp500Value);
+            const sportsOutperformance = ((futureValue - establishedSportsValue) / establishedSportsValue);
+
+            // Sensitivity analysis
+            const bestGrowth = currentGrowth * 1.5;
+            const bestRisk = currentRisk * 0.7;
+            const bestExit = currentExit + 2;
+            const bestValue = entryCost * Math.pow(1 + bestGrowth, currentHorizon) * bestExit;
+            const bestIRR = (Math.pow(bestValue / entryCost, 1 / currentHorizon) - 1);
+            const bestSharpe = (bestIRR - riskFreeRate) / bestRisk;
+
+            const worstGrowth = currentGrowth * 0.5;
+            const worstRisk = currentRisk * 1.5;
+            const worstExit = currentExit * 0.5;
+            const worstValue = entryCost * Math.pow(1 + worstGrowth, currentHorizon) * worstExit;
+            const worstIRR = (Math.pow(worstValue / entryCost, 1 / currentHorizon) - 1);
+            const worstSharpe = (worstIRR - riskFreeRate) / worstRisk;
+
+            // Update display
+            document.getElementById('result-future-value').textContent = formatCurrency(futureValue);
+            document.getElementById('result-irr').textContent = formatPercent(irr);
+            document.getElementById('result-sharpe').textContent = sharpeRatio.toFixed(2);
+            document.getElementById('result-breakeven').textContent = breakEven.toFixed(1) + ' years';
+
+            // Comparison table
+            document.getElementById('comp-your-return').textContent = formatPercent(irr);
+            document.getElementById('comp-your-risk').textContent = formatPercent(currentRisk);
+            document.getElementById('comp-your-value').textContent = formatCurrency(futureValue);
+            document.getElementById('comp-sp500-value').textContent = formatCurrency(sp500Value);
+            document.getElementById('comp-sports-value').textContent = formatCurrency(establishedSportsValue);
+
+            const sp500PerfEl = document.getElementById('comp-sp500-perf');
+            sp500PerfEl.textContent = formatPercent(sp500Outperformance, true);
+            sp500PerfEl.className = sp500Outperformance >= 0 ? 'positive' : 'negative';
+
+            const sportsPerfEl = document.getElementById('comp-sports-perf');
+            sportsPerfEl.textContent = formatPercent(sportsOutperformance, true);
+            sportsPerfEl.className = sportsOutperformance >= 0 ? 'positive' : 'negative';
+
+            // Sensitivity analysis
+            document.getElementById('sens-best-value').textContent = formatCurrency(bestValue);
+            document.getElementById('sens-best-irr').textContent = formatPercent(bestIRR);
+            document.getElementById('sens-best-sharpe').textContent = bestSharpe.toFixed(2);
+
+            document.getElementById('sens-base-value').textContent = formatCurrency(futureValue);
+            document.getElementById('sens-base-irr').textContent = formatPercent(irr);
+            document.getElementById('sens-base-sharpe').textContent = sharpeRatio.toFixed(2);
+
+            document.getElementById('sens-worst-value').textContent = formatCurrency(worstValue);
+            document.getElementById('sens-worst-irr').textContent = formatPercent(worstIRR);
+            document.getElementById('sens-worst-sharpe').textContent = worstSharpe.toFixed(2);
+
+            // High risk warning
+            const warningEl = document.getElementById('high-risk-warning');
+            if (currentGrowth >= 0.40) {
+                warningEl.classList.add('visible');
+            } else {
+                warningEl.classList.remove('visible');
+            }
+
+            announceToScreenReader(`Analysis updated. Expected IRR: ${formatPercent(irr)}. Future value: ${formatCurrency(futureValue)}`);
+        }
+
+        // Event listeners
+        function attachEventListeners() {
+            investmentDropdown.addEventListener('change', () => {
+                updateInvestmentInfo();
+                updateSliderDefaults();
+                calculate();
+            });
+
+            growthSlider.addEventListener('input', () => {
+                currentGrowth = parseInt(growthSlider.value) / 100;
+                updateSliderDisplays();
+                calculate();
+            });
+
+            riskSlider.addEventListener('input', () => {
+                currentRisk = parseInt(riskSlider.value) / 100;
+                updateSliderDisplays();
+                calculate();
+            });
+
+            horizonSlider.addEventListener('input', () => {
+                currentHorizon = parseInt(horizonSlider.value);
+                updateSliderDisplays();
+                calculate();
+            });
+
+            exitSlider.addEventListener('input', () => {
+                currentExit = parseFloat(exitSlider.value);
+                updateSliderDisplays();
+                calculate();
+            });
+
+            exportBtn.addEventListener('click', exportToCSV);
+        }
+
+        // Format currency
+        function formatCurrency(value) {
+            if (value >= 1000000) {
+                return '$' + (value / 1000000).toFixed(1) + 'M';
+            }
+            return '$' + (value / 1000).toFixed(0) + 'K';
+        }
+
+        // Format percentage
+        function formatPercent(value, showSign = false) {
+            const pct = (value * 100).toFixed(1) + '%';
+            if (showSign && value > 0) {
+                return '+' + pct;
+            }
+            return pct;
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            const entryCost = currentInvestment.entry_cost;
+            const futureValue = entryCost * Math.pow(1 + currentGrowth, currentHorizon) * currentExit;
+            const irr = (Math.pow(futureValue / entryCost, 1 / currentHorizon) - 1);
+            const sharpe = ((irr - 0.03) / currentRisk);
+            const breakEven = Math.log(2) / Math.log(1 + currentGrowth);
+
+            const csv = [
+                ['Emerging Sports Investment Analysis'],
+                ['Generated', new Date().toLocaleString()],
+                [],
+                ['Investment Details'],
+                ['Property', currentInvestment.name],
+                ['Entry Cost', formatCurrency(entryCost)],
+                ['Growth Rate', formatPercent(currentGrowth)],
+                ['Risk Premium', formatPercent(currentRisk)],
+                ['Time Horizon', currentHorizon + ' years'],
+                ['Exit Multiple', currentExit + 'x'],
+                [],
+                ['Investment Results'],
+                ['Future Value', formatCurrency(futureValue)],
+                ['Expected IRR', formatPercent(irr)],
+                ['Sharpe Ratio', sharpe.toFixed(2)],
+                ['Break-Even Timeline', breakEven.toFixed(1) + ' years'],
+                [],
+                ['Benchmark Comparisons'],
+                ['vs S&P 500', formatPercent(((futureValue / (entryCost * Math.pow(1.10, currentHorizon))) - 1), true)],
+                ['vs Established Sports', formatPercent(((futureValue / (entryCost * Math.pow(1.12, currentHorizon))) - 1), true)]
+            ].map(row => row.join(',')).join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'emerging-sports-investment-analysis.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+
+            announceToScreenReader('Analysis exported to CSV file');
+        }
+
+        // Screen reader announcements
+        function announceToScreenReader(message) {
+            const liveRegion = document.getElementById('sr-live-region');
+            liveRegion.textContent = message;
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

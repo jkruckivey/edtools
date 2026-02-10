@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Rights Pre-Assessment - Media Strategy Knowledge Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-white: #ffffff;
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-error: #ef4444;
+            --color-success: #c0d1cd;
+            --color-warning: #f0ede0;
+            --color-info: #bfe5e7;
+            --color-purple: #d5cae0;
+            --color-green: #c0d1cd;
+            --color-turquoise: #bfe5e7;
+            --color-sand: #f0ede0;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--color-white);
+            border-radius: 8px;
+            border: 1px solid var(--color-neutral-300);
+            padding: 40px;
+        }
+
+        /* Screen Management */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Screen 1: Challenge Preview */
+        .challenge-preview {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 8px;
+        }
+
+        .time-estimate {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background: var(--color-neutral-100);
+            border-left: 4px solid var(--color-neutral-400);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            font-size: 14px;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+        }
+
+        .challenge-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: var(--color-neutral-50);
+            border-radius: 8px;
+            border: 1px solid var(--color-neutral-200);
+        }
+
+        .challenge-section h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 15px;
+        }
+
+        .challenge-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-neutral-700);
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .challenge-section p {
+            margin-bottom: 15px;
+            color: var(--color-neutral-700);
+        }
+
+        .challenge-section ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            color: var(--color-neutral-700);
+        }
+
+        .challenge-section li {
+            margin-bottom: 8px;
+        }
+
+        .cta-button {
+            display: block;
+            margin: 40px auto 0;
+            padding: 10px 24px;
+            background: var(--color-neutral-900);
+            color: var(--color-white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-align: center;
+        }
+
+        .cta-button:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .cta-button:focus {
+            outline: 2px solid var(--color-info);
+            outline-offset: 2px;
+        }
+
+        /* Screen 2: Quiz */
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--color-neutral-300);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.completed {
+            background: var(--color-success);
+        }
+
+        .progress-dot.active {
+            background: var(--color-neutral-800);
+        }
+
+        .question-container {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: var(--color-neutral-50);
+            border-radius: 8px;
+            border: 1px solid var(--color-neutral-200);
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--color-neutral-800);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .question-type {
+            font-size: 12px;
+            color: var(--color-neutral-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px 20px;
+            background: var(--color-white);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option:hover {
+            border-color: var(--color-neutral-500);
+            background: var(--color-neutral-50);
+        }
+
+        .option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .option.selected {
+            border-color: var(--color-neutral-800);
+            background: var(--color-neutral-100);
+        }
+
+        .option.correct {
+            border-color: var(--color-success);
+            background: var(--color-neutral-50);
+        }
+
+        .option.incorrect {
+            border-color: var(--color-error);
+            background: var(--color-neutral-50);
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: var(--color-neutral-50);
+            border-left: 4px solid var(--color-success);
+            color: var(--color-neutral-900);
+        }
+
+        .feedback.incorrect {
+            background: var(--color-neutral-50);
+            border-left: 4px solid var(--color-error);
+            color: var(--color-neutral-900);
+        }
+
+        .feedback strong {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 40px;
+            gap: 10px;
+        }
+
+        .submit-btn-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+
+        .submit-btn, .next-btn {
+            background: var(--color-neutral-900);
+            color: var(--color-white);
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .submit-btn:hover, .next-btn:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .submit-btn:focus, .next-btn:focus {
+            outline: 2px solid var(--color-info);
+            outline-offset: 2px;
+        }
+
+        .submit-btn:disabled, .next-btn:disabled {
+            background: var(--color-neutral-400);
+            cursor: not-allowed;
+        }
+
+        .next-btn {
+            margin-left: auto;
+        }
+
+        /* Screen 3: Results */
+        .results-container {
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            border: 8px solid var(--color-neutral-200);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .score-label {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--color-neutral-600);
+            margin-top: 5px;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .level-badge.foundation {
+            background: var(--color-neutral-200);
+            color: var(--color-neutral-900);
+        }
+
+        .level-badge.intuition {
+            background: var(--color-neutral-100);
+            color: var(--color-info);
+        }
+
+        .level-badge.advanced {
+            background: var(--color-neutral-100);
+            color: var(--color-success);
+        }
+
+        .level-badge.master {
+            background: var(--color-neutral-100);
+            color: var(--color-warning);
+        }
+
+        .learning-path {
+            background: var(--color-neutral-50);
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid var(--color-neutral-200);
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .learning-path h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--color-neutral-900);
+        }
+
+        .learning-path p {
+            margin-bottom: 20px;
+            color: var(--color-neutral-700);
+        }
+
+        .learning-path ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .learning-path li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            color: var(--color-neutral-700);
+        }
+
+        .learning-path li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--color-neutral-500);
+            font-weight: bold;
+        }
+
+        .outcome-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .outcome-card {
+            background: var(--color-white);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--color-neutral-200);
+        }
+
+        .outcome-card h4 {
+            font-size: 14px;
+            color: var(--color-neutral-600);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .outcome-score {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--color-neutral-200);
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-neutral-900);
+            transition: width 0.5s ease;
+        }
+
+        /* Export button styling */
+        .export-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 30px;
+            padding: 12px 24px;
+            background: var(--color-neutral-800);
+            color: var(--color-white);
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .export-btn:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .export-btn:focus {
+            outline: 2px solid var(--color-info);
+            outline-offset: 2px;
+        }
+
+        /* Screen reader only text */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .question-text {
+                font-size: 16px;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+
+            .next-btn {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Screen 1: Challenge Preview -->
+        <div id="screen-1" class="screen active challenge-preview">
+            <header>
+                <h1>Can You Solve These Media Rights Problems?</h1>
+                <p class="subtitle">Media rights deals involve billion-dollar valuations, platform wars, and strategic trade-offs. This week tests whether you can analyze media economics like a league executive or broadcaster.</p>
+                <p class="time-estimate">⏱ Estimated time: 10-15 minutes | 10 questions | Not graded</p>
+                <div class="info-box">
+                    Before you dive into the content, test your current knowledge to discover where to focus your energy. This quiz is not graded—it's designed to create your personalized learning path.
+                </div>
+            </header>
+
+            <div class="challenge-section">
+                <h2>Challenge 1: Value a Media Rights Deal</h2>
+                <p><strong>The Problem:</strong> Rogers Communications paid $5.2B for 12 years of NHL rights (2014-2026). Was this a smart deal? Can you calculate the valuation drivers and explain whether Rogers overpaid?</p>
+
+                <h3>What you'll need to know:</h3>
+                <ul>
+                    <li>How to value media rights based on audience size, growth rate, and engagement</li>
+                    <li>Revenue streams beyond advertising (subscriptions, sponsorships, digital)</li>
+                    <li>Why exclusivity commands premium pricing</li>
+                    <li>How to assess ROI when viewership declines unexpectedly</li>
+                </ul>
+
+                <p><strong>Test yourself:</strong> Can you name three factors that determine whether a media rights deal creates value or destroys it?</p>
+            </div>
+
+            <div class="challenge-section">
+                <h2>Challenge 2: Navigate Streaming vs. Traditional Broadcasting</h2>
+                <p><strong>The Problem:</strong> The NHL has two offers: (A) $400M/year from ESPN (linear TV), or (B) $300M/year from Amazon Prime Video (streaming-only). Which deal is better, and why?</p>
+
+                <h3>What you'll need to know:</h3>
+                <ul>
+                    <li>Reach vs. engagement trade-offs (linear TV = broad reach, streaming = deeper engagement)</li>
+                    <li>Revenue models: advertising CPMs vs. subscription fees</li>
+                    <li>Strategic implications: Does going streaming-only alienate older fans?</li>
+                    <li>Future-proofing: Which platform has better long-term growth prospects?</li>
+                </ul>
+
+                <p><strong>Test yourself:</strong> Would you recommend the ESPN or Amazon deal? What's the strategic rationale?</p>
+            </div>
+
+            <div class="challenge-section">
+                <h2>Challenge 3: Evaluate Platform Economics</h2>
+                <p><strong>The Problem:</strong> DAZN (sports streaming service) loses $500M annually despite 10M subscribers. Why do streaming platforms struggle with profitability, and can they ever compete with traditional broadcasters?</p>
+
+                <h3>What you'll need to know:</h3>
+                <ul>
+                    <li>Content acquisition costs (rights fees are the same regardless of distribution platform)</li>
+                    <li>Subscriber acquisition costs (CAC) and churn rates</li>
+                    <li>Why linear TV has structural advantages (bundling, carriage fees)</li>
+                    <li>When DTC streaming makes strategic sense despite losses</li>
+                </ul>
+
+                <p><strong>Test yourself:</strong> Can you explain why streaming platforms like DAZN lose money even with millions of subscribers?</p>
+            </div>
+
+            <div class="challenge-section">
+                <h2>Challenge 4: Design a Long-Term Media Strategy</h2>
+                <p><strong>The Problem:</strong> You're the NHL commissioner. Your current media deal expires in 2026. Do you: (A) Renew with traditional broadcasters at premium pricing, (B) Go all-in on streaming, or (C) Split rights across multiple platforms? How do you balance revenue maximization with fan access?</p>
+
+                <h3>What you'll need to know:</h3>
+                <ul>
+                    <li>The strategic value of reach vs. revenue vs. engagement</li>
+                    <li>How rights fragmentation affects fan experience (games split across 5 platforms)</li>
+                    <li>Why leagues increasingly prefer multi-platform deals</li>
+                    <li>How to future-proof against cord-cutting and demographic shifts</li>
+                </ul>
+
+                <p><strong>Test yourself:</strong> If you had to design the NHL's 2026-2038 media strategy, what would you prioritize, and why?</p>
+            </div>
+
+            <button class="cta-button" onclick="goToQuiz()">Take the Pre-Assessment Quiz</button>
+        </div>
+
+        <!-- Screen 2: Quiz -->
+        <div id="screen-2" class="screen">
+            <div class="quiz-header">
+                <h1>Media Rights Knowledge Quiz</h1>
+                <p class="subtitle">10 questions covering media strategy</p>
+                <div class="progress-indicator" id="progress-dots"></div>
+                <div class="info-box">
+                    <strong>This quiz is not graded.</strong> Answer honestly to identify your knowledge gaps and get a personalized learning path for Week 2.
+                </div>
+            </div>
+
+            <div id="quiz-container">
+                <!-- Questions will be rendered here -->
+            </div>
+
+            <div class="nav-buttons">
+                <button class="next-btn" id="next-btn" onclick="nextQuestion()" disabled>Next Question</button>
+            </div>
+        </div>
+
+        <!-- Screen 3: Results -->
+        <div id="screen-3" class="screen">
+            <div class="results-container">
+                <div class="score-circle">
+                    <div>
+                        <span id="score-number">0</span>/10
+                        <div class="score-label">Your Score</div>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="level-badge" id="level-badge">Foundation Builder</span>
+                    <h2 id="level-title"></h2>
+                </div>
+
+                <div class="outcome-breakdown">
+                    <div class="outcome-card">
+                        <h4>MLO 2.1: Media Rights Valuation</h4>
+                        <div class="outcome-score" id="outcome-2-1">0/3</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-2-1" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="outcome-card">
+                        <h4>MLO 2.2: Platform Economics</h4>
+                        <div class="outcome-score" id="outcome-2-2">0/3</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-2-2" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="outcome-card">
+                        <h4>MLO 2.3: Content Strategy</h4>
+                        <div class="outcome-score" id="outcome-2-3">0/2</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-2-3" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="outcome-card">
+                        <h4>MLO 2.4: Strategic Trade-offs</h4>
+                        <div class="outcome-score" id="outcome-2-4">0/2</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-2-4" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="learning-path">
+                    <h3>Your Personalized Learning Path</h3>
+                    <p id="path-description"></p>
+                    <ul id="path-recommendations"></ul>
+                </div>
+
+                <button class="export-btn" onclick="exportResults()">
+                    Download Results (TXT)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz data
+        const quizData = [
+            {
+                number: 1,
+                outcome: 'MLO2.1',
+                type: 'Multiple Choice',
+                question: 'Rogers Communications paid $5.2B for 12 years of NHL rights (2014-2026). Annual viewership averaged 1.5M viewers. What was Rogers\' primary revenue calculation error?',
+                options: [
+                    { value: 'A', text: 'A) They assumed viewership would grow 10% annually, but it declined 20%' },
+                    { value: 'B', text: 'B) They overestimated subscription revenue from cord-cutters' },
+                    { value: 'C', text: 'C) They failed to account for digital streaming cannibalizing linear TV' },
+                    { value: 'D', text: 'D) All of the above' }
+                ],
+                correct: 'D',
+                points: 1,
+                feedback: {
+                    correct: "Correct! Rogers made all three errors: (1) Overestimated viewership growth (declined 20% vs. projected +10%), (2) Assumed cord-cutters would pay for Sportsnet Now subscriptions (actual take-rate <5%), and (3) Failed to anticipate streaming cannibalization (fans stopped paying for cable). Result: Rogers lost $2B+ over the contract. Lesson: Media valuations depend on accurate growth projections AND platform migration trends.",
+                    incorrect: "Not quite. Rogers actually made ALL three errors simultaneously: Viewership declined instead of growing, cord-cutters didn't subscribe to Sportsnet Now, AND streaming cannibalized linear TV. The correct answer is D. This is why media valuations require stress-testing assumptions—a single incorrect projection can destroy billions in value. Rogers' error demonstrates the importance of conservative forecasting in multi-billion-dollar deals."
+                }
+            },
+            {
+                number: 2,
+                outcome: 'MLO2.1',
+                type: 'Multiple Choice',
+                question: 'Which factor has the GREATEST impact on media rights valuations for professional sports leagues?',
+                options: [
+                    { value: 'A', text: 'A) Total audience size (reach)' },
+                    { value: 'B', text: 'B) Exclusivity of rights (no competition)' },
+                    { value: 'C', text: 'C) Advertiser willingness to pay (CPMs)' },
+                    { value: 'D', text: 'D) Growth rate of viewership' }
+                ],
+                correct: 'B',
+                points: 1,
+                feedback: {
+                    correct: "Correct! Exclusivity is the #1 driver of media rights valuations. Why? Scarcity creates bidding wars. Example: NFL Sunday Ticket (exclusive) commands $2B/year, while NBA on TNT (non-exclusive) gets $1.2B despite similar viewership. Exclusivity means 'if you want this content, you MUST work with me.' Non-exclusive deals split audience and revenue across platforms. Strategic implication: Leagues maximize value by creating exclusive packages, not fragmenting rights.",
+                    incorrect: "Think about scarcity. While [selected answer] matters, EXCLUSIVITY is the #1 valuation driver. Why? Because it creates bidding wars. The NFL Sunday Ticket commands $2B/year (exclusive) vs. NBA on TNT at $1.2B (non-exclusive), despite similar audiences. Exclusivity means broadcasters MUST pay premium prices or lose ALL access. Non-exclusive deals dilute value by splitting audience across platforms. Remember: Scarcity drives price in media rights markets."
+                }
+            },
+            {
+                number: 3,
+                outcome: 'MLO2.2',
+                type: 'Multiple Choice',
+                question: 'Why do streaming-only sports platforms (like DAZN) lose money despite millions of subscribers?',
+                options: [
+                    { value: 'A', text: 'A) Content acquisition costs (rights fees) are the same as linear TV, but revenue per subscriber is lower' },
+                    { value: 'B', text: 'B) Customer acquisition costs (CAC) exceed lifetime value (LTV) due to high churn' },
+                    { value: 'C', text: 'C) They lack bundling leverage (can\'t force distributors to carry them)' },
+                    { value: 'D', text: 'D) All of the above' }
+                ],
+                correct: 'D',
+                points: 1,
+                feedback: {
+                    correct: "Excellent! Streaming platforms face three structural disadvantages: (1) They pay the SAME rights fees as broadcasters but earn less per viewer (DTC subscriptions vs. carriage fees + ads), (2) High CAC and churn (50%+ annual churn is common), and (3) No bundling leverage (cable bundles force 100M households to subsidize ESPN; streaming is opt-in only). Result: Even with 10M subscribers, platforms like DAZN lose $500M/year. This is why most streaming sports services fail—unit economics don't work.",
+                    incorrect: "Think about platform economics holistically. Streaming platforms don't just face [selected answer]—they face ALL three challenges simultaneously: (1) Same content costs but lower revenue per subscriber, (2) High CAC and churn rates, AND (3) No bundling leverage. Cable TV forces 100M households to subsidize ESPN whether they watch or not. Streaming is opt-in only. This triple disadvantage is why DAZN, fuboTV, and Peacock Sports all lose billions despite millions of subscribers. Correct answer: D."
+                }
+            },
+            {
+                number: 4,
+                outcome: 'MLO2.2',
+                type: 'True/False',
+                question: 'True or False: Streaming platforms will inevitably replace traditional broadcasters for sports because younger audiences prefer streaming.',
+                options: [
+                    { value: 'True', text: 'True' },
+                    { value: 'False', text: 'False' }
+                ],
+                correct: 'False',
+                points: 1,
+                feedback: {
+                    correct: "Correct! This is FALSE because economics, not demographics, determine platform winners. While Gen Z prefers streaming, the BUSINESS MODEL doesn't work: Streaming platforms can't generate sufficient revenue to offset rights costs without bundling leverage. Even if 100% of viewers migrated to streaming, platforms would still lose money unless they either (1) Significantly raise prices, or (2) Reintroduce bundling (which defeats the 'à la carte' streaming value proposition). Likely outcome: Hybrid models (ESPN+, Peacock) that combine streaming with traditional TV economics.",
+                    incorrect: "Think about economics vs. consumer preference. While younger audiences DO prefer streaming, that doesn't mean streaming platforms will WIN—because the business model doesn't work. Streaming platforms pay the same rights fees but generate less revenue per viewer. Unless they solve bundling (which requires scale) or dramatically raise prices (which triggers churn), streaming-only sports platforms remain unprofitable. Most likely outcome: Hybrid models combining streaming and traditional TV, not pure streaming dominance. Answer: False."
+                }
+            },
+            {
+                number: 5,
+                outcome: 'MLO2.2',
+                type: 'Multiple Choice',
+                question: 'The NHL splits its U.S. media rights between ESPN (linear + streaming) and Turner (linear). What is the PRIMARY strategic benefit of multi-platform deals?',
+                options: [
+                    { value: 'A', text: 'A) Maximizes total revenue by creating bidding competition' },
+                    { value: 'B', text: 'B) Reduces risk by diversifying across platforms (hedges against cord-cutting)' },
+                    { value: 'C', text: 'C) Increases fan reach by being available on multiple networks' },
+                    { value: 'D', text: 'D) All of the above' }
+                ],
+                correct: 'D',
+                points: 1,
+                feedback: {
+                    correct: "Excellent! Multi-platform deals deliver ALL three benefits: (1) Competition: ESPN and Turner bid against each other, driving total value from $300M to $635M annually. (2) Risk reduction: If cord-cutting accelerates, ESPN+ provides streaming hedge; if it stalls, Turner's linear TV delivers stable reach. (3) Reach maximization: Games on ESPN + Turner + ESPN+ reach more households than a single-platform exclusive. Trade-off: Fan experience suffers (games fragmented across platforms). Strategic principle: Leagues increasingly prefer revenue and risk mitigation over fan convenience.",
+                    incorrect: "Think comprehensively. Multi-platform deals don't just provide [selected answer]—they deliver ALL three benefits simultaneously: Revenue maximization (bidding competition), risk reduction (platform diversification), AND reach expansion (more households). Example: NHL's ESPN + Turner deal ($635M/year) vs. previous NBC exclusive ($300M/year) demonstrates 112% revenue increase. Plus, if streaming grows faster than expected, ESPN+ hedges the decline in linear TV. Correct answer: D—all of the above."
+                }
+            },
+            {
+                number: 6,
+                outcome: 'MLO2.3',
+                type: 'Multiple Choice',
+                question: 'A league has 82 games per team. Should they put ALL games on national TV (maximizing reach) or reserve some for regional broadcasters (maximizing revenue)?',
+                options: [
+                    { value: 'A', text: 'A) All national TV (maximizes reach and fan engagement)' },
+                    { value: 'B', text: 'B) Split: national for marquee games, regional for others (balances reach + revenue)' },
+                    { value: 'C', text: 'C) All regional (maximizes total revenue from local broadcasters)' },
+                    { value: 'D', text: 'D) Streaming-only (future-proofs against cord-cutting)' }
+                ],
+                correct: 'B',
+                points: 1,
+                feedback: {
+                    correct: "Correct! The optimal strategy is SPLIT rights: National broadcasters pay premium for marquee games (playoffs, rivalry matchups, Christmas Day) = high reach + high revenue. Regional broadcasters pay for non-marquee games = incremental revenue that national networks won't pay for. Why? National networks won't pay top dollar for ALL 82 games (diminishing returns on low-viewership games). Regional networks will overpay for local teams due to geographic loyalty. Result: NBA earns $2.6B/year by splitting national (TNT, ESPN) + regional (local RSNs). Lesson: Segment content by value.",
+                    incorrect: "Think about value segmentation. [Selected answer] misses the revenue maximization opportunity. National broadcasters pay premium for MARQUEE games (high viewership) but won't overpay for low-viewership games. Regional broadcasters overpay for LOCAL teams (geographic loyalty). Optimal strategy: Sell marquee games nationally (reach + revenue) and non-marquee games regionally (incremental revenue). Example: NBA splits TNT/ESPN (national) + RSNs (regional) to maximize total revenue. Answer: B."
+                }
+            },
+            {
+                number: 7,
+                outcome: 'MLO2.3',
+                type: 'Multiple Choice',
+                question: 'Which content strategy creates the MOST value for leagues negotiating media deals?',
+                options: [
+                    { value: 'A', text: 'A) Exclusive windows (e.g., "Only ABC can broadcast playoff games")' },
+                    { value: 'B', text: 'B) Shoulder programming (pre-game, post-game, highlights, documentaries)' },
+                    { value: 'C', text: 'C) Digital rights (social media clips, streaming highlights)' },
+                    { value: 'D', text: 'D) Exclusive windows create the most value' }
+                ],
+                correct: 'D',
+                points: 1,
+                feedback: {
+                    correct: "Correct! Exclusive windows create the MOST value because they guarantee scarcity and force broadcasters into bidding wars. Example: NFL Thursday Night Football (exclusive to Amazon Prime Video) = $1B/year. NBA Playoffs on TNT (exclusive during conference finals) = premium pricing. Why? Broadcasters will pay 2-3x for exclusivity vs. shared rights. Shoulder programming and digital rights add incremental value but don't command premium pricing like exclusive live game windows. Strategic takeaway: Maximize exclusivity to maximize revenue.",
+                    incorrect: "Think about scarcity. While [selected answer] adds value, EXCLUSIVE WINDOWS create the MOST value because they guarantee no competition. NFL Thursday Night Football (Amazon exclusive) = $1B/year. Shared rights would reduce this by 50%+. Shoulder programming and digital rights are valuable, but they're secondary to the core product: exclusive live games. Leagues maximize revenue by creating exclusive windows, not by fragmenting content across multiple platforms. Answer: D—exclusive windows."
+                }
+            },
+            {
+                number: 8,
+                outcome: 'MLO2.4',
+                type: 'Multiple Choice',
+                question: 'You\'re the NHL commissioner. Your media deal expires in 2026. Which strategy balances revenue maximization with fan accessibility?',
+                options: [
+                    { value: 'A', text: 'A) Exclusive deal with one broadcaster (e.g., ESPN-only) for maximum simplicity' },
+                    { value: 'B', text: 'B) Multi-platform deal (ESPN linear + ESPN+ streaming + Turner linear) splitting rights' },
+                    { value: 'C', text: 'C) DTC streaming-only (NHL app) to capture 100% of revenue' },
+                    { value: 'D', text: 'D) Free-to-air broadcast on ABC/CBS to maximize reach' }
+                ],
+                correct: 'B',
+                points: 1,
+                feedback: {
+                    correct: "Excellent strategic thinking! Multi-platform deals (B) optimize the revenue-reach-accessibility triangle. Why? (1) Revenue: Competition between ESPN and Turner drives higher total value. (2) Reach: Linear TV (ESPN, Turner) reaches cord-holders; streaming (ESPN+) reaches cord-cutters. (3) Accessibility: Fans can find games on familiar platforms. Trade-off: Fragmentation frustrates fans who must navigate multiple apps. But this is the dominant model (NBA, NFL, MLB all use multi-platform deals) because it maximizes league revenue while hedging platform risk.",
+                    incorrect: "Consider the trade-offs. [Selected answer] optimizes ONE variable at the expense of others. (A) Simplicity but lower revenue (no competition). (C) 100% revenue capture but kills reach (most fans won't subscribe). (D) Maximum reach but low revenue (free = no rights fees). The optimal strategy is (B): Multi-platform deals maximize revenue (bidding wars), reach (linear + streaming), and accessibility (multiple familiar platforms). Yes, fragmentation frustrates fans, but leagues prioritize revenue. This is why NBA, NFL, and MLB all use multi-platform models."
+                }
+            },
+            {
+                number: 9,
+                outcome: 'MLO2.4',
+                type: 'Multiple Choice',
+                question: 'A broadcaster offers $2B for exclusive rights vs. $1.5B for non-exclusive rights. The league would earn $1.8B total by splitting rights across two non-exclusive partners. Which should they choose?',
+                options: [
+                    { value: 'A', text: 'A) $2B exclusive (maximizes revenue)' },
+                    { value: 'B', text: 'B) $1.8B split (diversifies risk, increases reach)' },
+                    { value: 'C', text: 'C) Depends on strategic priorities (revenue vs. reach vs. risk)' },
+                    { value: 'D', text: 'D) Neither—go DTC streaming instead' }
+                ],
+                correct: 'C',
+                points: 1,
+                feedback: {
+                    correct: "Perfect! The answer is C because there's NO universally correct decision—it depends on strategic priorities. If you prioritize: (1) Maximum revenue → Take $2B exclusive. (2) Risk mitigation → Take $1.8B split (hedges against broadcaster bankruptcy or platform decline). (3) Fan reach → Take $1.8B split (games on 2 networks reach more households). (4) Fan experience → Take $2B exclusive (simplicity beats fragmentation). Real example: NFL prioritizes revenue ($2B) while NBA prioritizes reach + risk ($1.8B split). Both are valid strategies with different trade-offs.",
+                    incorrect: "Don't oversimplify! The correct answer is C because the 'right' decision depends on what the league prioritizes. If revenue is paramount (NFL model), take $2B exclusive. If risk mitigation matters more (NBA model), take $1.8B split to diversify across partners. If fan reach is critical, split rights increase households served. There's no objectively correct answer—strategy depends on organizational priorities, competitive dynamics, and risk tolerance. Remember: Strategic trade-offs have no universal solution."
+                }
+            },
+            {
+                number: 10,
+                outcome: 'MLO2.4',
+                type: 'Multiple Choice',
+                question: 'What is the BIGGEST long-term strategic risk for sports leagues in media negotiations?',
+                options: [
+                    { value: 'A', text: 'A) Cord-cutting accelerates faster than streaming subscription growth' },
+                    { value: 'B', text: 'B) Over-fragmenting rights makes it too hard for fans to find games' },
+                    { value: 'C', text: 'C) Locking into long-term deals (12+ years) that become outdated as platforms evolve' },
+                    { value: 'D', text: 'D) Streaming platforms fail financially, forcing re-negotiation at lower valuations' }
+                ],
+                correct: 'C',
+                points: 1,
+                feedback: {
+                    correct: "Correct! The BIGGEST risk is (C): Long-term contracts lock leagues into deals that become obsolete. Example: Pac-12's 12-year deal with failed networks led to conference collapse. NHL's Rogers deal (2014-2026) looked smart initially but became a disaster as cord-cutting accelerated. Why is this the #1 risk? Because (A), (B), and (D) can be mitigated mid-contract through renegotiation or amendments. But 12-year exclusive deals can't adapt to platform shifts. Strategic lesson: Shorter deals (5-7 years) with opt-outs provide flexibility as media landscape evolves.",
+                    incorrect: "Think about irreversibility. While [selected answer] is a real risk, the BIGGEST risk is (C): Long-term deals that become outdated and CAN'T be fixed. Why? Cord-cutting (A), fragmentation (B), and platform failures (D) can be addressed mid-contract through renegotiation or amendments. But a 12-year exclusive contract can't adapt to platform shifts—you're locked in. Example: Pac-12's conference collapsed partly due to a terrible long-term media deal. Strategic lesson: Shorter contracts with opt-outs > long-term maximization. Answer: C."
+                }
+            }
+        ];
+
+        // State
+        let currentScreen = 1;
+        let currentQuestion = 0;
+        let answers = {};
+        let outcomeScores = {
+            'MLO2.1': { correct: 0, total: 3, maxPoints: 3 },
+            'MLO2.2': { correct: 0, total: 3, maxPoints: 3 },
+            'MLO2.3': { correct: 0, total: 2, maxPoints: 2 },
+            'MLO2.4': { correct: 0, total: 3, maxPoints: 2 }
+        };
+
+        function goToQuiz() {
+            showScreen(2);
+            initializeQuiz();
+        }
+
+        function showScreen(screenNum) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(`screen-${screenNum}`).classList.add('active');
+            currentScreen = screenNum;
+            window.scrollTo(0, 0);
+        }
+
+        function initializeQuiz() {
+            renderProgressDots();
+            renderQuestion(0);
+        }
+
+        function renderProgressDots() {
+            const dotsContainer = document.getElementById('progress-dots');
+            dotsContainer.innerHTML = '';
+            dotsContainer.setAttribute('role', 'status');
+            dotsContainer.setAttribute('aria-label', `Progress: Question 1 of ${quizData.length}`);
+            for (let i = 0; i < quizData.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot' + (i === 0 ? ' active' : '');
+                dot.id = `dot-${i}`;
+                dot.setAttribute('aria-label', `Question ${i + 1}: ${i === 0 ? 'Current' : 'Not started'}`);
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function renderQuestion(index) {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            const q = quizData[index];
+            const qDiv = document.createElement('div');
+            qDiv.className = 'question-container active';
+            qDiv.dataset.question = q.number;
+
+            let optionsHTML = '<div class="options">';
+            q.options.forEach(opt => {
+                optionsHTML += `<label class="option">
+                    <input type="radio" name="q${q.number}" value="${opt.value}">
+                    <span>${opt.text}</span>
+                </label>`;
+            });
+            optionsHTML += '</div>';
+
+            qDiv.innerHTML = `
+                <div class="question-header">
+                    <span class="question-number">Question ${q.number} of 10</span>
+                    <span class="question-type">${q.type}</span>
+                </div>
+                <div class="question-text">${q.question}</div>
+                ${optionsHTML}
+                <div class="submit-btn-container">
+                    <button class="submit-btn" onclick="submitAnswer(${index})">Submit Answer</button>
+                </div>
+                <div class="feedback" role="alert" aria-live="assertive">
+                    <strong></strong>
+                    <p></p>
+                </div>
+            `;
+
+            container.appendChild(qDiv);
+
+            // Add event listeners
+            qDiv.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    this.parentElement.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+
+            currentQuestion = index;
+        }
+
+        function submitAnswer(index) {
+            const q = quizData[index];
+            const container = document.querySelector(`[data-question="${q.number}"]`);
+
+            const selectedInput = container.querySelector('input:checked');
+            if (!selectedInput) {
+                alert('Please select an answer before submitting.');
+                return;
+            }
+
+            const userAnswer = selectedInput.value;
+            const isCorrect = userAnswer === q.correct;
+            const pointsEarned = isCorrect ? q.points : 0;
+
+            container.querySelectorAll('.option').forEach(opt => {
+                const input = opt.querySelector('input');
+                if (input.value === q.correct) {
+                    opt.classList.add('correct');
+                } else if (input.value === userAnswer && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+                opt.style.pointerEvents = 'none';
+            });
+
+            // Store answer
+            answers[q.number] = {
+                correct: isCorrect,
+                outcome: q.outcome,
+                points: pointsEarned
+            };
+
+            // Update outcome scores
+            outcomeScores[q.outcome].correct += pointsEarned;
+
+            // Show feedback
+            const feedbackDiv = container.querySelector('.feedback');
+            const feedbackStrong = feedbackDiv.querySelector('strong');
+            const feedbackP = feedbackDiv.querySelector('p');
+
+            feedbackDiv.classList.remove('correct', 'incorrect');
+            feedbackDiv.classList.add(isCorrect ? 'correct' : 'incorrect', 'show');
+            feedbackStrong.textContent = isCorrect ? '✓ Correct!' : '✗ Not quite.';
+            feedbackP.textContent = isCorrect ? q.feedback.correct : q.feedback.incorrect;
+
+            // Disable submit button
+            container.querySelector('.submit-btn').disabled = true;
+            container.querySelector('.submit-btn').textContent = 'Answer Submitted';
+
+            // Update progress dots
+            const currentDot = document.getElementById(`dot-${index}`);
+            currentDot.classList.remove('active');
+            currentDot.classList.add('completed');
+            currentDot.setAttribute('aria-label', `Question ${index + 1}: ${isCorrect ? 'Correct' : 'Incorrect'}`);
+
+            // Update progress indicator aria-label
+            const dotsContainer = document.getElementById('progress-dots');
+            dotsContainer.setAttribute('aria-label', `Progress: Completed ${index + 1} of ${quizData.length} questions`);
+
+            // Enable next button
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                const nextDot = document.getElementById(`dot-${currentQuestion + 1}`);
+                nextDot.classList.add('active');
+                nextDot.setAttribute('aria-label', `Question ${currentQuestion + 2}: Current`);
+                renderQuestion(currentQuestion + 1);
+                document.getElementById('next-btn').disabled = true;
+                window.scrollTo(0, 0);
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            showScreen(3);
+
+            const totalPoints = Object.values(answers).reduce((sum, a) => sum + a.points, 0);
+            document.getElementById('score-number').textContent = totalPoints;
+
+            // Determine level
+            let level, levelClass, levelTitle, pathDescription, recommendations;
+
+            if (totalPoints <= 3) {
+                level = 'Foundation Builder';
+                levelClass = 'foundation';
+                levelTitle = 'You\'re starting fresh with media rights strategy!';
+                pathDescription = "Focus heavily on the Rogers case study and media valuation frameworks. Spend extra time with the Media Rights Calculator and Platform Economics widgets. The fundamentals will build your foundation.";
+                recommendations = [
+                    'Consider a deep dive into the Rogers case study (Module 3) for valuation errors',
+                    'You might find the Media Rights Calculator widget helpful for practicing frameworks',
+                    'Try the Platform Economics Visualizer to understand streaming vs. linear TV',
+                    'Consider taking notes on concepts that feel unfamiliar'
+                ];
+            } else if (totalPoints <= 6) {
+                level = 'Strategic Intuition';
+                levelClass = 'intuition';
+                levelTitle = 'You have good intuition about media strategy!';
+                pathDescription = "Focus on platform trade-offs and strategic decision frameworks. Your challenge: Moving from intuition to rigorous analysis. The Rogers case and decision simulators will sharpen your thinking.";
+                recommendations = [
+                    'You might focus on the Rogers case study (Module 3) to analyze strategic errors',
+                    'Consider the Platform Comparison widget for testing streaming vs. linear trade-offs',
+                    'The 2026 Decision Simulator could help practice strategic decision-making',
+                    'Try the Viewership Trends Analyzer to learn forecasting platform shifts'
+                ];
+            } else if (totalPoints <= 8) {
+                level = 'Advanced Strategist';
+                levelClass = 'advanced';
+                levelTitle = 'Strong baseline knowledge of media economics!';
+                pathDescription = "Challenge yourself with the 2026 NHL Decision Simulator and Exclusivity Bidding Simulator. Your focus: Mastering multi-variable trade-offs and strategic risk assessment.";
+                recommendations = [
+                    'Consider challenging yourself with the 2026 Decision Simulator',
+                    'You might explore the Exclusivity Bidding Simulator for revenue vs. reach trade-offs',
+                    'Try reflecting on the Rogers case: what would you have done differently?',
+                    'Consider journaling your strategic reasoning to reinforce learning'
+                ];
+            } else {
+                level = 'Strategic Master';
+                levelClass = 'master';
+                levelTitle = 'You already understand media rights strategy well!';
+                pathDescription = "Speed through core content, then challenge yourself with the advanced simulators. Consider: How would YOU structure the NHL's 2026 deal? What strategic innovations could reshape media economics?";
+                recommendations = [
+                    'Consider designing your ideal media strategy in the 2026 Decision Simulator',
+                    'You might reflect on Rogers case lessons for 2026 negotiations',
+                    'Try connecting this week\'s concepts to your own professional experience',
+                    'Consider what media rights might look like in 2035'
+                ];
+            }
+
+            // Update results display
+            document.getElementById('level-badge').textContent = level;
+            document.getElementById('level-badge').className = `level-badge ${levelClass}`;
+            document.getElementById('level-title').textContent = levelTitle;
+            document.getElementById('path-description').textContent = pathDescription;
+
+            const recList = document.getElementById('path-recommendations');
+            recList.innerHTML = '';
+            recommendations.forEach(rec => {
+                const li = document.createElement('li');
+                li.textContent = rec;
+                recList.appendChild(li);
+            });
+
+            // Update outcome breakdown
+            updateOutcomeBreakdown();
+        }
+
+        function updateOutcomeBreakdown() {
+            Object.keys(outcomeScores).forEach(outcome => {
+                const score = outcomeScores[outcome].correct;
+                const total = outcomeScores[outcome].maxPoints;
+                const outcomeNum = outcome.replace('MLO', '');
+
+                document.getElementById(`outcome-${outcomeNum}`).textContent = `${score}/${total}`;
+                document.getElementById(`progress-${outcomeNum}`).style.width = `${(score / total) * 100}%`;
+            });
+        }
+
+        function exportResults() {
+            const totalPoints = Object.values(answers).reduce((sum, a) => sum + a.points, 0);
+            const level = document.getElementById('level-badge').textContent;
+            const pathDescription = document.getElementById('path-description').textContent;
+            const recommendations = Array.from(document.getElementById('path-recommendations').querySelectorAll('li')).map(li => li.textContent);
+
+            let content = `MEDIA RIGHTS PRE-ASSESSMENT RESULTS\n`;
+            content += `${'='.repeat(50)}\n\n`;
+            content += `Date: ${new Date().toLocaleString()}\n\n`;
+            content += `OVERALL SCORE: ${totalPoints}/10\n`;
+            content += `LEVEL: ${level}\n\n`;
+
+            content += `OUTCOME BREAKDOWN\n`;
+            content += `${'-'.repeat(30)}\n`;
+            Object.keys(outcomeScores).forEach(outcome => {
+                const score = outcomeScores[outcome].correct;
+                const total = outcomeScores[outcome].maxPoints;
+                const outcomeNames = {
+                    'MLO2.1': 'Media Rights Valuation',
+                    'MLO2.2': 'Platform Economics',
+                    'MLO2.3': 'Content Strategy',
+                    'MLO2.4': 'Strategic Trade-offs'
+                };
+                content += `${outcomeNames[outcome]}: ${score}/${total}\n`;
+            });
+
+            content += `\nQUESTION-BY-QUESTION RESULTS\n`;
+            content += `${'-'.repeat(30)}\n`;
+            Object.keys(answers).forEach(qNum => {
+                const answer = answers[qNum];
+                content += `Q${qNum}: ${answer.correct ? 'Correct' : 'Incorrect'} (${answer.outcome})\n`;
+            });
+
+            content += `\nYOUR PERSONALIZED LEARNING PATH\n`;
+            content += `${'-'.repeat(30)}\n`;
+            content += `${pathDescription}\n\n`;
+            content += `RECOMMENDATIONS:\n`;
+            recommendations.forEach((rec, i) => {
+                content += `${i + 1}. ${rec}\n`;
+            });
+
+            content += `\n${'='.repeat(50)}\n`;
+            content += `Business of Marketing in Sport - Week 2\n`;
+            content += `Media, Content & Fan Engagement\n`;
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `media-rights-preassessment-${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

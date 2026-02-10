@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betting Market Simulator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+        body { font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: white; color: var(--color-neutral-800); padding: 1.5rem; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .widget-box { background: var(--color-neutral-50); border: 2px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.5rem; }
+        .widget-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+        .widget-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--color-neutral-800); color: white; padding: 0.375rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+        .widget-badge::before { content: ''; width: 8px; height: 8px; background: var(--color-accent); border-radius: 50%; }
+        .widget-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.25rem; }
+        .widget-subtitle { font-size: 0.85rem; color: var(--color-neutral-600); margin-bottom: 0.5rem; }
+        .widget-disclaimer { font-size: 0.75rem; color: var(--color-neutral-500); font-style: italic; margin-bottom: 1rem; }
+
+        /* Presets */
+        .presets { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+        .preset-btn { padding: 0.4rem 0.75rem; background: white; color: var(--color-neutral-700); border: 1px solid var(--color-neutral-300); border-radius: var(--border-radius-sm); font-family: inherit; font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .preset-btn:hover { background: var(--color-neutral-100); border-color: var(--color-neutral-400); }
+        .preset-btn.active { background: var(--color-neutral-800); color: white; border-color: var(--color-neutral-800); }
+
+        /* Two column layout */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1rem; }
+
+        /* Input panel */
+        .input-panel { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; }
+        .panel-label { font-size: 0.75rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+
+        /* Input groups */
+        .input-group { margin-bottom: 1rem; }
+        .input-group:last-child { margin-bottom: 0; }
+        .input-label { display: block; font-size: 0.8rem; font-weight: 500; color: var(--color-neutral-700); margin-bottom: 0.375rem; }
+        .input-row { display: flex; align-items: center; gap: 0.75rem; }
+        input[type="range"] { flex: 1; height: 6px; background: var(--color-neutral-200); border-radius: 3px; -webkit-appearance: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; background: var(--color-neutral-700); border-radius: 50%; cursor: pointer; }
+        input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; background: var(--color-neutral-700); border-radius: 50%; cursor: pointer; border: none; }
+        .value-badge { min-width: 60px; padding: 0.25rem 0.5rem; background: var(--color-neutral-100); border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); font-size: 0.8rem; font-weight: 600; color: var(--color-neutral-700); text-align: center; }
+
+        /* Results panel */
+        .results-panel { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); border-radius: var(--border-radius-sm); padding: 1rem; }
+        .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--color-neutral-100); }
+        .metric-row:last-child { border-bottom: none; }
+        .metric-label { font-size: 0.8rem; color: var(--color-neutral-600); }
+        .metric-value { font-size: 0.95rem; font-weight: 700; color: var(--color-neutral-800); }
+        .metric-value.highlight { font-size: 1.1rem; color: var(--color-accent); }
+        .metric-hint { font-size: 0.65rem; color: var(--color-neutral-500); }
+
+        /* Chart section */
+        .chart-section { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; }
+        .chart-container { height: 160px; }
+
+        /* Table section */
+        .table-section { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); border-radius: var(--border-radius-sm); padding: 1rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; font-size: 0.7rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.05em; padding: 0.375rem 0; border-bottom: 1px solid var(--color-neutral-200); }
+        td { padding: 0.5rem 0; font-size: 0.8rem; color: var(--color-neutral-700); border-bottom: 1px solid var(--color-neutral-100); }
+        tr:last-child td { border-bottom: none; }
+
+        /* Insight section */
+        .insight-section { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; margin-bottom: 1rem; }
+        .insight-text { font-size: 0.85rem; color: var(--color-neutral-600); line-height: 1.5; margin-bottom: 0.5rem; }
+        .insight-text:last-child { margin-bottom: 0; }
+
+        /* Action row */
+        .action-row { display: flex; justify-content: flex-end; gap: 0.5rem; }
+        .btn { padding: 0.5rem 1rem; border: none; border-radius: var(--border-radius-sm); font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .btn-secondary { background: var(--color-neutral-200); color: var(--color-neutral-700); }
+        .btn-secondary:hover { background: var(--color-neutral-300); }
+        .btn-primary { background: var(--color-neutral-800); color: white; }
+        .btn-primary:hover { background: var(--color-neutral-700); }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            .widget-box { padding: 1rem; }
+            .two-col { grid-template-columns: 1fr; }
+            .presets { gap: 0.375rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }
+
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+
+        /* Concentration Toggle */
+        .concentration-toggle { display: flex; gap: 0.375rem; margin-top: 0.375rem; }
+        .conc-btn { flex: 1; padding: 0.375rem 0.5rem; background: var(--color-neutral-100); color: var(--color-neutral-600); border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); font-family: inherit; font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .conc-btn:hover { background: var(--color-neutral-200); border-color: var(--color-neutral-300); }
+        .conc-btn.active { background: var(--color-neutral-700); color: white; border-color: var(--color-neutral-700); }
+        .concentration-hint { font-size: 0.7rem; color: var(--color-neutral-500); margin-top: 0.375rem; font-style: italic; }
+
+        /* Splash Screen Styles */
+        .splash-screen { text-align: center; padding: 2rem 1.5rem; }
+        .splash-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.5rem; }
+        .splash-subtitle { font-size: 0.9rem; color: var(--color-neutral-600); margin-bottom: 1.5rem; }
+        .splash-box { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.25rem; margin-bottom: 1.5rem; text-align: left; }
+        .splash-box-title { font-size: 0.8rem; font-weight: 600; color: var(--color-neutral-700); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .splash-box ul { list-style: none; padding: 0; margin: 0; }
+        .splash-box li { font-size: 0.85rem; color: var(--color-neutral-600); padding: 0.4rem 0; padding-left: 1.25rem; position: relative; line-height: 1.5; }
+        .splash-box li::before { content: "•"; position: absolute; left: 0; color: var(--color-neutral-400); }
+        .splash-disclaimer { font-size: 0.75rem; color: var(--color-neutral-500); font-style: italic; margin-bottom: 1.5rem; line-height: 1.5; }
+        .splash-btn { padding: 0.75rem 2rem; background: var(--color-neutral-800); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+        .splash-btn:hover { background: var(--color-neutral-700); }
+        .splash-btn:focus { outline: 3px solid var(--color-neutral-900); outline-offset: 2px; }
+        .simulator-screen { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+            <!-- Splash Screen -->
+            <div class="splash-screen" id="splashScreen">
+                <h1 class="splash-title">Betting Market Simulator</h1>
+                <p class="splash-subtitle">Explore the economics of state sports betting markets</p>
+
+                <div class="splash-box">
+                    <div class="splash-box-title">What This Tool Does</div>
+                    <ul>
+                        <li>Models the revenue funnel: population → bettors → handle → GGR → operator profit → state tax</li>
+                        <li>Shows how parameters like participation rate, wager size, and tax rate affect outcomes</li>
+                        <li>Provides benchmarks against real state markets (illustrative comparisons)</li>
+                    </ul>
+                </div>
+
+                <div class="splash-box">
+                    <div class="splash-box-title">Model Simplifications</div>
+                    <ul>
+                        <li><strong>Steady-state assumption:</strong> Markets are dynamic — new states grow rapidly, mature markets stabilize. This model shows a single snapshot.</li>
+                        <li><strong>Uniform behavior assumed:</strong> In reality, a small % of heavy bettors drive most handle; this model uses averages</li>
+                        <li><strong>Operator costs simplified:</strong> We use 35% of GGR for costs, but actual margins vary by operator and competitive intensity</li>
+                        <li><strong>Early-stage volatility ignored:</strong> New markets often operate at losses due to promotional spending; this model assumes mature-market economics</li>
+                        <li><strong>Social costs excluded:</strong> Problem gambling, regulatory enforcement, and other externalities are not modeled</li>
+                    </ul>
+                </div>
+
+                <p class="splash-disclaimer">
+                    State presets use approximate public data for educational purposes. Actual market performance varies by competitive dynamics, promotion spending, and regulatory changes. Different stakeholders (states, operators, bettors, communities) experience these outcomes very differently.
+                </p>
+
+                <button class="splash-btn" onclick="startSimulator()">I Understand — Explore the Model</button>
+            </div>
+
+            <!-- Main Simulator (hidden until splash acknowledged) -->
+            <div class="simulator-screen" id="simulatorScreen">
+            <div class="widget-header">
+                <span class="widget-badge">Interactive Tool</span>
+            </div>
+            <h1 class="widget-title">Betting Market Simulator</h1>
+            <p class="widget-subtitle">Model state sports betting market size, operator revenue, and tax revenue using real parameters.</p>
+            <p class="widget-disclaimer">This simulator illustrates how assumptions shape outcomes. It doesn't capture volatility, regulatory uncertainty, or social costs.</p>
+
+            <div class="presets" role="group" aria-label="State market presets">
+                <button class="preset-btn" onclick="loadPreset('nj')">New Jersey</button>
+                <button class="preset-btn" onclick="loadPreset('ny')">New York</button>
+                <button class="preset-btn" onclick="loadPreset('pa')">Pennsylvania</button>
+                <button class="preset-btn" onclick="loadPreset('mi')">Michigan</button>
+                <button class="preset-btn" onclick="loadPreset('oh')">Ohio</button>
+            </div>
+
+            <div class="two-col">
+                <div class="input-panel">
+                    <div class="panel-label">Market Parameters</div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="population">State Population (Millions)</label>
+                        <div class="input-row">
+                            <input type="range" id="population" min="1" max="20" value="10" step="0.5" oninput="updateCalculations()">
+                            <span class="value-badge" id="populationValue">10.0M</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="participation">Betting Participation (% of Adults)</label>
+                        <div class="input-row">
+                            <input type="range" id="participation" min="5" max="20" value="10" step="1" oninput="updateCalculations()">
+                            <span class="value-badge" id="participationValue">10%</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="avgWager">Avg Wager per Bettor/Year</label>
+                        <div class="input-row">
+                            <input type="range" id="avgWager" min="500" max="5000" value="2400" step="100" oninput="updateCalculations()">
+                            <span class="value-badge" id="wagerValue">$2,400</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="operatorMargin">Operator Margin (House Edge)</label>
+                        <div class="input-row">
+                            <input type="range" id="operatorMargin" min="5" max="10" value="7" step="0.5" oninput="updateCalculations()">
+                            <span class="value-badge" id="marginValue">7.0%</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="taxRate">State Tax Rate on GGR</label>
+                        <div class="input-row">
+                            <input type="range" id="taxRate" min="10" max="51" value="20" step="1" oninput="updateCalculations()">
+                            <span class="value-badge" id="taxValue">20%</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Heavy Bettor Concentration</label>
+                        <div class="concentration-toggle" role="radiogroup" aria-label="Heavy bettor concentration level">
+                            <button type="button" class="conc-btn active" data-level="low" onclick="setConcentration('low')" aria-pressed="true">Low</button>
+                            <button type="button" class="conc-btn" data-level="medium" onclick="setConcentration('medium')" aria-pressed="false">Medium</button>
+                            <button type="button" class="conc-btn" data-level="high" onclick="setConcentration('high')" aria-pressed="false">High</button>
+                        </div>
+                        <div class="concentration-hint" id="concentrationHint">20% of bettors → 50% of handle</div>
+                    </div>
+                </div>
+
+                <div class="results-panel" role="region" aria-label="Market results" aria-live="polite">
+                    <div class="panel-label">Market Economics</div>
+                    <div class="metric-row">
+                        <span class="metric-label">Total Handle</span>
+                        <span class="metric-value highlight" id="totalHandle">$0B</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Gross Gaming Revenue</span>
+                        <span class="metric-value" id="ggr">$0M</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Operator Net Revenue</span>
+                        <span class="metric-value" id="operatorNet">$0M</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">State Tax Revenue</span>
+                        <span class="metric-value" id="stateTax">$0M</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="two-col">
+                <div class="chart-section">
+                    <div class="panel-label">Revenue Funnel</div>
+                    <div class="chart-container">
+                        <canvas id="funnelChart" role="img" aria-label="Revenue funnel chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="table-section">
+                    <div class="panel-label">Funnel Breakdown</div>
+                    <table role="table">
+                        <thead>
+                            <tr>
+                                <th>Stage</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="funnelTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="insight-section">
+                <p class="insight-text" id="profitabilityText"></p>
+                <p class="insight-text" id="stateBenefitText"></p>
+                <p class="insight-text" id="concentrationText"></p>
+                <p class="insight-text" id="benchmarkText"></p>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" onclick="resetSimulator()">Reset</button>
+                <button class="btn btn-primary" onclick="exportData()">Export CSV</button>
+            </div>
+            </div><!-- End simulator-screen -->
+        </div>
+    </div>
+
+    <script>
+        function startSimulator() {
+            document.getElementById('splashScreen').style.display = 'none';
+            document.getElementById('simulatorScreen').style.display = 'block';
+        }
+
+        let funnelChart = null;
+        let currentConcentration = 'low';
+
+        // Heavy bettor concentration levels
+        // Shows what % of bettors generate what % of handle
+        const concentrationLevels = {
+            low: { bettorPct: 20, handlePct: 50, label: '20% of bettors → 50% of handle' },
+            medium: { bettorPct: 10, handlePct: 65, label: '10% of bettors → 65% of handle' },
+            high: { bettorPct: 5, handlePct: 80, label: '5% of bettors → 80% of handle' }
+        };
+
+        function setConcentration(level) {
+            currentConcentration = level;
+            document.querySelectorAll('.conc-btn').forEach(btn => {
+                const isActive = btn.dataset.level === level;
+                btn.classList.toggle('active', isActive);
+                btn.setAttribute('aria-pressed', isActive);
+            });
+            document.getElementById('concentrationHint').textContent = concentrationLevels[level].label;
+            updateCalculations();
+        }
+
+        const presets = {
+            nj: { population: 9.3, participation: 12, avgWager: 2400, operatorMargin: 7, taxRate: 17.5 },
+            ny: { population: 19.8, participation: 8, avgWager: 2800, operatorMargin: 6.5, taxRate: 51 },
+            pa: { population: 13.0, participation: 10, avgWager: 2300, operatorMargin: 7, taxRate: 36 },
+            mi: { population: 10.0, participation: 11, avgWager: 2500, operatorMargin: 7.5, taxRate: 20 },
+            oh: { population: 11.8, participation: 9, avgWager: 2200, operatorMargin: 7, taxRate: 20 }
+        };
+
+        function loadPreset(state) {
+            const preset = presets[state];
+            document.getElementById('population').value = preset.population;
+            document.getElementById('participation').value = preset.participation;
+            document.getElementById('avgWager').value = preset.avgWager;
+            document.getElementById('operatorMargin').value = preset.operatorMargin;
+            document.getElementById('taxRate').value = preset.taxRate;
+
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            updateCalculations();
+        }
+
+        function updateCalculations() {
+            const population = parseFloat(document.getElementById('population').value) * 1000000;
+            const participation = parseFloat(document.getElementById('participation').value) / 100;
+            const avgWager = parseFloat(document.getElementById('avgWager').value);
+            const operatorMargin = parseFloat(document.getElementById('operatorMargin').value) / 100;
+            const taxRate = parseFloat(document.getElementById('taxRate').value) / 100;
+
+            document.getElementById('populationValue').textContent = `${(population / 1000000).toFixed(1)}M`;
+            document.getElementById('participationValue').textContent = `${(participation * 100).toFixed(0)}%`;
+            document.getElementById('wagerValue').textContent = `$${avgWager.toLocaleString()}`;
+            document.getElementById('marginValue').textContent = `${(operatorMargin * 100).toFixed(1)}%`;
+            document.getElementById('taxValue').textContent = `${(taxRate * 100).toFixed(0)}%`;
+
+            const adults = population * 0.75;
+            const bettors = adults * participation;
+            const totalHandle = bettors * avgWager;
+            const ggr = totalHandle * operatorMargin;
+            const operatorNet = ggr * 0.65;
+            const stateTaxRevenue = ggr * taxRate;
+
+            document.getElementById('totalHandle').textContent = `$${(totalHandle / 1000000000).toFixed(2)}B`;
+            document.getElementById('ggr').textContent = `$${(ggr / 1000000).toFixed(1)}M`;
+            document.getElementById('operatorNet').textContent = `$${(operatorNet / 1000000).toFixed(1)}M`;
+            document.getElementById('stateTax').textContent = `$${(stateTaxRevenue / 1000000).toFixed(1)}M`;
+
+            updateInsights(operatorNet, totalHandle, stateTaxRevenue, ggr, bettors);
+            updateFunnelChart(totalHandle, ggr, operatorNet, stateTaxRevenue);
+            updateFunnelTable(totalHandle, ggr, operatorNet, stateTaxRevenue);
+        }
+
+        function updateInsights(operatorNet, totalHandle, stateTax, ggr, bettors) {
+            const profitMargin = ((operatorNet / totalHandle) * 100).toFixed(1);
+            document.getElementById('profitabilityText').textContent =
+                `Under these assumptions, operators earn $${(operatorNet / 1000000).toFixed(1)}M net profit (${profitMargin}% margin on handle after estimated marketing costs).`;
+
+            const publicSalaries = Math.floor(stateTax / 65000);
+            document.getElementById('stateBenefitText').textContent =
+                `State collects $${(stateTax / 1000000).toFixed(1)}M in annual tax revenue—comparable to funding ~${publicSalaries.toLocaleString()} public-sector salaries (illustrative).`;
+
+            // Heavy bettor concentration insight
+            const conc = concentrationLevels[currentConcentration];
+            const heavyBettors = Math.round(bettors * (conc.bettorPct / 100));
+            const heavyHandle = totalHandle * (conc.handlePct / 100);
+            const avgHeavyWager = heavyHandle / heavyBettors;
+            document.getElementById('concentrationText').textContent =
+                `Bettor concentration (${currentConcentration}): ~${heavyBettors.toLocaleString()} heavy bettors (${conc.bettorPct}%) generate $${(heavyHandle / 1000000000).toFixed(2)}B (${conc.handlePct}%) of handle—averaging $${Math.round(avgHeavyWager).toLocaleString()}/year each.`;
+
+            let benchmark = '';
+            if (ggr / 1000000 > 200) benchmark = 'Market scale similar to large U.S. states (illustrative).';
+            else if (ggr / 1000000 > 100) benchmark = 'Market scale similar to mid-sized U.S. states (illustrative).';
+            else if (ggr / 1000000 > 50) benchmark = 'Developing market scale with growth potential.';
+            else benchmark = 'Small or emerging market scale.';
+            document.getElementById('benchmarkText').textContent = benchmark;
+        }
+
+        function updateFunnelChart(handle, ggr, operatorNet, stateTax) {
+            const ctx = document.getElementById('funnelChart').getContext('2d');
+            if (funnelChart) funnelChart.destroy();
+
+            funnelChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Handle', 'GGR', 'Operator Net', 'State Tax'],
+                    datasets: [{
+                        data: [handle, ggr, operatorNet, stateTax],
+                        backgroundColor: ['rgba(64,64,64,0.8)', 'rgba(115,115,115,0.8)', 'rgba(163,163,163,0.8)', 'rgba(212,212,212,0.8)'],
+                        borderColor: ['#404040', '#737373', '#a3a3a3', '#d4d4d4'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: { callback: v => v >= 1000000000 ? '$'+(v/1000000000).toFixed(1)+'B' : v >= 1000000 ? '$'+(v/1000000).toFixed(0)+'M' : '$'+v },
+                            grid: { color: '#e5e5e5' }
+                        },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function updateFunnelTable(handle, ggr, operatorNet, stateTax) {
+            const tbody = document.getElementById('funnelTableBody');
+            const formatNum = n => n >= 1000000000 ? '$'+(n/1000000000).toFixed(2)+'B' : '$'+(n/1000000).toFixed(1)+'M';
+
+            tbody.innerHTML = [
+                { name: 'Total Handle', amount: formatNum(handle) },
+                { name: 'Gross Gaming Revenue', amount: formatNum(ggr) },
+                { name: 'Operator Net Revenue', amount: formatNum(operatorNet) },
+                { name: 'State Tax Revenue', amount: formatNum(stateTax) }
+            ].map(s => `<tr><td>${s.name}</td><td>${s.amount}</td></tr>`).join('');
+        }
+
+        function exportData() {
+            const rows = [
+                'Betting Market Simulator - Export',
+                `Timestamp,${new Date().toISOString()}`,
+                '',
+                'PARAMETERS',
+                `Population,${document.getElementById('populationValue').textContent}`,
+                `Participation Rate,${document.getElementById('participationValue').textContent}`,
+                `Avg Wager/Bettor,${document.getElementById('wagerValue').textContent}`,
+                `Operator Margin,${document.getElementById('marginValue').textContent}`,
+                `State Tax Rate,${document.getElementById('taxValue').textContent}`,
+                '',
+                'RESULTS',
+                `Total Handle,${document.getElementById('totalHandle').textContent}`,
+                `Gross Gaming Revenue,${document.getElementById('ggr').textContent}`,
+                `Operator Net Revenue,${document.getElementById('operatorNet').textContent}`,
+                `State Tax Revenue,${document.getElementById('stateTax').textContent}`,
+                '',
+                'ANALYSIS',
+                document.getElementById('profitabilityText').textContent,
+                document.getElementById('benchmarkText').textContent
+            ];
+
+            const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `betting-market-${Date.now()}.csv`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        function resetSimulator() {
+            document.getElementById('population').value = 10;
+            document.getElementById('participation').value = 10;
+            document.getElementById('avgWager').value = 2400;
+            document.getElementById('operatorMargin').value = 7;
+            document.getElementById('taxRate').value = 20;
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            updateCalculations();
+        }
+
+        window.addEventListener('DOMContentLoaded', updateCalculations);
+    </script>
+</body>
+</html>

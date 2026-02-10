@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engagement Strategy Comparison</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: white; color: var(--color-neutral-800); padding: 1.5rem; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .widget-box { background: var(--color-neutral-50); border: 2px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.5rem; }
+        .widget-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--color-neutral-600); color: white; padding: 0.25rem 0.75rem; border-radius: var(--border-radius-sm); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+        .widget-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.5rem; }
+        .widget-subtitle { font-size: 0.85rem; color: var(--color-neutral-600); margin-bottom: 1.25rem; }
+
+        .context-box { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-neutral-800); padding: 1rem; border-radius: var(--border-radius-sm); margin-bottom: 1.5rem; }
+        .context-box p { font-size: 0.875rem; color: var(--color-neutral-700); }
+        .context-box strong { color: var(--color-neutral-900); }
+
+        .comparison-table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; background: white; border-radius: var(--border-radius-sm); overflow: hidden; border: 1px solid var(--color-neutral-200); }
+        .comparison-table th { text-align: left; padding: 0.75rem 1rem; background: var(--color-neutral-800); color: white; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .comparison-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--color-neutral-200); font-size: 0.85rem; color: var(--color-neutral-700); }
+        .comparison-table tr:last-child td { border-bottom: none; }
+        .comparison-table .strategy-name { font-weight: 600; color: var(--color-neutral-800); }
+        .comparison-table .highlight-row { background: var(--color-accent-light); }
+        .comparison-table .highlight-row td { color: var(--color-neutral-800); }
+        .comparison-table .value-positive { color: var(--color-accent); font-weight: 600; }
+
+        .strategies-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+        .strategy-card { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1rem; }
+        .strategy-card.featured { border-left: 3px solid var(--color-accent); }
+        .strategy-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .strategy-name { font-size: 0.9rem; font-weight: 600; color: var(--color-neutral-800); }
+        .strategy-badge { font-size: 0.65rem; font-weight: 600; padding: 0.2rem 0.5rem; border-radius: 4px; text-transform: uppercase; }
+        .badge-baseline { background: var(--color-neutral-200); color: var(--color-neutral-700); }
+        .badge-high-roi { background: var(--color-accent-light); color: var(--color-neutral-800); }
+        .strategy-desc { font-size: 0.8rem; color: var(--color-neutral-600); margin-bottom: 0.75rem; }
+        .strategy-tactics { font-size: 0.75rem; color: var(--color-neutral-500); padding-top: 0.75rem; border-top: 1px solid var(--color-neutral-100); }
+
+        .insight-box { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); padding: 1rem; border-radius: var(--border-radius-sm); }
+        .insight-label { font-size: 0.7rem; font-weight: 600; color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .insight-text { font-size: 0.875rem; color: var(--color-neutral-700); }
+        .insight-text strong { color: var(--color-neutral-800); }
+
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            .widget-box { padding: 1rem; }
+            .strategies-grid { grid-template-columns: 1fr; }
+            .comparison-table { font-size: 0.8rem; }
+            .comparison-table th, .comparison-table td { padding: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+            <div class="widget-badge">Reference Infographic</div>
+            <h1 class="widget-title">Engagement Strategy Comparison</h1>
+            <p class="widget-subtitle">How different fan engagement approaches affect total value for a league with 1M fans</p>
+
+            <div class="context-box">
+                <p><strong>Baseline:</strong> Passive viewers generate <strong>$10/fan/year</strong> through advertising ($10M total). Each engagement strategy builds on this foundation with different cost-to-value tradeoffs.</p>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Strategy</th>
+                        <th>Total Value</th>
+                        <th>Cost</th>
+                        <th>Net Gain</th>
+                        <th>ROI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="strategy-name">Broadcast-Only</td>
+                        <td>$10.0M</td>
+                        <td>$0</td>
+                        <td>$0</td>
+                        <td>N/A</td>
+                    </tr>
+                    <tr>
+                        <td class="strategy-name">Digital Engagement</td>
+                        <td>$15.6M</td>
+                        <td>$4.5M</td>
+                        <td>$1.1M</td>
+                        <td>24%</td>
+                    </tr>
+                    <tr class="highlight-row">
+                        <td class="strategy-name">Betting-Integrated</td>
+                        <td>$14.5M</td>
+                        <td class="value-positive">$1.5M</td>
+                        <td class="value-positive">$3.0M</td>
+                        <td class="value-positive">200%</td>
+                    </tr>
+                    <tr>
+                        <td class="strategy-name">Premium Content</td>
+                        <td>$16.5M</td>
+                        <td>$5.0M</td>
+                        <td>$1.5M</td>
+                        <td>30%</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="strategies-grid">
+                <div class="strategy-card">
+                    <div class="strategy-header">
+                        <span class="strategy-name">Broadcast-Only</span>
+                        <span class="strategy-badge badge-baseline">Baseline</span>
+                    </div>
+                    <p class="strategy-desc">Traditional model: show games, collect ad revenue. No engagement investment.</p>
+                    <p class="strategy-tactics"><strong>Tactics:</strong> None (passive viewing only)</p>
+                </div>
+
+                <div class="strategy-card">
+                    <div class="strategy-header">
+                        <span class="strategy-name">Digital Engagement</span>
+                        <span class="strategy-badge badge-baseline">Popular</span>
+                    </div>
+                    <p class="strategy-desc">Build app, social presence, and gamification to engage fans across platforms.</p>
+                    <p class="strategy-tactics"><strong>Tactics:</strong> Mobile App (30% adopt, +$5/fan) + Social Media (50%, +$8/fan) + Gamification (25%, +$12/fan)</p>
+                </div>
+
+                <div class="strategy-card featured">
+                    <div class="strategy-header">
+                        <span class="strategy-name">Betting-Integrated</span>
+                        <span class="strategy-badge badge-high-roi">High Upside</span>
+                    </div>
+                    <p class="strategy-desc">Partner with sportsbooks for betting + fantasy integration. Revenue share model means minimal cost.</p>
+                    <p class="strategy-tactics"><strong>Tactics:</strong> Betting Partnerships (10% bet, +$30/fan, illustrative) + Fantasy Integration (15%, +$15/fan, illustrative)</p>
+                </div>
+
+                <div class="strategy-card">
+                    <div class="strategy-header">
+                        <span class="strategy-name">Premium Content</span>
+                        <span class="strategy-badge badge-baseline">High Value</span>
+                    </div>
+                    <p class="strategy-desc">Create exclusive behind-the-scenes content and premium app experiences.</p>
+                    <p class="strategy-tactics"><strong>Tactics:</strong> Exclusive Content (20% subscribe, +$25/fan) + Mobile App (30%, +$5/fan)</p>
+                </div>
+            </div>
+
+            <div class="insight-box">
+                <div class="insight-label">Key Takeaway</div>
+                <p class="insight-text"><strong>Betting partnerships have low upfront costs</strong> (revenue share model) and can generate strong ROI. This helps explain why platforms with betting capabilities may be willing to pay more for media rights — they can potentially extract more value per fan. However, betting-driven value is highly variable and depends on regulation, adoption rates, and revenue-sharing terms.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethical Sponsorship Decision Tool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            /* Neutral Palette */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Accent Colors */
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+
+            /* Course Color Palette */
+            --color-purple: #d5cae0;
+            --color-sand: #f0ede0;
+            --color-turquoise: #bfe5e7;
+            --color-green: #c0d1cd;
+
+            /* Layout */
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .preset-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-neutral-600);
+            margin-right: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .preset-btn {
+            padding: 0.5rem 1rem;
+            background: var(--color-purple);
+            color: var(--color-neutral-700);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: var(--color-neutral-200);
+            border-color: var(--color-neutral-400);
+        }
+
+        .preset-btn:focus {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .preset-btn.active {
+            background: var(--color-neutral-700);
+            color: white;
+            border-color: var(--color-neutral-700);
+        }
+
+        .section {
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            background: var(--color-neutral-100);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            user-select: none;
+            background: var(--color-neutral-50);
+            border-radius: 8px 8px 0 0;
+            transition: background 0.2s;
+        }
+
+        .section-header:hover {
+            background: var(--color-neutral-100);
+        }
+
+        .section-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin: 0;
+        }
+
+        .toggle-icon {
+            font-size: 1.2rem;
+            color: var(--color-neutral-600);
+            transition: transform 0.2s ease;
+        }
+
+        .toggle-icon.expanded {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .section-content.expanded {
+            max-height: 2000px;
+        }
+
+        .section-inner {
+            padding: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .label-description {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+            font-weight: 400;
+            display: block;
+            margin-top: 0.25rem;
+        }
+
+        .input-with-value {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 6px;
+            background: var(--color-neutral-200);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--color-neutral-700);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--color-neutral-700);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.625rem;
+            font-family: 'Geist', sans-serif;
+            font-size: 0.875rem;
+            color: var(--color-neutral-900);
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+        }
+
+        select:focus {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+            border-color: var(--color-neutral-400);
+        }
+
+        .value-display {
+            min-width: 100px;
+            padding: 0.5rem 0.75rem;
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            text-align: center;
+        }
+
+        .value-display.negative {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .value-display.positive {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .value-display.neutral {
+            background: var(--color-sand);
+            color: var(--color-neutral-700);
+        }
+
+        .results {
+            background: var(--color-green);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .results h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 1.5rem;
+        }
+
+        .score-display {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .score-value {
+            font-size: 3rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .score-label {
+            font-size: 0.875rem;
+            color: var(--color-neutral-600);
+            margin-top: 0.5rem;
+        }
+
+        .recommendation-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .recommendation-strongly-favor {
+            background: var(--color-neutral-200);
+            color: var(--color-neutral-800);
+        }
+
+        .recommendation-lean-favor {
+            background: var(--color-neutral-300);
+            color: var(--color-neutral-800);
+        }
+
+        .recommendation-mixed-signals {
+            background: var(--color-neutral-100);
+            color: var(--color-neutral-800);
+        }
+
+        .recommendation-lean-against {
+            background: var(--color-neutral-500);
+            color: white;
+        }
+
+        .recommendation-strongly-against {
+            background: var(--color-neutral-700);
+            color: white;
+        }
+
+        .chart-container {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: var(--color-turquoise);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .insight-box {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .insight-box h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-box p {
+            font-size: 0.875rem;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+        }
+
+        .stakeholder-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stakeholder-card {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stakeholder-name {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .stakeholder-impact {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .stakeholder-weight {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+            margin-top: 0.25rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--color-neutral-800);
+            color: white;
+            border: 1px solid var(--color-neutral-800);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-700);
+            border: 1px solid var(--color-neutral-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-100);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Splash Screen Styles */
+        .splash-screen {
+            text-align: center;
+            padding: 2rem 1.5rem;
+        }
+
+        .splash-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .splash-subtitle {
+            font-size: 0.9rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .splash-box {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .splash-box-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-neutral-700);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .splash-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .splash-box li {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            padding: 0.4rem 0;
+            padding-left: 1.25rem;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .splash-box li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--color-neutral-400);
+        }
+
+        .splash-disclaimer {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .splash-btn {
+            padding: 0.75rem 2rem;
+            background: var(--color-neutral-800);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .splash-btn:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .splash-btn:focus {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .simulator-screen {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .presets {
+                flex-direction: column;
+            }
+
+            .preset-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Splash Screen -->
+        <div class="splash-screen" id="splashScreen">
+            <h1 class="splash-title">Ethical Sponsorship Decision Tool</h1>
+            <p class="splash-subtitle">A framework for systematic stakeholder impact analysis</p>
+
+            <div class="splash-box">
+                <div class="splash-box-title">What This Tool Does</div>
+                <ul>
+                    <li>Helps you systematically evaluate controversial sponsorship opportunities by assessing stakeholder impacts</li>
+                    <li>Shows how brand positioning (mass market vs. niche) affects which stakeholders matter most</li>
+                    <li>Generates a weighted decision score that highlights ethical tensions</li>
+                </ul>
+            </div>
+
+            <div class="splash-box">
+                <div class="splash-box-title">Important: This is a Decision Framework, Not a Prediction</div>
+                <ul>
+                    <li><strong>Brand type determines weights:</strong> Mass market brands weight customers/employees heavily; niche brands weight shareholders more</li>
+                    <li><strong>Real impacts are uncertain:</strong> Your impact estimates involve judgment — the tool helps structure thinking, not eliminate uncertainty</li>
+                    <li><strong>Context matters:</strong> A +30 score for one brand may be a -30 for another based on their positioning</li>
+                    <li><strong>No "correct" answer:</strong> The tool surfaces trade-offs, but ethical decisions involve values that can't be mathematically optimized</li>
+                </ul>
+            </div>
+
+            <p class="splash-disclaimer">
+                This tool is designed for learning stakeholder analysis methodology. Real sponsorship decisions involve legal, regulatory, and reputational factors beyond this framework's scope.
+            </p>
+
+            <button class="splash-btn" onclick="startSimulator()">I Understand — Begin Analysis</button>
+        </div>
+
+        <!-- Main Simulator (hidden until splash acknowledged) -->
+        <div class="simulator-screen" id="simulatorScreen">
+        <h1>Ethical Sponsorship Decision Tool</h1>
+        <p class="subtitle">Evaluate controversial sponsorship opportunities using stakeholder impact analysis. Practice systematic decision-making for properties like LIV Golf.</p>
+
+        <div class="presets" role="group" aria-label="Preset scenarios">
+            <span class="preset-label">Load scenario:</span>
+            <button class="preset-btn" onclick="loadPreset('liv-conservative')" aria-label="Load LIV Golf conservative brand scenario">LIV Golf (Conservative Brand)</button>
+            <button class="preset-btn" onclick="loadPreset('liv-niche')" aria-label="Load LIV Golf niche brand scenario">LIV Golf (Niche Brand)</button>
+            <button class="preset-btn" onclick="loadPreset('fanduel')" aria-label="Load FanDuel baseline scenario">FanDuel (Baseline)</button>
+            <button class="preset-btn" onclick="loadPreset('custom')" aria-label="Start custom analysis">Custom Analysis</button>
+        </div>
+
+        <!-- Brand Type Selection -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)" role="button" aria-expanded="true" tabindex="0" onkeydown="handleKeydown(event, this)">
+                <h2>Brand Profile</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded">
+                <div class="section-inner">
+                    <div class="input-group">
+                        <label for="brandType">Brand Type
+                            <span class="label-description">Your brand positioning affects stakeholder sensitivity</span>
+                        </label>
+                        <select id="brandType" onchange="updateBrandSuggestions()">
+                            <option value="mass-market">Mass Market (e.g., Nike, Coca-Cola)</option>
+                            <option value="premium">Premium (e.g., Rolex, BMW)</option>
+                            <option value="niche">Niche/Challenger (e.g., regional brands)</option>
+                            <option value="b2b">B2B (e.g., enterprise software)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stakeholder Impact Section -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)" role="button" aria-expanded="true" tabindex="0" onkeydown="handleKeydown(event, this)">
+                <h2>Stakeholder Impact Assessment</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded">
+                <div class="section-inner">
+                    <p style="font-size: 0.875rem; color: var(--color-neutral-600); margin-bottom: 0.5rem;">Rate the expected impact on each stakeholder group from -2 (very negative) to +2 (very positive).</p>
+                    <p style="font-size: 0.75rem; color: var(--color-neutral-500); font-style: italic; margin-bottom: 1.5rem;">Stakeholder groups shown are illustrative, not exhaustive.</p>
+
+                    <div class="input-group">
+                        <label for="impactCustomers">Customers
+                            <span class="label-description">Will customers support or boycott your brand?</span>
+                        </label>
+                        <div class="input-with-value">
+                            <input type="range" id="impactCustomers" min="-2" max="2" step="1" value="0" oninput="calculate()">
+                            <span class="value-display neutral" id="impactCustomersDisplay">Neutral (0)</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="impactEmployees">Employees
+                            <span class="label-description">Will employees be proud or embarrassed?</span>
+                        </label>
+                        <div class="input-with-value">
+                            <input type="range" id="impactEmployees" min="-2" max="2" step="1" value="0" oninput="calculate()">
+                            <span class="value-display neutral" id="impactEmployeesDisplay">Neutral (0)</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="impactShareholders">Shareholders
+                            <span class="label-description">Financial impact positive or negative?</span>
+                        </label>
+                        <div class="input-with-value">
+                            <input type="range" id="impactShareholders" min="-2" max="2" step="1" value="0" oninput="calculate()">
+                            <span class="value-display neutral" id="impactShareholdersDisplay">Neutral (0)</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="impactMedia">Media
+                            <span class="label-description">Will coverage be favorable or critical?</span>
+                        </label>
+                        <div class="input-with-value">
+                            <input type="range" id="impactMedia" min="-2" max="2" step="1" value="0" oninput="calculate()">
+                            <span class="value-display neutral" id="impactMediaDisplay">Neutral (0)</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="impactAdvocacy">Advocacy Groups
+                            <span class="label-description">Will advocacy groups campaign against you?</span>
+                        </label>
+                        <div class="input-with-value">
+                            <input type="range" id="impactAdvocacy" min="-2" max="2" step="1" value="0" oninput="calculate()">
+                            <span class="value-display neutral" id="impactAdvocacyDisplay">Neutral (0)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auto-Weights Display -->
+        <div style="background: var(--color-neutral-100); border: 1px solid var(--color-neutral-200); border-radius: 8px; padding: 1rem 1.5rem; margin-bottom: 1.5rem;">
+            <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-neutral-600); margin-bottom: 0.5rem;">Stakeholder Weights (auto-assigned by brand type)</div>
+            <div id="weightsDisplay" style="font-size: 0.85rem; color: var(--color-neutral-700);"></div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results" role="region" aria-label="Decision analysis results">
+            <h2>Decision Analysis</h2>
+
+            <div class="score-display">
+                <div class="score-value" id="decisionScore">0</div>
+                <div class="score-label">Weighted Decision Score (-100 to +100)</div>
+                <div class="recommendation-badge recommendation-mixed-signals" id="recommendation">Mixed Signals</div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="radarChart" aria-label="Stakeholder impact radar chart"></canvas>
+            </div>
+
+            <div class="stakeholder-breakdown" id="stakeholderBreakdown">
+                <!-- Populated by JavaScript -->
+            </div>
+
+            <div class="tension-display" id="tensionDisplay" style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <div style="flex: 1; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 1rem; text-align: center;">
+                    <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: #166534; margin-bottom: 0.25rem;">Strongest Positive</div>
+                    <div id="strongestPositive" style="font-size: 0.9rem; font-weight: 600; color: #15803d;">—</div>
+                </div>
+                <div style="flex: 1; background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 1rem; text-align: center;">
+                    <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: #991b1b; margin-bottom: 0.25rem;">Strongest Negative</div>
+                    <div id="strongestNegative" style="font-size: 0.9rem; font-weight: 600; color: #dc2626;">—</div>
+                </div>
+            </div>
+
+            <div class="insight-box" id="insightBox">
+                <h3>Strategic Insight</h3>
+                <p id="insightText">Adjust the stakeholder impacts and weights to see how they affect your sponsorship decision.</p>
+                <p style="font-size: 0.75rem; color: var(--color-neutral-500); font-style: italic; margin-top: 0.75rem;">Impact estimates remain uncertain; revisit assumptions as conditions change.</p>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-primary" onclick="exportAnalysis()">Export Analysis</button>
+                <button class="btn btn-secondary" onclick="resetTool()">Reset</button>
+            </div>
+        </div>
+        </div><!-- End simulator-screen -->
+    </div>
+
+    <script>
+        function startSimulator() {
+            document.getElementById('splashScreen').style.display = 'none';
+            document.getElementById('simulatorScreen').style.display = 'block';
+        }
+        let radarChart = null;
+
+        const impactLabels = {
+            '-2': 'Very Negative (-2)',
+            '-1': 'Negative (-1)',
+            '0': 'Neutral (0)',
+            '1': 'Positive (+1)',
+            '2': 'Very Positive (+2)'
+        };
+
+        // Auto-weights based on brand type
+        const brandWeights = {
+            'mass-market': { customers: 35, employees: 25, shareholders: 15, media: 15, advocacy: 10 },
+            'premium': { customers: 30, employees: 20, shareholders: 25, media: 15, advocacy: 10 },
+            'niche': { customers: 20, employees: 10, shareholders: 45, media: 15, advocacy: 10 },
+            'b2b': { customers: 25, employees: 15, shareholders: 35, media: 15, advocacy: 10 }
+        };
+
+        const presets = {
+            'liv-conservative': {
+                brandType: 'mass-market',
+                impacts: { customers: -1, employees: -2, shareholders: 1, media: -2, advocacy: -2 }
+            },
+            'liv-niche': {
+                brandType: 'niche',
+                impacts: { customers: 0, employees: 0, shareholders: 2, media: -1, advocacy: -1 }
+            },
+            'fanduel': {
+                brandType: 'mass-market',
+                impacts: { customers: 1, employees: 1, shareholders: 2, media: 1, advocacy: 0 }
+            },
+            'custom': {
+                brandType: 'mass-market',
+                impacts: { customers: 0, employees: 0, shareholders: 0, media: 0, advocacy: 0 }
+            }
+        };
+
+        function toggleSection(header) {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            const isExpanded = content.classList.contains('expanded');
+
+            content.classList.toggle('expanded');
+            icon.classList.toggle('expanded');
+            header.setAttribute('aria-expanded', !isExpanded);
+        }
+
+        function handleKeydown(event, element) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                toggleSection(element);
+            }
+        }
+
+        function loadPreset(presetName) {
+            const preset = presets[presetName];
+
+            // Update button states
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Set brand type
+            document.getElementById('brandType').value = preset.brandType;
+
+            // Set impacts
+            document.getElementById('impactCustomers').value = preset.impacts.customers;
+            document.getElementById('impactEmployees').value = preset.impacts.employees;
+            document.getElementById('impactShareholders').value = preset.impacts.shareholders;
+            document.getElementById('impactMedia').value = preset.impacts.media;
+            document.getElementById('impactAdvocacy').value = preset.impacts.advocacy;
+
+            calculate();
+        }
+
+        function updateBrandSuggestions() {
+            // Could add suggested weights based on brand type
+            calculate();
+        }
+
+        function getImpactClass(value) {
+            if (value < 0) return 'negative';
+            if (value > 0) return 'positive';
+            return 'neutral';
+        }
+
+        function calculate() {
+            // Get impacts
+            const impacts = {
+                customers: parseInt(document.getElementById('impactCustomers').value),
+                employees: parseInt(document.getElementById('impactEmployees').value),
+                shareholders: parseInt(document.getElementById('impactShareholders').value),
+                media: parseInt(document.getElementById('impactMedia').value),
+                advocacy: parseInt(document.getElementById('impactAdvocacy').value)
+            };
+
+            // Get weights based on brand type (auto-assigned)
+            const brandType = document.getElementById('brandType').value;
+            const weights = brandWeights[brandType];
+
+            // Update impact displays
+            for (const [key, value] of Object.entries(impacts)) {
+                const display = document.getElementById(`impact${key.charAt(0).toUpperCase() + key.slice(1)}Display`);
+                display.textContent = impactLabels[value.toString()];
+                display.className = `value-display ${getImpactClass(value)}`;
+            }
+
+            // Update weights display
+            document.getElementById('weightsDisplay').innerHTML =
+                `Customers ${weights.customers}% · Employees ${weights.employees}% · Shareholders ${weights.shareholders}% · Media ${weights.media}% · Advocacy ${weights.advocacy}%`;
+
+            // Calculate weighted score (normalize to -100 to +100)
+            let weightedSum = 0;
+            for (const key of Object.keys(impacts)) {
+                weightedSum += impacts[key] * weights[key];
+            }
+            const score = Math.round(weightedSum / 2); // Normalize from -200/+200 to -100/+100
+
+            // Update score display
+            document.getElementById('decisionScore').textContent = score > 0 ? `+${score}` : score;
+
+            // Update recommendation
+            const recEl = document.getElementById('recommendation');
+            let recommendation, recClass;
+            if (score > 50) {
+                recommendation = 'Strongly Favor';
+                recClass = 'recommendation-strongly-favor';
+            } else if (score > 20) {
+                recommendation = 'Lean Favor';
+                recClass = 'recommendation-lean-favor';
+            } else if (score > -20) {
+                recommendation = 'Mixed Signals';
+                recClass = 'recommendation-mixed-signals';
+            } else if (score > -50) {
+                recommendation = 'Lean Against';
+                recClass = 'recommendation-lean-against';
+            } else {
+                recommendation = 'Strongly Against';
+                recClass = 'recommendation-strongly-against';
+            }
+            recEl.textContent = recommendation;
+            recEl.className = `recommendation-badge ${recClass}`;
+
+            // Update stakeholder breakdown
+            updateStakeholderBreakdown(impacts, weights);
+
+            // Update radar chart
+            updateRadarChart(impacts);
+
+            // Update insight
+            updateInsight(impacts, weights, score, recommendation);
+        }
+
+        function updateStakeholderBreakdown(impacts, weights) {
+            const container = document.getElementById('stakeholderBreakdown');
+            const stakeholders = ['customers', 'employees', 'shareholders', 'media', 'advocacy'];
+            const labels = ['Customers', 'Employees', 'Shareholders', 'Media', 'Advocacy'];
+
+            container.innerHTML = stakeholders.map((s, i) => {
+                const impact = impacts[s];
+                const weight = weights[s];
+                const contribution = Math.round((impact * weight) / 2);
+                return `
+                    <div class="stakeholder-card">
+                        <div class="stakeholder-name">${labels[i]}</div>
+                        <div class="stakeholder-impact ${getImpactClass(impact)}" style="color: ${impact < 0 ? '#dc2626' : impact > 0 ? '#16a34a' : 'var(--color-neutral-600)'}">
+                            ${impact > 0 ? '+' : ''}${impact}
+                        </div>
+                        <div class="stakeholder-weight">${weight}% weight → ${contribution > 0 ? '+' : ''}${contribution} pts</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateRadarChart(impacts) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+
+            // Normalize impacts to 0-4 scale for radar (adding 2 to shift from -2/+2 to 0/4)
+            const normalizedData = [
+                impacts.customers + 2,
+                impacts.employees + 2,
+                impacts.shareholders + 2,
+                impacts.media + 2,
+                impacts.advocacy + 2
+            ];
+
+            if (radarChart) {
+                radarChart.data.datasets[0].data = normalizedData;
+                radarChart.update();
+            } else {
+                radarChart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Customers', 'Employees', 'Shareholders', 'Media', 'Advocacy'],
+                        datasets: [{
+                            label: 'Stakeholder Impact',
+                            data: normalizedData,
+                            backgroundColor: 'rgba(64, 64, 64, 0.2)',
+                            borderColor: 'rgba(64, 64, 64, 0.8)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(64, 64, 64, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(64, 64, 64, 1)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            r: {
+                                min: 0,
+                                max: 4,
+                                ticks: {
+                                    stepSize: 1,
+                                    callback: function(value) {
+                                        const labels = ['Very Neg', 'Negative', 'Neutral', 'Positive', 'Very Pos'];
+                                        return labels[value] || '';
+                                    },
+                                    font: { size: 10 }
+                                },
+                                pointLabels: {
+                                    font: { size: 11, weight: '500' }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+        }
+
+        function updateInsight(impacts, weights, score, recommendation) {
+            const brandType = document.getElementById('brandType').value;
+            const brandLabels = {
+                'mass-market': 'Mass market brands',
+                'premium': 'Premium brands',
+                'niche': 'Niche/challenger brands',
+                'b2b': 'B2B brands'
+            };
+
+            const stakeholderLabels = {
+                'customers': 'Customers',
+                'employees': 'Employees',
+                'shareholders': 'Shareholders',
+                'media': 'Media',
+                'advocacy': 'Advocacy Groups'
+            };
+
+            // Find most negative stakeholder
+            let worstStakeholder = '';
+            let worstImpact = 0;
+            for (const [key, value] of Object.entries(impacts)) {
+                if (value < worstImpact) {
+                    worstImpact = value;
+                    worstStakeholder = key;
+                }
+            }
+
+            // Find most positive stakeholder
+            let bestStakeholder = '';
+            let bestImpact = 0;
+            for (const [key, value] of Object.entries(impacts)) {
+                if (value > bestImpact) {
+                    bestImpact = value;
+                    bestStakeholder = key;
+                }
+            }
+
+            // Update tension display
+            const posEl = document.getElementById('strongestPositive');
+            const negEl = document.getElementById('strongestNegative');
+
+            if (bestStakeholder && bestImpact > 0) {
+                posEl.textContent = `${stakeholderLabels[bestStakeholder]} (+${bestImpact})`;
+            } else {
+                posEl.textContent = 'None positive';
+            }
+
+            if (worstStakeholder && worstImpact < 0) {
+                negEl.textContent = `${stakeholderLabels[worstStakeholder]} (${worstImpact})`;
+            } else {
+                negEl.textContent = 'None negative';
+            }
+
+            // Find highest weighted stakeholder
+            let highestWeightStakeholder = '';
+            let highestWeight = 0;
+            for (const [key, value] of Object.entries(weights)) {
+                if (value > highestWeight) {
+                    highestWeight = value;
+                    highestWeightStakeholder = key;
+                }
+            }
+
+            let insight = `${brandLabels[brandType]} typically prioritize ${stakeholderLabels[highestWeightStakeholder].toLowerCase()} sentiment (your ${highestWeight}% weighting reflects this). `;
+
+            if (worstStakeholder && worstImpact < 0) {
+                insight += `Your biggest concern is ${stakeholderLabels[worstStakeholder].toLowerCase()} impact (${worstImpact}). `;
+            }
+
+            if (score > 20) {
+                insight += `With a positive score of ${score}, the stakeholder benefits outweigh the risks. Most brands in your category would proceed with appropriate messaging.`;
+            } else if (score > -20) {
+                insight += `With a borderline score of ${score}, this decision requires careful consideration. Consider negotiating terms that mitigate the negative stakeholder impacts.`;
+            } else {
+                insight += `With a negative score of ${score}, the reputation risks outweigh potential benefits. This helps explain why many major brands chose not to partner with LIV Golf despite attractive economics.`;
+            }
+
+            document.getElementById('insightText').textContent = insight;
+        }
+
+        function exportAnalysis() {
+            const brandType = document.getElementById('brandType').value;
+            const weights = brandWeights[brandType];
+            const score = document.getElementById('decisionScore').textContent;
+            const recommendation = document.getElementById('recommendation').textContent;
+            const insight = document.getElementById('insightText').textContent;
+
+            const exportText = `ETHICAL SPONSORSHIP DECISION ANALYSIS
+=====================================
+Generated: ${new Date().toLocaleString()}
+
+DECISION SCORE: ${score} / 100
+RECOMMENDATION: ${recommendation}
+
+BRAND TYPE: ${document.getElementById('brandType').options[document.getElementById('brandType').selectedIndex].text}
+
+STAKEHOLDER IMPACTS (weights auto-assigned by brand type):
+- Customers: ${document.getElementById('impactCustomers').value} (Weight: ${weights.customers}%)
+- Employees: ${document.getElementById('impactEmployees').value} (Weight: ${weights.employees}%)
+- Shareholders: ${document.getElementById('impactShareholders').value} (Weight: ${weights.shareholders}%)
+- Media: ${document.getElementById('impactMedia').value} (Weight: ${weights.media}%)
+- Advocacy Groups: ${document.getElementById('impactAdvocacy').value} (Weight: ${weights.advocacy}%)
+
+STRATEGIC INSIGHT:
+${insight}
+
+---
+Generated by Ethical Sponsorship Decision Tool
+Week 3: Sponsorship & Betting - Business of Sports Marketing`;
+
+            const blob = new Blob([exportText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ethical-sponsorship-analysis.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function resetTool() {
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            loadPreset('custom');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            calculate();
+        });
+    </script>
+</body>
+</html>

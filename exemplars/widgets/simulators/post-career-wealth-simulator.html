@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post-Career Wealth Simulator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-error: #ef4444;
+            --color-success: #c0d1cd;
+            --color-warning: #f0ede0;
+            --color-info: #bfe5e7;
+            --color-purple: #d5cae0;
+            --color-green: #c0d1cd;
+            --color-turquoise: #bfe5e7;
+            --color-sand: #f0ede0;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--color-neutral-600);
+            margin-bottom: 32px;
+            font-size: 0.95rem;
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            position: relative;
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--color-neutral-200);
+            z-index: 0;
+        }
+
+        .progress-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--color-neutral-300);
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--color-neutral-500);
+        }
+
+        .progress-step.active .step-circle {
+            background: var(--color-neutral-900);
+            border-color: var(--color-neutral-900);
+            color: white;
+        }
+
+        .progress-step.completed .step-circle {
+            background: var(--color-neutral-700);
+            border-color: var(--color-neutral-700);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            font-weight: 500;
+        }
+
+        .progress-step.active .step-label {
+            color: var(--color-neutral-900);
+            font-weight: 600;
+        }
+
+        .phase-section {
+            display: none;
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .phase-section.active {
+            display: block;
+        }
+
+        .phase-header {
+            margin-bottom: 20px;
+        }
+
+        .phase-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .phase-subtitle {
+            color: var(--color-neutral-600);
+            font-size: 0.9rem;
+        }
+
+        .given-info {
+            background: var(--color-neutral-50);
+            border-left: 4px solid var(--color-neutral-400);
+            padding: 16px;
+            border-radius: var(--border-radius);
+            margin-bottom: 24px;
+        }
+
+        .given-title {
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .given-list {
+            list-style: none;
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+        }
+
+        .given-list li {
+            padding: 4px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .given-list li::before {
+            content: "▪";
+            position: absolute;
+            left: 0;
+            font-weight: 700;
+        }
+
+        .decision-group {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .decision-title {
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .choice-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .choice-btn {
+            padding: 12px 16px;
+            background: white;
+            border: 2px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .choice-btn:hover {
+            border-color: var(--color-neutral-500);
+            transform: translateY(-1px);
+        }
+
+        .choice-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .choice-btn.selected {
+            background: var(--color-neutral-900);
+            color: white;
+            border-color: var(--color-neutral-900);
+        }
+
+        .choice-label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .choice-desc {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .phase-output {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .output-title {
+            font-weight: 600;
+            color: var(--color-neutral-700);
+            margin-bottom: 8px;
+        }
+
+        .output-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-900);
+            border: 2px solid var(--color-neutral-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-100);
+        }
+
+        .btn-primary {
+            background: var(--color-neutral-900);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .chart-container {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 24px;
+            height: 400px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 16px;
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .comparison-table {
+            width: 100%;
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        th {
+            background: var(--color-neutral-50);
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--color-neutral-700);
+        }
+
+        td {
+            font-size: 0.9rem;
+            color: var(--color-neutral-900);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr.highlight {
+            background: var(--color-neutral-50);
+            font-weight: 600;
+        }
+
+        .warning-box {
+            background: var(--color-neutral-100);
+            border-left: 4px solid #f59e0b;
+            padding: 16px;
+            border-radius: var(--border-radius);
+            margin-bottom: 24px;
+            display: none;
+        }
+
+        .warning-box.visible {
+            display: block;
+        }
+
+        .warning-title {
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 4px;
+        }
+
+        .warning-text {
+            color: #78350f;
+            font-size: 0.9rem;
+        }
+
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .preset-btn {
+            padding: 12px 16px;
+            background: white;
+            border: 2px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--color-neutral-500);
+            transform: translateY(-1px);
+        }
+
+        .preset-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            h1 { font-size: 1.5rem; }
+            .chart-container { height: 300px; }
+            .choice-buttons { grid-template-columns: 1fr; }
+            .metrics-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Splash Screen Styles */
+        .splash-screen { text-align: center; padding: 2rem 1.5rem; background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius); margin-bottom: 24px; }
+        .splash-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.5rem; }
+        .splash-subtitle { font-size: 0.9rem; color: var(--color-neutral-600); margin-bottom: 1.5rem; }
+        .splash-box { background: var(--color-neutral-50); border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.25rem; margin-bottom: 1.5rem; text-align: left; }
+        .splash-box-title { font-size: 0.8rem; font-weight: 600; color: var(--color-neutral-700); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .splash-box ul { list-style: none; padding: 0; margin: 0; }
+        .splash-box li { font-size: 0.85rem; color: var(--color-neutral-600); padding: 0.4rem 0; padding-left: 1.25rem; position: relative; line-height: 1.5; }
+        .splash-box li::before { content: "•"; position: absolute; left: 0; color: var(--color-neutral-400); }
+        .splash-disclaimer { font-size: 0.75rem; color: var(--color-neutral-500); font-style: italic; margin-bottom: 1.5rem; line-height: 1.5; }
+        .splash-btn { padding: 0.75rem 2rem; background: var(--color-neutral-800); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+        .splash-btn:hover { background: var(--color-neutral-700); }
+        .splash-btn:focus { outline: 3px solid var(--color-neutral-900); outline-offset: 2px; }
+        .simulator-content { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Splash Screen -->
+        <div class="splash-screen" id="splashScreen">
+            <h1 class="splash-title">Post-Career Wealth Simulator</h1>
+            <p class="splash-subtitle">Explore how career-stage decisions compound into dramatically different outcomes</p>
+
+            <div class="splash-box">
+                <div class="splash-box-title">What This Tool Does</div>
+                <ul>
+                    <li>Simulates a 20-year career arc from rookie (age 22) through retirement (age 65)</li>
+                    <li>Models how lifestyle spending, investment strategy, and equity vs. endorsement decisions compound over time</li>
+                    <li>Compares your path to preset scenarios (Lifestyle Trap, Conservative Builder, Magic Johnson-style)</li>
+                </ul>
+            </div>
+
+            <div class="splash-box">
+                <div class="splash-box-title">Model Simplifications</div>
+                <ul>
+                    <li><strong>Salary progressions are hypothetical:</strong> The $2M → $25M career arc is illustrative — actual salaries vary enormously by sport, position, and performance</li>
+                    <li><strong>Investment returns are simplified averages:</strong> "Conservative" at 4%, "Balanced" at 7%, "Aggressive" at 10% are long-term averages — actual returns are volatile year-to-year</li>
+                    <li><strong>Equity outcomes are speculative:</strong> The "$3M → $140M business exit" scenario represents exceptional outcomes — most athlete business investments fail or underperform</li>
+                    <li><strong>No taxes, divorce, or bad advice modeled:</strong> Real athlete wealth is eroded by factors not captured here — advisors, family obligations, legal issues</li>
+                    <li><strong>Celebrity comparisons are illustrative:</strong> "Magic Johnson-style" and "Allen Iverson-style" scenarios are dramatized patterns, not biographical accounts</li>
+                </ul>
+            </div>
+
+            <p class="splash-disclaimer">
+                This simulator illustrates how compounding and timing affect long-term wealth. The scenarios are designed to teach principles, not predict actual outcomes.
+            </p>
+
+            <button class="splash-btn" onclick="startSimulator()">I Understand — Start the Simulation</button>
+        </div>
+
+        <!-- Main Simulator (hidden until splash acknowledged) -->
+        <div class="simulator-content" id="simulatorContent">
+        <h1>Post-Career Wealth Simulator</h1>
+        <p class="subtitle">See how career-stage decisions compound to create dramatically different retirement wealth outcomes</p>
+
+        <div id="sr-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="1">
+            <div class="progress-step active" data-phase="1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Rookie Years<br>(22-26)</div>
+            </div>
+            <div class="progress-step" data-phase="2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Peak Career<br>(27-32)</div>
+            </div>
+            <div class="progress-step" data-phase="3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Retirement<br>(33-40)</div>
+            </div>
+            <div class="progress-step" data-phase="results">
+                <div class="step-circle">4</div>
+                <div class="step-label">Results</div>
+            </div>
+        </div>
+
+        <!-- Quick Load Presets -->
+        <div style="background: white; padding: 16px; border-radius: var(--border-radius); border: 1px solid var(--color-neutral-200); margin-bottom: 24px;">
+            <div style="font-weight: 600; margin-bottom: 12px; color: var(--color-neutral-900);">Quick Load Scenario:</div>
+            <div class="preset-buttons">
+                <button class="preset-btn" data-preset="lifestyle-trap" title="High spending, low investing, minimal equity">Lifestyle Trap</button>
+                <button class="preset-btn" data-preset="conservative" title="High savings rate, diversified portfolio, moderate equity">Conservative Builder</button>
+                <button class="preset-btn" data-preset="equity-max" title="Maximum savings, aggressive equity and business investments">Equity Maximizer</button>
+                <button class="preset-btn" data-preset="magic" title="Moderate spending, aggressive equity stakes in businesses">Magic Johnson-style</button>
+                <button class="preset-btn" data-preset="iverson" title="High lifestyle spending, conservative investments, depleted assets">Allen Iverson-style</button>
+            </div>
+        </div>
+
+        <!-- Phase 1: Rookie Years -->
+        <div class="phase-section active" id="phase-1">
+            <div class="phase-header">
+                <h2 class="phase-title">Phase 1: Rookie Years (Ages 22-26)</h2>
+                <p class="phase-subtitle">Building your foundation</p>
+            </div>
+
+            <div class="given-info">
+                <div class="given-title">Given: Your 5-Year Salary Progression</div>
+                <ul class="given-list">
+                    <li>Year 1: $2M</li>
+                    <li>Year 2: $2.5M</li>
+                    <li>Year 3: $3M</li>
+                    <li>Year 4: $4M</li>
+                    <li>Year 5: $5M</li>
+                    <li><strong>Total 5-year earnings: $16.5M</strong></li>
+                </ul>
+            </div>
+
+            <div class="decision-group">
+                <div class="decision-title">Decision 1: Lifestyle Spending</div>
+                <div class="choice-buttons">
+                    <button class="choice-btn" data-decision="phase1-lifestyle" data-value="frugal">
+                        <span class="choice-label">Frugal (30%)</span>
+                        <span class="choice-desc">Save $11.55M over 5 years</span>
+                    </button>
+                    <button class="choice-btn" data-decision="phase1-lifestyle" data-value="moderate">
+                        <span class="choice-label">Moderate (50%)</span>
+                        <span class="choice-desc">Save $8.25M over 5 years</span>
+                    </button>
+                    <button class="choice-btn" data-decision="phase1-lifestyle" data-value="lavish">
+                        <span class="choice-label">Lavish (80%)</span>
+                        <span class="choice-desc">Save $3.3M over 5 years</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="decision-group">
+                <div class="decision-title">Decision 2: Investment Strategy</div>
+                <div class="choice-buttons">
+                    <button class="choice-btn" data-decision="phase1-investment" data-value="conservative">
+                        <span class="choice-label">Conservative</span>
+                        <span class="choice-desc">Bonds - 4% annual return</span>
+                    </button>
+                    <button class="choice-btn" data-decision="phase1-investment" data-value="balanced">
+                        <span class="choice-label">Balanced</span>
+                        <span class="choice-desc">60/40 - 7% annual return</span>
+                    </button>
+                    <button class="choice-btn" data-decision="phase1-investment" data-value="aggressive">
+                        <span class="choice-label">Aggressive</span>
+                        <span class="choice-desc">100% stocks - 10% return</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="phase-output">
+                <div class="output-title">Phase 1 Result (Age 26):</div>
+                <div class="output-value" id="phase1-output">Make your decisions above</div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-primary" id="phase1-next" disabled>Continue to Peak Career →</button>
+            </div>
+        </div>
+
+        <!-- Phase 2: Peak Career -->
+        <div class="phase-section" id="phase-2">
+            <div class="phase-header">
+                <h2 class="phase-title">Phase 2: Peak Career (Ages 27-32)</h2>
+                <p class="phase-subtitle">Your highest earning years</p>
+            </div>
+
+            <div class="given-info">
+                <div class="given-title">Given: Your Peak Earnings</div>
+                <ul class="given-list">
+                    <li>6-year salary: $10M, $15M, $20M, $22M, $25M, $25M</li>
+                    <li><strong>Total: $117M over 6 years</strong></li>
+                    <li>Starting net worth from Phase 1: <span id="phase1-networth-display">$0M</span></li>
+                </ul>
+            </div>
+
+            <div class="decision-group">
+                <div class="decision-title">Decision 1: Endorsement vs. Equity</div>
+                <div class="choice-buttons">
+                    <button class="choice-btn" data-decision="phase2-endorsement" data-value="endorsement">
+                        <span class="choice-label">Take Endorsement</span>
+                        <span class="choice-desc">$10M/year × 6 = $60M guaranteed</span>
+                    </button>
+                    <button class="choice-btn" data-decision="phase2-endorsement" data-value="equity">
+                        <span class="choice-label">Invest in Business</span>
+                        <span class="choice-desc">$3M → projected $140M at exit</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="decision-group">
+                <div class="decision-title">Decision 2: Lifestyle Spending</div>
+                <div class="choice-buttons">
+                    <button class="choice-btn" data-decision="phase2-lifestyle" data-value="frugal">
+                        <span class="choice-label">Frugal (30%)</span>
+                        <span class="choice-desc">Save $81.9M + Phase 1 assets</span>
+                    </button>
+                    <button class="choice-btn" data-decision="phase2-lifestyle" data-value="moderate">
+                        <span class="choice-label">Moderate (50%)</span>
+                        <span class="choice-desc">Save $58.5M + Phase 1 assets</span>
+                    </button>
+                    <button class="choice-btn" data-decision="phase2-lifestyle" data-value="lavish">
+                        <span class="choice-label">Lavish (80%)</span>
+                        <span class="choice-desc">Save $23.4M + Phase 1 assets</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="phase-output">
+                <div class="output-title">Phase 2 Result (Age 32):</div>
+                <div class="output-value" id="phase2-output">Make your decisions above</div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" id="phase2-back">← Back to Rookie Years</button>
+                <button class="btn btn-primary" id="phase2-next" disabled>Continue to Retirement →</button>
+            </div>
+        </div>
+
+        <!-- Phase 3: Retirement -->
+        <div class="phase-section" id="phase-3">
+            <div class="phase-header">
+                <h2 class="phase-title">Phase 3: Retirement Transition (Ages 33-40)</h2>
+                <p class="phase-subtitle">Preserving and growing your wealth</p>
+            </div>
+
+            <div class="given-info">
+                <div class="given-title">Given: Post-Career Situation</div>
+                <ul class="given-list">
+                    <li>Playing salary declines to $0 by age 35</li>
+                    <li>Endorsement income declines 60-80%</li>
+                    <li>Starting net worth from Phase 2: <span id="phase2-networth-display">$0M</span></li>
+                </ul>
+            </div>
+
+            <div class="decision-group">
+                <div class="decision-title">Decision 1: Business Exit Strategy</div>
+                <div class="choice-buttons">
+                    <button class="choice-btn" data-decision="phase3-exit" data-value="sell">
+                        <span class="choice-label">Sell Now</span>
+                        <span class="choice-desc">Capture valuation, get cash</span>
+                    </button>
+                    <button class="choice-btn" data-decision="phase3-exit" data-value="hold">
+                        <span class="choice-label">Hold for Growth</span>
+                        <span class="choice-desc">Continue 25% growth, more risk</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="decision-group">
+                <div class="decision-title">Decision 2: Post-Career Venture</div>
+                <div class="choice-buttons">
+                    <button class="choice-btn" data-decision="phase3-venture" data-value="media">
+                        <span class="choice-label">Media/Broadcasting</span>
+                        <span class="choice-desc">$1M/year income</span>
+                    </button>
+                    <button class="choice-btn" data-decision="phase3-venture" data-value="coaching">
+                        <span class="choice-label">Coaching/Front Office</span>
+                        <span class="choice-desc">$650K/year income</span>
+                    </button>
+                    <button class="choice-btn" data-decision="phase3-venture" data-value="business">
+                        <span class="choice-label">Business Focus</span>
+                        <span class="choice-desc">$0 income, reinvest time</span>
+                    </button>
+                    <button class="choice-btn" data-decision="phase3-venture" data-value="retirement">
+                        <span class="choice-label">Retirement</span>
+                        <span class="choice-desc">No new income, live off assets</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="decision-group">
+                <div class="decision-title">Decision 3: Drawdown Strategy</div>
+                <div class="choice-buttons">
+                    <button class="choice-btn" data-decision="phase3-drawdown" data-value="preserve">
+                        <span class="choice-label">Preserve</span>
+                        <span class="choice-desc">Withdraw 4% annually</span>
+                    </button>
+                    <button class="choice-btn" data-decision="phase3-drawdown" data-value="balanced">
+                        <span class="choice-label">Balanced</span>
+                        <span class="choice-desc">Withdraw 7% annually</span>
+                    </button>
+                    <button class="choice-btn" data-decision="phase3-drawdown" data-value="aggressive">
+                        <span class="choice-label">Aggressive</span>
+                        <span class="choice-desc">Withdraw 12% annually</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="phase-output">
+                <div class="output-title">Phase 3 Result (Age 42):</div>
+                <div class="output-value" id="phase3-output">Make your decisions above</div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" id="phase3-back">← Back to Peak Career</button>
+                <button class="btn btn-primary" id="phase3-next" disabled>View Full Results →</button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="results">
+            <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 24px; text-align: center;">Your Wealth Journey Results</h2>
+
+            <div class="warning-box" id="bankruptcy-warning">
+                <div class="warning-title">⚠️ WARNING: High Bankruptcy Risk</div>
+                <div class="warning-text">Your withdrawals exceed asset growth. Without changes, you risk running out of money before retirement.</div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="resultsChart"></canvas>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Age 32 (Peak)</div>
+                    <div class="metric-value" id="result-age32">$0M</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Age 42 (Transition)</div>
+                    <div class="metric-value" id="result-age42">$0M</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Age 65 (Retirement)</div>
+                    <div class="metric-value" id="result-age65">$0M</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Preservation Score</div>
+                    <div class="metric-value" id="result-preservation">0/100</div>
+                </div>
+            </div>
+
+            <p style="font-size: 0.85rem; color: var(--color-neutral-600); margin-bottom: 12px; font-style: italic;">All dollar amounts are illustrative model outputs, not audited biographies. They're designed to show how savings rates and equity ownership change long-term outcomes.</p>
+
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Scenario</th>
+                            <th>Age 32</th>
+                            <th>Age 42</th>
+                            <th>Age 65</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="highlight">
+                            <td><strong>Your Path</strong></td>
+                            <td id="comp-your-32">$0M</td>
+                            <td id="comp-your-42">$0M</td>
+                            <td id="comp-your-65">$0M</td>
+                            <td id="comp-your-score">0</td>
+                        </tr>
+                        <tr>
+                            <td>Conservative Builder</td>
+                            <td>$156M</td>
+                            <td>$198M</td>
+                            <td>$334M</td>
+                            <td>100</td>
+                        </tr>
+                        <tr>
+                            <td>Lifestyle Trap</td>
+                            <td>$27M</td>
+                            <td>$18M</td>
+                            <td>$0 (broke)</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>Magic Johnson-style Equity Builder</td>
+                            <td>$48M</td>
+                            <td>$180M</td>
+                            <td>$1200M+</td>
+                            <td>200+</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" id="restart-btn">← Start Over</button>
+                <button class="btn btn-primary" id="export-btn">Export Report (CSV)</button>
+            </div>
+        </div>
+        </div><!-- End simulator-content -->
+    </div>
+
+    <script>
+        // Splash screen handler
+        function startSimulator() {
+            document.getElementById('splashScreen').style.display = 'none';
+            document.getElementById('simulatorContent').style.display = 'block';
+        }
+        // State
+        const state = {
+            phase1: { lifestyle: null, investment: null, networth: 0 },
+            phase2: { endorsement: null, lifestyle: null, networth: 0 },
+            phase3: { exit: null, venture: null, drawdown: null, networth: 0 },
+            currentPhase: 1
+        };
+
+        // Presets
+        const PRESETS = {
+            'lifestyle-trap': {
+                phase1: { lifestyle: 'lavish', investment: 'conservative' },
+                phase2: { endorsement: 'endorsement', lifestyle: 'lavish' },
+                phase3: { exit: 'sell', venture: 'retirement', drawdown: 'aggressive' }
+            },
+            'conservative': {
+                phase1: { lifestyle: 'frugal', investment: 'balanced' },
+                phase2: { endorsement: 'endorsement', lifestyle: 'moderate' },
+                phase3: { exit: 'hold', venture: 'media', drawdown: 'preserve' }
+            },
+            'equity-max': {
+                phase1: { lifestyle: 'frugal', investment: 'aggressive' },
+                phase2: { endorsement: 'equity', lifestyle: 'frugal' },
+                phase3: { exit: 'hold', venture: 'business', drawdown: 'preserve' }
+            },
+            'magic': {
+                phase1: { lifestyle: 'moderate', investment: 'balanced' },
+                phase2: { endorsement: 'equity', lifestyle: 'moderate' },
+                phase3: { exit: 'hold', venture: 'business', drawdown: 'preserve' }
+            },
+            'iverson': {
+                phase1: { lifestyle: 'lavish', investment: 'conservative' },
+                phase2: { endorsement: 'endorsement', lifestyle: 'lavish' },
+                phase3: { exit: 'sell', venture: 'retirement', drawdown: 'aggressive' }
+            }
+        };
+
+        // Calculations
+        function calculatePhase1() {
+            const lifestyle = state.phase1.lifestyle;
+            const investment = state.phase1.investment;
+
+            if (!lifestyle || !investment) return null;
+
+            const savings = { frugal: 11.55, moderate: 8.25, lavish: 3.3 }[lifestyle];
+            const returns = { conservative: 1.04, balanced: 1.07, aggressive: 1.10 }[investment];
+            const networth = savings * Math.pow(returns, 5);
+
+            state.phase1.networth = networth;
+            return networth;
+        }
+
+        function calculatePhase2() {
+            const endorsement = state.phase2.endorsement;
+            const lifestyle = state.phase2.lifestyle;
+
+            if (!endorsement || !lifestyle) return null;
+
+            const phase1Assets = state.phase1.networth || 0;
+            const salaryEarnings = 117; // $117M total
+            const endorsementValue = endorsement === 'endorsement' ? 60 : 0;
+            const equityValue = endorsement === 'equity' ? 140 : 0;
+
+            const totalIncome = salaryEarnings + endorsementValue;
+            const savings = { frugal: 0.70, moderate: 0.50, lavish: 0.20 }[lifestyle];
+            const saved = totalIncome * savings;
+
+            // Compound phase 1 assets over 6 years at 7%
+            const compoundedPhase1 = phase1Assets * Math.pow(1.07, 6);
+
+            const networth = compoundedPhase1 + saved + equityValue;
+            state.phase2.networth = networth;
+            return networth;
+        }
+
+        function calculatePhase3() {
+            const exit = state.phase3.exit;
+            const venture = state.phase3.venture;
+            const drawdown = state.phase3.drawdown;
+
+            if (!exit || !venture || !drawdown) return null;
+
+            const phase2Assets = state.phase2.networth || 0;
+
+            // Post-career income (ages 33-42, 10 years)
+            const ventureIncome = { media: 1, coaching: 0.65, business: 0, retirement: 0 }[venture];
+            const totalVentureIncome = ventureIncome * 10;
+
+            // Drawdown rates
+            const drawdownRate = { preserve: 0.04, balanced: 0.07, aggressive: 0.12 }[drawdown];
+            const totalDrawdown = phase2Assets * drawdownRate * 10;
+
+            // Assets grow at 5% if holding businesses, 3% otherwise
+            const growthRate = exit === 'hold' ? 1.05 : 1.03;
+            const finalAssets = (phase2Assets + totalVentureIncome - totalDrawdown) * Math.pow(growthRate, 10);
+
+            state.phase3.networth = Math.max(0, finalAssets);
+            return state.phase3.networth;
+        }
+
+        function projectToAge65() {
+            const age42Assets = state.phase3.networth;
+            // Project 23 more years at 4% growth with 5% annual withdrawal
+            const years = 23;
+            let assets = age42Assets;
+            for (let i = 0; i < years; i++) {
+                assets = assets * 1.04 - assets * 0.05;
+            }
+            return Math.max(0, assets);
+        }
+
+        function calculatePreservationScore() {
+            const peak = Math.max(state.phase1.networth, state.phase2.networth, state.phase3.networth);
+            const retirement = projectToAge65();
+            if (peak === 0) return 0;
+            return Math.min(100, Math.round((retirement / peak) * 100));
+        }
+
+        // UI Updates
+        function updatePhase1Output() {
+            const networth = calculatePhase1();
+            if (networth) {
+                document.getElementById('phase1-output').textContent = `Net Worth: $${networth.toFixed(1)}M`;
+                document.getElementById('phase1-next').disabled = false;
+            }
+        }
+
+        function updatePhase2Output() {
+            const networth = calculatePhase2();
+            if (networth) {
+                document.getElementById('phase2-output').textContent = `Net Worth: $${networth.toFixed(0)}M`;
+                document.getElementById('phase2-next').disabled = false;
+            }
+        }
+
+        function updatePhase3Output() {
+            const networth = calculatePhase3();
+            if (networth) {
+                document.getElementById('phase3-output').textContent = `Net Worth: $${networth.toFixed(0)}M`;
+                document.getElementById('phase3-next').disabled = false;
+            }
+        }
+
+        function showResults() {
+            const age32 = state.phase2.networth;
+            const age42 = state.phase3.networth;
+            const age65 = projectToAge65();
+            const score = calculatePreservationScore();
+
+            document.getElementById('result-age32').textContent = `$${age32.toFixed(0)}M`;
+            document.getElementById('result-age42').textContent = `$${age42.toFixed(0)}M`;
+            document.getElementById('result-age65').textContent = age65 === 0 ? '$0 (broke)' : `$${age65.toFixed(0)}M`;
+            document.getElementById('result-preservation').textContent = `${score}/100`;
+
+            document.getElementById('comp-your-32').textContent = `$${age32.toFixed(0)}M`;
+            document.getElementById('comp-your-42').textContent = `$${age42.toFixed(0)}M`;
+            document.getElementById('comp-your-65').textContent = age65 === 0 ? '$0' : `$${age65.toFixed(0)}M`;
+            document.getElementById('comp-your-score').textContent = score;
+
+            if (score < 30) {
+                document.getElementById('bankruptcy-warning').classList.add('visible');
+            }
+
+            renderResultsChart();
+
+            document.querySelectorAll('.phase-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('results').classList.add('active');
+
+            updateProgressBar('results');
+        }
+
+        function renderResultsChart() {
+            const ctx = document.getElementById('resultsChart').getContext('2d');
+
+            // Your path data points
+            const yourPath = [
+                { age: 22, wealth: 0 },
+                { age: 26, wealth: state.phase1.networth },
+                { age: 32, wealth: state.phase2.networth },
+                { age: 42, wealth: state.phase3.networth },
+                { age: 65, wealth: projectToAge65() }
+            ];
+
+            // Comparison paths (simplified)
+            const conservativePath = [
+                { age: 22, wealth: 0 },
+                { age: 26, wealth: 14 },
+                { age: 32, wealth: 156 },
+                { age: 42, wealth: 198 },
+                { age: 65, wealth: 334 }
+            ];
+
+            const lifestyleTrapPath = [
+                { age: 22, wealth: 0 },
+                { age: 26, wealth: 4 },
+                { age: 32, wealth: 27 },
+                { age: 42, wealth: 18 },
+                { age: 65, wealth: 0 }
+            ];
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [22, 26, 32, 42, 65],
+                    datasets: [
+                        {
+                            label: 'Your Path',
+                            data: yourPath.map(p => p.wealth),
+                            borderColor: '#3b82f6',
+                            borderWidth: 3,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Conservative Builder',
+                            data: conservativePath.map(p => p.wealth),
+                            borderColor: '#10b981',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Lifestyle Trap',
+                            data: lifestyleTrapPath.map(p => p.wealth),
+                            borderColor: '#ef4444',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Age' }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Net Worth ($M)' }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => `${context.dataset.label}: $${context.parsed.y.toFixed(0)}M`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateProgressBar(phase) {
+            document.querySelectorAll('.progress-step').forEach(el => {
+                el.classList.remove('active', 'completed');
+            });
+
+            const phaseMap = { 1: 1, 2: 2, 3: 3, 'results': 4 };
+            const currentIndex = phaseMap[phase];
+
+            for (let i = 1; i < currentIndex; i++) {
+                document.querySelector(`.progress-step:nth-child(${i})`).classList.add('completed');
+            }
+
+            document.querySelector(`.progress-step:nth-child(${currentIndex})`).classList.add('active');
+        }
+
+        // Event Listeners
+        function setupChoiceButtons() {
+            document.querySelectorAll('.choice-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const decision = e.target.closest('.choice-btn').dataset.decision;
+                    const value = e.target.closest('.choice-btn').dataset.value;
+
+                    document.querySelectorAll(`[data-decision="${decision}"]`).forEach(b => b.classList.remove('selected'));
+                    e.target.closest('.choice-btn').classList.add('selected');
+
+                    const [phase, key] = decision.split('-');
+                    state[phase][key] = value;
+
+                    if (phase === 'phase1') {
+                        updatePhase1Output();
+                    } else if (phase === 'phase2') {
+                        updatePhase2Output();
+                    } else if (phase === 'phase3') {
+                        updatePhase3Output();
+                    }
+                });
+            });
+        }
+
+        function setupNavigation() {
+            document.getElementById('phase1-next').addEventListener('click', () => {
+                document.getElementById('phase-1').classList.remove('active');
+                document.getElementById('phase-2').classList.add('active');
+                document.getElementById('phase1-networth-display').textContent = `$${state.phase1.networth.toFixed(1)}M`;
+                state.currentPhase = 2;
+                updateProgressBar(2);
+            });
+
+            document.getElementById('phase2-back').addEventListener('click', () => {
+                document.getElementById('phase-2').classList.remove('active');
+                document.getElementById('phase-1').classList.add('active');
+                state.currentPhase = 1;
+                updateProgressBar(1);
+            });
+
+            document.getElementById('phase2-next').addEventListener('click', () => {
+                document.getElementById('phase-2').classList.remove('active');
+                document.getElementById('phase-3').classList.add('active');
+                document.getElementById('phase2-networth-display').textContent = `$${state.phase2.networth.toFixed(0)}M`;
+                state.currentPhase = 3;
+                updateProgressBar(3);
+            });
+
+            document.getElementById('phase3-back').addEventListener('click', () => {
+                document.getElementById('phase-3').classList.remove('active');
+                document.getElementById('phase-2').classList.add('active');
+                state.currentPhase = 2;
+                updateProgressBar(2);
+            });
+
+            document.getElementById('phase3-next').addEventListener('click', () => {
+                showResults();
+            });
+
+            document.getElementById('restart-btn').addEventListener('click', () => {
+                location.reload();
+            });
+
+            document.getElementById('export-btn').addEventListener('click', () => {
+                const csv = `Age,Net Worth\n22,0\n26,${state.phase1.networth.toFixed(2)}\n32,${state.phase2.networth.toFixed(2)}\n42,${state.phase3.networth.toFixed(2)}\n65,${projectToAge65().toFixed(2)}`;
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'wealth-simulation.csv';
+                a.click();
+            });
+        }
+
+        function setupPresets() {
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const presetKey = e.target.dataset.preset;
+                    const preset = PRESETS[presetKey];
+
+                    // Apply preset to state
+                    Object.assign(state.phase1, preset.phase1);
+                    Object.assign(state.phase2, preset.phase2);
+                    Object.assign(state.phase3, preset.phase3);
+
+                    // Update UI selections
+                    Object.entries(preset.phase1).forEach(([key, value]) => {
+                        const btn = document.querySelector(`[data-decision="phase1-${key}"][data-value="${value}"]`);
+                        if (btn) {
+                            document.querySelectorAll(`[data-decision="phase1-${key}"]`).forEach(b => b.classList.remove('selected'));
+                            btn.classList.add('selected');
+                        }
+                    });
+
+                    Object.entries(preset.phase2).forEach(([key, value]) => {
+                        const btn = document.querySelector(`[data-decision="phase2-${key}"][data-value="${value}"]`);
+                        if (btn) {
+                            document.querySelectorAll(`[data-decision="phase2-${key}"]`).forEach(b => b.classList.remove('selected'));
+                            btn.classList.add('selected');
+                        }
+                    });
+
+                    Object.entries(preset.phase3).forEach(([key, value]) => {
+                        const btn = document.querySelector(`[data-decision="phase3-${key}"][data-value="${value}"]`);
+                        if (btn) {
+                            document.querySelectorAll(`[data-decision="phase3-${key}"]`).forEach(b => b.classList.remove('selected'));
+                            btn.classList.add('selected');
+                        }
+                    });
+
+                    // Calculate all phases
+                    updatePhase1Output();
+                    updatePhase2Output();
+                    updatePhase3Output();
+
+                    const presetNames = {
+                        'lifestyle-trap': 'Lifestyle Trap',
+                        'conservative': 'Conservative Builder',
+                        'equity-max': 'Equity Maximizer',
+                        'magic': 'Magic Johnson-style Equity Builder',
+                        'iverson': 'Allen Iverson-style'
+                    };
+                    announceToScreenReader(`Loaded ${presetNames[presetKey] || presetKey} scenario`);
+                });
+            });
+        }
+
+        function announceToScreenReader(message) {
+            document.getElementById('sr-live-region').textContent = message;
+        }
+
+        // Initialize
+        function init() {
+            setupChoiceButtons();
+            setupNavigation();
+            setupPresets();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>

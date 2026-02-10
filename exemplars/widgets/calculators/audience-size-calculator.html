@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Media Rights Valuation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: white; color: var(--color-neutral-800); padding: 1.5rem; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .widget-box { background: var(--color-neutral-50); border: 2px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.5rem; }
+        .widget-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--color-neutral-600); color: white; padding: 0.25rem 0.75rem; border-radius: var(--border-radius-sm); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+        .widget-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.5rem; }
+        .widget-subtitle { font-size: 0.85rem; color: var(--color-neutral-600); margin-bottom: 1.25rem; }
+
+        .formula-box { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.25rem; margin-bottom: 1rem; }
+        .formula-label { font-size: 0.7rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; text-align: center; }
+        .formula { font-size: 1rem; font-weight: 600; color: var(--color-neutral-800); display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+        .formula-part { background: var(--color-neutral-100); padding: 0.5rem 0.75rem; border-radius: var(--border-radius-sm); }
+        .formula-approx { color: var(--color-neutral-500); font-size: 1.2rem; }
+        .formula-result { background: var(--color-accent-light); padding: 0.5rem 0.75rem; border-radius: var(--border-radius-sm); }
+
+        .definitions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; font-size: 0.75rem; color: var(--color-neutral-600); }
+        .definition { display: flex; gap: 0.5rem; }
+        .definition-term { font-weight: 600; color: var(--color-neutral-700); }
+
+        .comparison-table { width: 100%; border-collapse: collapse; margin-bottom: 0.75rem; background: white; border-radius: var(--border-radius-sm); overflow: hidden; border: 1px solid var(--color-neutral-200); }
+        .comparison-table th { text-align: left; padding: 0.6rem 0.5rem; background: var(--color-neutral-800); color: white; font-weight: 600; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .comparison-table td { padding: 0.6rem 0.5rem; border-bottom: 1px solid var(--color-neutral-200); font-size: 0.8rem; color: var(--color-neutral-700); }
+        .comparison-table tr:last-child td { border-bottom: none; }
+        .comparison-table .league-name { font-weight: 600; color: var(--color-neutral-800); }
+        .comparison-table .highlight-row { background: var(--color-accent-light); }
+        .comparison-table .highlight-row td { color: var(--color-neutral-800); }
+        .comparison-table .value-large { font-weight: 700; color: var(--color-neutral-900); }
+        .comparison-table .range { font-size: 0.75rem; }
+
+        .table-note { font-size: 0.7rem; color: var(--color-neutral-500); font-style: italic; text-align: center; margin-bottom: 1.25rem; }
+
+        .explanatory-box { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-neutral-500); padding: 0.75rem 1rem; border-radius: var(--border-radius-sm); margin-bottom: 1.25rem; font-size: 0.8rem; color: var(--color-neutral-600); }
+
+        .framework-section { margin-bottom: 1.25rem; }
+        .framework-title { font-size: 0.8rem; font-weight: 700; color: var(--color-neutral-800); margin-bottom: 0.75rem; text-align: center; }
+
+        .triangle-model { display: flex; flex-direction: column; align-items: center; margin-bottom: 1rem; }
+        .triangle-top { margin-bottom: 0.5rem; }
+        .triangle-label { font-size: 0.75rem; font-weight: 600; color: var(--color-neutral-700); text-align: center; }
+        .triangle-visual { display: flex; align-items: center; justify-content: center; gap: 1.5rem; margin: 0.5rem 0; }
+        .triangle-side { font-size: 0.75rem; font-weight: 600; color: var(--color-neutral-700); text-align: center; }
+        .triangle-center { font-size: 2rem; color: var(--color-neutral-300); line-height: 1; }
+
+        .league-positions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+        .league-position { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 0.5rem 0.75rem; }
+        .league-position.nfl { border-left: 3px solid var(--color-accent); }
+        .league-position-name { font-size: 0.75rem; font-weight: 700; color: var(--color-neutral-800); }
+        .league-position-desc { font-size: 0.7rem; color: var(--color-neutral-500); }
+
+        .takeaway-box { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); padding: 1rem; border-radius: var(--border-radius-sm); }
+        .takeaway-title { font-size: 0.7rem; font-weight: 600; color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .takeaway-text { font-size: 0.875rem; color: var(--color-neutral-700); }
+        .takeaway-text strong { color: var(--color-neutral-800); }
+
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            .widget-box { padding: 1rem; }
+            .definitions { grid-template-columns: 1fr; }
+            .formula { font-size: 0.85rem; }
+            .comparison-table { font-size: 0.75rem; }
+            .league-positions { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+            <div class="widget-badge">Reference Infographic</div>
+            <h1 class="widget-title">Sports Media Rights Valuation</h1>
+            <p class="widget-subtitle">A framework for understanding what drives the value of sports broadcasting rights</p>
+
+            <div class="formula-box">
+                <div class="formula-label">The Valuation Framework</div>
+                <div class="formula">
+                    <span class="formula-result">Rights Value</span>
+                    <span class="formula-approx">≈</span>
+                    <span class="formula-part">Audience Scale</span>
+                    <span>×</span>
+                    <span class="formula-part">Inventory</span>
+                    <span>×</span>
+                    <span class="formula-part">Ad Value</span>
+                    <span>×</span>
+                    <span class="formula-part">Strategic Premium</span>
+                </div>
+                <div class="definitions">
+                    <div class="definition"><span class="definition-term">Audience Scale:</span> avg viewers × demographic quality</div>
+                    <div class="definition"><span class="definition-term">Inventory:</span> number of games per season</div>
+                    <div class="definition"><span class="definition-term">Ad Value:</span> CPM (cost per 1,000 viewers)</div>
+                    <div class="definition"><span class="definition-term">Strategic Premium:</span> subscription value, bidder competition, scarcity</div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>League</th>
+                        <th>Viewers</th>
+                        <th>Games</th>
+                        <th>Demo Strength</th>
+                        <th>CPM</th>
+                        <th>Rights Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="highlight-row">
+                        <td class="league-name">NFL</td>
+                        <td class="range">15–20M</td>
+                        <td>272</td>
+                        <td>Very High</td>
+                        <td class="range">$50–70</td>
+                        <td class="value-large">~$10–11B</td>
+                    </tr>
+                    <tr>
+                        <td class="league-name">NBA</td>
+                        <td class="range">2–5M</td>
+                        <td>1,230</td>
+                        <td>High</td>
+                        <td class="range">$30–50</td>
+                        <td class="value-large">~$3–7B</td>
+                    </tr>
+                    <tr>
+                        <td class="league-name">NHL</td>
+                        <td class="range">1–3M</td>
+                        <td>1,312</td>
+                        <td>Medium</td>
+                        <td class="range">$20–35</td>
+                        <td class="value-large">~$1–1.5B</td>
+                    </tr>
+                    <tr>
+                        <td class="league-name">MLS</td>
+                        <td class="range">0.3–1M</td>
+                        <td>510</td>
+                        <td>Low–Medium</td>
+                        <td class="range">$10–25</td>
+                        <td class="value-large">~$0.1–0.3B</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="table-note">Rounded estimates for comparison, not precise financial statements.</p>
+
+            <div class="explanatory-box">
+                These figures are illustrative estimates based on advertising economics. Real rights deals also reflect subscription revenue, platform strategy, and competition among bidders.
+            </div>
+
+            <div class="framework-section">
+                <div class="framework-title">The 3-Factor Model</div>
+                <div class="triangle-model">
+                    <div class="triangle-top">
+                        <div class="triangle-label">Demographic Value</div>
+                    </div>
+                    <div class="triangle-visual">
+                        <div class="triangle-side">Audience<br>Scale</div>
+                        <div class="triangle-center">▲</div>
+                        <div class="triangle-side">Scarcity</div>
+                    </div>
+                </div>
+                <div class="league-positions">
+                    <div class="league-position nfl">
+                        <div class="league-position-name">NFL</div>
+                        <div class="league-position-desc">High on all three dimensions</div>
+                    </div>
+                    <div class="league-position">
+                        <div class="league-position-name">NBA</div>
+                        <div class="league-position-desc">High audience, lower scarcity (1,230 games)</div>
+                    </div>
+                    <div class="league-position">
+                        <div class="league-position-name">NHL</div>
+                        <div class="league-position-desc">Balanced, mid-tier across dimensions</div>
+                    </div>
+                    <div class="league-position">
+                        <div class="league-position-name">MLS</div>
+                        <div class="league-position-desc">Growing audience, lower ad value (for now)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="takeaway-box">
+                <div class="takeaway-title">Key Takeaway</div>
+                <p class="takeaway-text"><strong>The NFL's dominance comes from a rare alignment of scale, demographic value, and scarcity.</strong> Most leagues excel in one or two of these dimensions — few dominate all three. Understanding where a league sits on each factor explains its rights value better than any single metric.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

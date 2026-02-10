@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Betting Revenue Explorer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-accent: #bfe5e7;
+            --color-accent-dark: #5a9ea1;
+            --color-sand: #f0ede0;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        *:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
+        .subtitle { color: var(--color-neutral-500); }
+
+        .card {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--color-neutral-50);
+            padding: 1.25rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-neutral-800);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-neutral-500);
+            margin-top: 0.25rem;
+        }
+
+        /* Revenue Model Cards */
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--color-neutral-800);
+        }
+
+        .model-cards {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .model-card {
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            text-align: left;
+            font-family: inherit;
+            width: 100%;
+        }
+
+        .model-card:hover {
+            border-color: var(--color-neutral-400);
+        }
+
+        .model-card.selected {
+            border-color: var(--color-accent-dark);
+            background: var(--color-accent);
+        }
+
+        .model-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .model-name {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: var(--color-neutral-900);
+        }
+
+        .model-tag {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .tag-common { background: #e6fffa; color: #234e52; }
+        .tag-premium { background: #faf5ff; color: #553c9a; }
+        .tag-emerging { background: #fffbeb; color: #744210; }
+
+        .model-description {
+            color: var(--color-neutral-600);
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .model-example {
+            background: var(--color-neutral-100);
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--color-neutral-700);
+        }
+
+        .model-example strong {
+            color: var(--color-neutral-900);
+        }
+
+        /* Flow Diagram */
+        .flow-diagram {
+            background: var(--color-neutral-900);
+            border-radius: 8px;
+            padding: 1.5rem;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .flow-title {
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .flow-row {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .flow-box {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.75rem 1.25rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .flow-box.highlight {
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .flow-label {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-bottom: 0.25rem;
+        }
+
+        .flow-value {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .flow-arrow {
+            text-align: center;
+            font-size: 1.25rem;
+            opacity: 0.5;
+        }
+
+        /* Insight Box */
+        .insight-box {
+            background: var(--color-accent);
+            border-left: 4px solid var(--color-accent-dark);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .insight-box h3 {
+            font-size: 0.85rem;
+            color: var(--color-accent-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-box p {
+            color: var(--color-neutral-800);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Button */
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            background: white;
+            color: var(--color-neutral-700);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--color-neutral-50);
+            border-color: var(--color-neutral-400);
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .stat-value { font-size: 1.5rem; }
+            .flow-row { flex-direction: column; align-items: center; }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sports Betting Revenue Explorer</h1>
+            <p class="subtitle">How teams and leagues make money from betting partnerships</p>
+        </header>
+
+        <div aria-live="polite" id="announcer" class="sr-only"></div>
+
+        <div class="card">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">$1.5B+</div>
+                    <div class="stat-label">Annual betting sponsorships in North American sports</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">38</div>
+                    <div class="stat-label">US states with legal sports betting (2024)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">$120B</div>
+                    <div class="stat-label">Total US legal betting handle (2023)</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Revenue Models — Click to Explore</h2>
+
+            <div class="model-cards" role="tablist" aria-label="Revenue models">
+                <button class="model-card selected" data-model="sponsorship" role="tab" aria-selected="true">
+                    <div class="model-header">
+                        <span class="model-name">Sponsorship Deals</span>
+                        <span class="model-tag tag-common">Most Common</span>
+                    </div>
+                    <p class="model-description">Fixed annual payments for branding rights, signage, and official partner status.</p>
+                    <div class="model-example">
+                        <strong>Example:</strong> Caesars pays the NY Giants ~$10M/year as official casino partner for stadium signage and "Official Sportsbook" designation.
+                    </div>
+                </button>
+
+                <button class="model-card" data-model="data" role="tab" aria-selected="false">
+                    <div class="model-header">
+                        <span class="model-name">Data Licensing</span>
+                        <span class="model-tag tag-premium">Premium Revenue</span>
+                    </div>
+                    <p class="model-description">Teams and leagues sell real-time game data that sportsbooks need for live betting.</p>
+                    <div class="model-example">
+                        <strong>Example:</strong> MLB's deal with MGM includes official data rights worth $80M+ over 5 years for real-time pitch and play data.
+                    </div>
+                </button>
+
+                <button class="model-card" data-model="media" role="tab" aria-selected="false">
+                    <div class="model-header">
+                        <span class="model-name">Media Integration</span>
+                        <span class="model-tag tag-emerging">Emerging</span>
+                    </div>
+                    <p class="model-description">Betting content integrated into broadcasts, driving affiliate revenue when viewers sign up.</p>
+                    <div class="model-example">
+                        <strong>Example:</strong> ESPN BET launched in partnership with Penn Entertainment, with ESPN earning fees per customer acquired through its platforms.
+                    </div>
+                </button>
+
+                <button class="model-card" data-model="venue" role="tab" aria-selected="false">
+                    <div class="model-header">
+                        <span class="model-name">Venue Sportsbooks</span>
+                        <span class="model-tag tag-emerging">Emerging</span>
+                    </div>
+                    <p class="model-description">Physical betting lounges inside stadiums that share revenue with teams.</p>
+                    <div class="model-example">
+                        <strong>Example:</strong> Capital One Arena (Wizards/Caps) features a William Hill sportsbook where fans can bet before, during, and after games.
+                    </div>
+                </button>
+            </div>
+
+            <div class="flow-diagram">
+                <div class="flow-title">How Money Flows from Bettors to Teams</div>
+                <div class="flow-container">
+                    <div class="flow-row">
+                        <div class="flow-box">
+                            <div class="flow-label">Bettors</div>
+                            <div class="flow-value">Place Bets</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-row">
+                        <div class="flow-box highlight">
+                            <div class="flow-label">Sportsbooks</div>
+                            <div class="flow-value">Keep ~5% Margin</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-row">
+                        <div class="flow-box">
+                            <div class="flow-label">Teams Receive</div>
+                            <div class="flow-value">Sponsorship $</div>
+                        </div>
+                        <div class="flow-box">
+                            <div class="flow-label">Leagues Receive</div>
+                            <div class="flow-value">Data Rights $</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="insight-box">
+                <h3>Key Insight</h3>
+                <p id="insight-text">Teams don't get a cut of actual bets. Instead, they monetize betting through traditional sponsorship models — selling access to their brand, data, and venue rights to sportsbook companies eager to reach sports fans.</p>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn" onclick="location.reload()">Start Over</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modelInsights = {
+            sponsorship: "Teams don't get a cut of actual bets. Instead, they monetize betting through traditional sponsorship models — selling access to their brand, data, and venue rights to sportsbook companies eager to reach sports fans.",
+            data: "Real-time data is the 'new oil' of sports betting. As live betting grows (now 50%+ of all bets in some markets), accurate, official data becomes essential — and leagues control this valuable resource.",
+            media: "Media integration blurs the line between content and commerce. When a broadcast shows betting odds, networks earn affiliate fees for each viewer who signs up. This creates new revenue but also raises editorial concerns.",
+            venue: "In-venue sportsbooks transform stadium economics. Fans arrive earlier, stay later, and spend more. But some worry that making betting too easy could harm problem gamblers in a captive environment."
+        };
+
+        const modelCards = document.querySelectorAll('.model-card');
+        const insightText = document.getElementById('insight-text');
+        const announcer = document.getElementById('announcer');
+
+        modelCards.forEach(card => {
+            card.addEventListener('click', () => {
+                modelCards.forEach(c => {
+                    c.classList.remove('selected');
+                    c.setAttribute('aria-selected', 'false');
+                });
+                card.classList.add('selected');
+                card.setAttribute('aria-selected', 'true');
+
+                const model = card.dataset.model;
+                insightText.textContent = modelInsights[model];
+                announcer.textContent = `Selected ${card.querySelector('.model-name').textContent}`;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Pricing Simulator - Optimize Ticket Revenue</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-project: #6b9085;
+            --color-project-light: #c0d1cd;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: white;
+            color: var(--color-neutral-800);
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .widget-box {
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.75rem;
+        }
+
+        .widget-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .widget-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--color-neutral-800);
+            color: white;
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .widget-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--color-project);
+            border-radius: 50%;
+        }
+
+        .widget-title {
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .widget-description {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+
+        /* Scenario box */
+        .scenario-section {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-left: 3px solid var(--color-project);
+            padding: 1rem 1.25rem;
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 1.25rem;
+        }
+
+        .scenario-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-project);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.375rem;
+        }
+
+        .scenario-text {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+            line-height: 1.55;
+        }
+
+        /* Examples - horizontal row */
+        .examples-section {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius-sm);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .examples-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+        }
+
+        .example-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+        }
+
+        .example-btn {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            color: var(--color-neutral-800);
+            padding: 0.625rem 0.75rem;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .example-btn:hover {
+            background: white;
+            border-color: var(--color-neutral-400);
+        }
+
+        .example-title {
+            font-weight: 600;
+            margin-bottom: 0.125rem;
+        }
+
+        .example-desc {
+            font-size: 0.7rem;
+            color: var(--color-neutral-500);
+        }
+
+        /* Controls - horizontal layout */
+        .controls-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .control-card {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius-sm);
+            padding: 1rem;
+        }
+
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.625rem;
+        }
+
+        .control-label {
+            font-weight: 600;
+            color: var(--color-neutral-800);
+            font-size: 0.85rem;
+        }
+
+        .control-value {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--color-neutral-700);
+        }
+
+        /* Slider styling */
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--color-neutral-300);
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--color-neutral-800);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: var(--color-neutral-700);
+            transform: scale(1.1);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--color-neutral-800);
+            cursor: pointer;
+            border: none;
+        }
+
+        .quality-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.375rem;
+            font-size: 0.65rem;
+            color: var(--color-neutral-500);
+        }
+
+        /* Select dropdown */
+        select {
+            width: 100%;
+            padding: 0.5rem;
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius-sm);
+            color: var(--color-neutral-800);
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        select:hover {
+            border-color: var(--color-neutral-400);
+        }
+
+        /* Results section - horizontal */
+        .results-section {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius-sm);
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-card {
+            background: var(--color-neutral-50);
+            padding: 0.875rem;
+            border-radius: var(--border-radius-sm);
+            text-align: center;
+        }
+
+        .result-label {
+            font-size: 0.7rem;
+            color: var(--color-neutral-500);
+            margin-bottom: 0.375rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .result-subtitle {
+            font-size: 0.75rem;
+            color: var(--color-neutral-600);
+            margin-top: 0.125rem;
+        }
+
+        /* Revenue breakdown - horizontal */
+        .revenue-breakdown {
+            padding-top: 1rem;
+            border-top: 1px solid var(--color-neutral-200);
+        }
+
+        .breakdown-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+            margin-bottom: 0.625rem;
+        }
+
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+        }
+
+        .breakdown-item {
+            text-align: center;
+            padding: 0.5rem;
+            background: var(--color-neutral-50);
+            border-radius: var(--border-radius-sm);
+        }
+
+        .breakdown-item-label {
+            font-size: 0.7rem;
+            color: var(--color-neutral-500);
+            margin-bottom: 0.25rem;
+        }
+
+        .breakdown-item-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+        }
+
+        .breakdown-item.total {
+            background: var(--color-neutral-800);
+        }
+
+        .breakdown-item.total .breakdown-item-label {
+            color: var(--color-neutral-400);
+        }
+
+        .breakdown-item.total .breakdown-item-value {
+            color: white;
+        }
+
+        /* Insights */
+        .insights-section {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-left: 3px solid var(--color-project);
+            padding: 1rem 1.25rem;
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 1.25rem;
+        }
+
+        .insights-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-project);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.625rem;
+        }
+
+        .insight-item {
+            padding: 0.625rem 0;
+            border-bottom: 1px solid var(--color-neutral-100);
+            font-size: 0.85rem;
+            color: var(--color-neutral-700);
+            line-height: 1.5;
+        }
+
+        .insight-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--border-radius-sm);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--color-neutral-800);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-700);
+            border: 1px solid var(--color-neutral-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-50);
+            border-color: var(--color-neutral-400);
+        }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            body { padding: 1rem; }
+            .widget-box { padding: 1.25rem; }
+            .example-buttons { grid-template-columns: repeat(2, 1fr); }
+            .controls-row { grid-template-columns: 1fr; }
+            .results-grid { grid-template-columns: 1fr; }
+            .breakdown-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+            <div class="widget-header">
+                <span class="widget-badge">Ticketing</span>
+            </div>
+
+            <h1 class="widget-title">Dynamic Pricing Simulator</h1>
+            <p class="widget-description">
+                You're the VP of Ticketing for the Toronto Raptors. Adjust demand factors to see how dynamic pricing maximizes revenue while balancing attendance.
+            </p>
+
+            <div class="scenario-section">
+                <div class="scenario-label">Scenario</div>
+                <p class="scenario-text">
+                    Set pricing for an upcoming home game at Scotiabank Arena (19,800 capacity). Opponent quality, game day, and team performance all affect optimal ticket prices.
+                </p>
+            </div>
+
+            <div class="examples-section">
+                <div class="examples-label">Try These Scenarios</div>
+                <div class="example-buttons">
+                    <button class="example-btn" onclick="loadExample('lakers')" aria-label="Load Lakers Saturday scenario">
+                        <div class="example-title">Lakers (Sat)</div>
+                        <div class="example-desc">Premium, winning</div>
+                    </button>
+                    <button class="example-btn" onclick="loadExample('pistons')" aria-label="Load Pistons Tuesday scenario">
+                        <div class="example-title">Pistons (Tue)</div>
+                        <div class="example-desc">Low-tier, losing</div>
+                    </button>
+                    <button class="example-btn" onclick="loadExample('celtics')" aria-label="Load Celtics Friday scenario">
+                        <div class="example-title">Celtics (Fri)</div>
+                        <div class="example-desc">Rivalry, mid-season</div>
+                    </button>
+                    <button class="example-btn" onclick="loadExample('bucks')" aria-label="Load Bucks Sunday scenario">
+                        <div class="example-title">Bucks (Sun)</div>
+                        <div class="example-desc">Star player, contender</div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="controls-row">
+                <div class="control-card">
+                    <div class="control-header">
+                        <label for="opponentQuality" class="control-label">Opponent</label>
+                        <span class="control-value" id="opponentQualityValue">Mid-Tier</span>
+                    </div>
+                    <input type="range" id="opponentQuality" min="1" max="5" value="3" step="1"
+                           aria-label="Opponent quality" aria-valuemin="1" aria-valuemax="5" aria-valuenow="3">
+                    <div class="quality-labels">
+                        <span>Low</span>
+                        <span>Elite</span>
+                    </div>
+                </div>
+
+                <div class="control-card">
+                    <div class="control-header">
+                        <label for="dayOfWeek" class="control-label">Day of Week</label>
+                    </div>
+                    <select id="dayOfWeek" aria-label="Select day of week">
+                        <option value="monday">Monday</option>
+                        <option value="tuesday">Tuesday</option>
+                        <option value="wednesday">Wednesday</option>
+                        <option value="thursday">Thursday</option>
+                        <option value="friday" selected>Friday</option>
+                        <option value="saturday">Saturday</option>
+                        <option value="sunday">Sunday</option>
+                    </select>
+                </div>
+
+                <div class="control-card">
+                    <div class="control-header">
+                        <label for="teamRecord" class="control-label">Team Performance</label>
+                        <span class="control-value" id="teamRecordValue">Mid-Season</span>
+                    </div>
+                    <input type="range" id="teamRecord" min="1" max="5" value="3" step="1"
+                           aria-label="Team performance" aria-valuemin="1" aria-valuemax="5" aria-valuenow="3">
+                    <div class="quality-labels">
+                        <span>Struggling</span>
+                        <span>Champs</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-label">Recommended Price</div>
+                        <div class="result-value" id="ticketPrice">$185</div>
+                        <div class="result-subtitle" id="priceChange">vs. $150 base</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Expected Attendance</div>
+                        <div class="result-value" id="attendance">17,200</div>
+                        <div class="result-subtitle" id="capacityPct">95% capacity</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Ticket Revenue</div>
+                        <div class="result-value" id="totalRevenue">$3.18M</div>
+                        <div class="result-subtitle" id="revenueChange">+24% vs. base</div>
+                    </div>
+                </div>
+
+                <div class="revenue-breakdown">
+                    <div class="breakdown-title">Game Day Revenue Breakdown</div>
+                    <div class="breakdown-grid">
+                        <div class="breakdown-item">
+                            <div class="breakdown-item-label">Tickets</div>
+                            <div class="breakdown-item-value" id="ticketRevenue">$3.18M</div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-item-label">Concessions</div>
+                            <div class="breakdown-item-value" id="concessionRevenue">$774K</div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-item-label">Parking</div>
+                            <div class="breakdown-item-value" id="parkingRevenue">$206K</div>
+                        </div>
+                        <div class="breakdown-item total">
+                            <div class="breakdown-item-label">Total</div>
+                            <div class="breakdown-item-value" id="totalGameRevenue">$4.16M</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="insights-section">
+                <div class="insights-label">Insights & Recommendations</div>
+                <div id="insightsContainer">
+                    <!-- Dynamic insights -->
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-secondary" onclick="resetToBase()" aria-label="Reset all inputs">
+                    Reset
+                </button>
+                <button class="btn btn-primary" onclick="exportData()" aria-label="Export data as CSV">
+                    Export CSV
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base pricing constants
+        const BASE_PRICE = 150;
+        const CAPACITY = 19800;
+
+        // Day of week multipliers
+        const dayMultipliers = {
+            monday: 0.85,
+            tuesday: 0.80,
+            wednesday: 0.85,
+            thursday: 0.90,
+            friday: 1.10,
+            saturday: 1.25,
+            sunday: 1.15
+        };
+
+        // Opponent quality labels and multipliers
+        const opponentLabels = ['Low-Tier', 'Below Avg', 'Mid-Tier', 'Contender', 'Elite'];
+        const opponentMultipliers = [0.75, 0.85, 1.0, 1.35, 1.80];
+
+        // Team performance labels and multipliers
+        const teamLabels = ['Struggling', 'Below .500', 'Mid-Season', 'Playoff Push', 'Championship'];
+        const teamMultipliers = [0.70, 0.85, 1.0, 1.20, 1.40];
+
+        // Get DOM elements
+        const opponentQuality = document.getElementById('opponentQuality');
+        const dayOfWeek = document.getElementById('dayOfWeek');
+        const teamRecord = document.getElementById('teamRecord');
+
+        // Add event listeners
+        opponentQuality.addEventListener('input', updateCalculations);
+        dayOfWeek.addEventListener('change', updateCalculations);
+        teamRecord.addEventListener('input', updateCalculations);
+
+        opponentQuality.addEventListener('input', function() {
+            document.getElementById('opponentQualityValue').textContent = opponentLabels[this.value - 1];
+            this.setAttribute('aria-valuenow', this.value);
+            updateSliderGradient(this);
+        });
+
+        teamRecord.addEventListener('input', function() {
+            document.getElementById('teamRecordValue').textContent = teamLabels[this.value - 1];
+            this.setAttribute('aria-valuenow', this.value);
+            updateSliderGradient(this);
+        });
+
+        function updateSliderGradient(slider) {
+            const percentage = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+            slider.style.background = `linear-gradient(to right, var(--color-neutral-600) 0%, var(--color-neutral-600) ${percentage}%, var(--color-neutral-300) ${percentage}%, var(--color-neutral-300) 100%)`;
+        }
+
+        function formatCurrency(value) {
+            if (value >= 1000000) {
+                return '$' + (value / 1000000).toFixed(2) + 'M';
+            } else if (value >= 1000) {
+                return '$' + Math.round(value / 1000) + 'K';
+            }
+            return '$' + value.toLocaleString();
+        }
+
+        function updateCalculations() {
+            const oppQuality = parseInt(opponentQuality.value);
+            const day = dayOfWeek.value;
+            const teamPerf = parseInt(teamRecord.value);
+
+            const oppMultiplier = opponentMultipliers[oppQuality - 1];
+            const dayMultiplier = dayMultipliers[day];
+            const teamMultiplier = teamMultipliers[teamPerf - 1];
+
+            const totalMultiplier = oppMultiplier * dayMultiplier * teamMultiplier;
+            const recommendedPrice = Math.round(BASE_PRICE * totalMultiplier);
+
+            const avgDemandMultiplier = (oppMultiplier + dayMultiplier + teamMultiplier) / 3;
+            const demandNormalized = (avgDemandMultiplier - 0.5) / 1.0;
+            const capacityPercent = 0.60 + (demandNormalized * 0.40);
+            const attendance = Math.round(Math.min(CAPACITY, CAPACITY * Math.min(1.0, capacityPercent)));
+
+            const ticketRevenue = recommendedPrice * attendance;
+            const concessionRevenue = attendance * 45;
+            const parkingRevenue = Math.round(attendance * 0.40) * 30;
+            const totalGameRevenue = ticketRevenue + concessionRevenue + parkingRevenue;
+
+            // Update display
+            document.getElementById('ticketPrice').textContent = '$' + recommendedPrice;
+            const priceChangePercent = Math.round(((recommendedPrice - BASE_PRICE) / BASE_PRICE) * 100);
+            const priceChangeSign = priceChangePercent >= 0 ? '+' : '';
+            document.getElementById('priceChange').textContent = `${priceChangeSign}${priceChangePercent}% vs. $${BASE_PRICE} base`;
+
+            document.getElementById('attendance').textContent = attendance.toLocaleString();
+            const capacityPct = Math.round((attendance / CAPACITY) * 100);
+            document.getElementById('capacityPct').textContent = capacityPct + '% capacity';
+
+            document.getElementById('totalRevenue').textContent = formatCurrency(ticketRevenue);
+            const baseRevenue = BASE_PRICE * (CAPACITY * 0.85);
+            const revenueChangePercent = Math.round(((ticketRevenue - baseRevenue) / baseRevenue) * 100);
+            const revenueChangeSign = revenueChangePercent >= 0 ? '+' : '';
+            document.getElementById('revenueChange').textContent = `${revenueChangeSign}${revenueChangePercent}% vs. base`;
+
+            // Update breakdown
+            document.getElementById('ticketRevenue').textContent = formatCurrency(ticketRevenue);
+            document.getElementById('concessionRevenue').textContent = formatCurrency(concessionRevenue);
+            document.getElementById('parkingRevenue').textContent = formatCurrency(parkingRevenue);
+            document.getElementById('totalGameRevenue').textContent = formatCurrency(totalGameRevenue);
+
+            generateInsights(recommendedPrice, attendance, capacityPct, oppQuality, day, teamPerf);
+        }
+
+        function generateInsights(price, attendance, capacityPct, oppQuality, day, teamPerf) {
+            const insights = [];
+            const priceChangePercent = Math.round(((price - BASE_PRICE) / BASE_PRICE) * 100);
+
+            if (priceChangePercent > 50 && capacityPct > 85) {
+                insights.push(`High demand drives both premium pricing (+${priceChangePercent}%) AND strong attendance (${capacityPct}%). This is the ideal dynamic pricing scenario.`);
+            } else if (priceChangePercent > 50 && capacityPct <= 85) {
+                insights.push(`Premium pricing (+${priceChangePercent}%) with moderate attendance (${capacityPct}%). Consider early-bird discounts to test price sensitivity.`);
+            } else if (priceChangePercent < -10 && capacityPct < 75) {
+                insights.push(`Low demand scenario: Discounted pricing (${priceChangePercent}%) reflects weaker factors, projecting ${capacityPct}% attendance.`);
+            } else if (priceChangePercent < -10 && capacityPct >= 75) {
+                insights.push(`Value pricing (${priceChangePercent}%) attracting solid attendance (${capacityPct}%). Consider modest price increases.`);
+            }
+
+            const demandFactors = [];
+            if (oppQuality >= 4) demandFactors.push('premium opponent');
+            if (oppQuality <= 2) demandFactors.push('low-profile opponent');
+            if (day === 'saturday' || day === 'sunday') demandFactors.push('weekend game');
+            if (day === 'tuesday' || day === 'monday') demandFactors.push('weekday slot');
+            if (teamPerf >= 4) demandFactors.push('team in contention');
+            if (teamPerf <= 2) demandFactors.push('team struggles');
+
+            if (demandFactors.length > 0) {
+                const positive = demandFactors.filter(f => f.includes('premium') || f.includes('weekend') || f.includes('contention'));
+                const negative = demandFactors.filter(f => f.includes('low-profile') || f.includes('weekday') || f.includes('struggles'));
+
+                if (positive.length > 0 && negative.length === 0) {
+                    insights.push(`Demand drivers: ${positive.join(', ')}. These support both higher prices and stronger turnout.`);
+                } else if (negative.length > 0 && positive.length === 0) {
+                    insights.push(`Attendance challenges: ${negative.join(', ')}. Consider promotional strategies to offset weaker demand.`);
+                } else if (positive.length > 0 && negative.length > 0) {
+                    insights.push(`Mixed signals: ${positive.join(', ')} vs. ${negative.join(', ')}. Price reflects the net effect.`);
+                }
+            }
+
+            if (capacityPct > 95) {
+                insights.push(`Near sell-out (${capacityPct}%). Consider last-minute price increases—demand can absorb it.`);
+            } else if (capacityPct < 70) {
+                insights.push(`Low projected attendance (${capacityPct}%). Try flash sales, group tickets, or corporate nights.`);
+            }
+
+            const container = document.getElementById('insightsContainer');
+            container.innerHTML = insights.map(text => `<div class="insight-item">${text}</div>`).join('');
+        }
+
+        function loadExample(scenario) {
+            const scenarios = {
+                lakers: { opponent: 5, day: 'saturday', team: 4 },
+                pistons: { opponent: 1, day: 'tuesday', team: 2 },
+                celtics: { opponent: 4, day: 'friday', team: 3 },
+                bucks: { opponent: 4, day: 'sunday', team: 4 }
+            };
+
+            const selected = scenarios[scenario];
+            if (selected) {
+                opponentQuality.value = selected.opponent;
+                dayOfWeek.value = selected.day;
+                teamRecord.value = selected.team;
+
+                document.getElementById('opponentQualityValue').textContent = opponentLabels[selected.opponent - 1];
+                document.getElementById('teamRecordValue').textContent = teamLabels[selected.team - 1];
+
+                updateSliderGradient(opponentQuality);
+                updateSliderGradient(teamRecord);
+                updateCalculations();
+            }
+        }
+
+        function resetToBase() {
+            opponentQuality.value = 3;
+            dayOfWeek.value = 'friday';
+            teamRecord.value = 3;
+
+            document.getElementById('opponentQualityValue').textContent = 'Mid-Tier';
+            document.getElementById('teamRecordValue').textContent = 'Mid-Season';
+
+            updateSliderGradient(opponentQuality);
+            updateSliderGradient(teamRecord);
+            updateCalculations();
+        }
+
+        function exportData() {
+            const csvRows = ['Category,Metric,Value'];
+            csvRows.push(`Scenario,Opponent Quality,${opponentLabels[opponentQuality.value - 1]}`);
+            csvRows.push(`Scenario,Day of Week,${dayOfWeek.value}`);
+            csvRows.push(`Scenario,Team Performance,${teamLabels[teamRecord.value - 1]}`);
+            csvRows.push(`Results,Recommended Price,${document.getElementById('ticketPrice').textContent}`);
+            csvRows.push(`Results,Expected Attendance,${document.getElementById('attendance').textContent}`);
+            csvRows.push(`Results,Total Revenue,${document.getElementById('totalRevenue').textContent}`);
+            csvRows.push(`Metadata,Timestamp,${new Date().toISOString()}`);
+
+            const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `pricing-scenario-${Date.now()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize
+        updateSliderGradient(opponentQuality);
+        updateSliderGradient(teamRecord);
+        updateCalculations();
+    </script>
+</body>
+</html>

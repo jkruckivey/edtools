@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CFL Brand Package Creator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-success: #c0d1cd;
+            --color-warning: #f0ede0;
+            --color-info: #bfe5e7;
+            --color-purple: #d5cae0;
+            --font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--color-neutral-50);
+            color: var(--color-neutral-800);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--color-neutral-600);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Input Panel */
+        .input-panel {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .input-panel h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            font-family: var(--font-family);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            background: white;
+            color: var(--color-neutral-800);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .help-text {
+            font-size: 0.8rem;
+            color: var(--color-neutral-500);
+            margin-top: 0.35rem;
+        }
+
+        /* Color Picker Section */
+        .color-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .color-picker-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .color-picker-group label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+        }
+
+        .color-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            width: 50px;
+            height: 40px;
+            border: 2px solid var(--color-neutral-300);
+            border-radius: 6px;
+            cursor: pointer;
+            padding: 2px;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 4px;
+        }
+
+        .color-hex {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: var(--color-neutral-600);
+            background: var(--color-neutral-100);
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* Preset Buttons */
+        .preset-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .preset-section h3 {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--color-neutral-600);
+            margin-bottom: 0.75rem;
+        }
+
+        .preset-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .preset-btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            font-family: var(--font-family);
+            font-weight: 500;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            background: white;
+            color: var(--color-neutral-700);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: var(--color-neutral-100);
+            border-color: var(--color-neutral-400);
+        }
+
+        .preset-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        /* Output Panel - Brand Preview */
+        .output-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .brand-preview {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .preview-header {
+            padding: 1.25rem 1.5rem;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+
+        .preview-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            transition: color 0.3s;
+        }
+
+        .preview-header .tagline {
+            font-size: 1rem;
+            font-weight: 500;
+            font-style: italic;
+            transition: color 0.3s;
+        }
+
+        .preview-body {
+            padding: 1.5rem;
+        }
+
+        /* Jersey Mockup */
+        .jersey-mockup {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .jersey {
+            width: 120px;
+            height: 150px;
+            border-radius: 8px 8px 40px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s;
+        }
+
+        .jersey::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 15px;
+            background: inherit;
+            border-radius: 0 0 15px 15px;
+            filter: brightness(0.9);
+        }
+
+        .jersey-number {
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .jersey-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Color Swatches */
+        .color-swatches {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .swatch {
+            text-align: center;
+        }
+
+        .swatch-color {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: background-color 0.3s;
+        }
+
+        .swatch-label {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Brand Info Card */
+        .brand-info {
+            background: var(--color-neutral-50);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .brand-info h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-neutral-700);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .info-value {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--color-neutral-800);
+        }
+
+        .info-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .mascot-description {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--color-neutral-700);
+        }
+
+        /* Brand Metrics */
+        .brand-metrics {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .brand-metrics h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+            margin-bottom: 1rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .metric-card {
+            background: var(--color-neutral-50);
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.25rem;
+        }
+
+        .metric-bar {
+            height: 6px;
+            background: var(--color-neutral-200);
+            border-radius: 3px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .metric-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease, background-color 0.3s;
+        }
+
+        .metric-fill.high { background: #22c55e; }
+        .metric-fill.medium { background: #eab308; }
+        .metric-fill.low { background: #ef4444; }
+
+        /* Insights Section */
+        .insights-section {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .insights-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+            margin-bottom: 1rem;
+        }
+
+        .insight-item {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 6px;
+            border-left: 3px solid;
+            font-size: 0.9rem;
+        }
+
+        .insight-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .insight-item.positive {
+            background: #f0fdf4;
+            border-color: #22c55e;
+            color: #166534;
+        }
+
+        .insight-item.neutral {
+            background: #fefce8;
+            border-color: #eab308;
+            color: #854d0e;
+        }
+
+        .insight-item.negative {
+            background: #fef2f2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
+            font-size: 0.95rem;
+            font-family: var(--font-family);
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .btn-primary {
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-700);
+            border: 1px solid var(--color-neutral-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-100);
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+            .input-panel, .action-buttons, .preset-section {
+                display: none;
+            }
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .brand-preview {
+                border: 2px solid #000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CFL Brand Package Creator</h1>
+        <p class="subtitle">Design your expansion team's identity and see how brand choices impact business potential</p>
+
+        <div class="main-grid">
+            <!-- Input Panel -->
+            <div class="input-panel">
+                <h2>Build Your Brand</h2>
+
+                <div class="preset-section">
+                    <h3>Quick Start Templates</h3>
+                    <div class="preset-buttons" role="group" aria-label="Brand presets">
+                        <button class="preset-btn" onclick="loadPreset('atlantic')" aria-label="Load Halifax Schooners preset">Halifax Schooners</button>
+                        <button class="preset-btn" onclick="loadPreset('quebec')" aria-label="Load Quebec Voyageurs preset">Quebec Voyageurs</button>
+                        <button class="preset-btn" onclick="loadPreset('saskatoon')" aria-label="Load Saskatoon preset">Saskatoon Thunder</button>
+                        <button class="preset-btn" onclick="loadPreset('london')" aria-label="Load London preset">London Forest</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <select id="city" aria-describedby="city-help">
+                        <option value="">Select expansion market...</option>
+                        <option value="Halifax">Halifax</option>
+                        <option value="Moncton">Moncton</option>
+                        <option value="Quebec City">Quebec City</option>
+                        <option value="London">London</option>
+                        <option value="Saskatoon">Saskatoon</option>
+                        <option value="Victoria">Victoria</option>
+                        <option value="Kitchener-Waterloo">Kitchener-Waterloo</option>
+                    </select>
+                    <p class="help-text" id="city-help">The market for your CFL expansion franchise</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="teamName">Team Name</label>
+                    <input type="text" id="teamName" placeholder="e.g., Schooners, Nordiques, Thunder" aria-describedby="name-help" maxlength="30">
+                    <p class="help-text" id="name-help">Choose a name that resonates with local identity</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="tagline">Tagline</label>
+                    <input type="text" id="tagline" placeholder="e.g., 'Rise with the Tide'" aria-describedby="tagline-help" maxlength="50">
+                    <p class="help-text" id="tagline-help">A memorable phrase that captures your brand essence</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Team Colors</label>
+                    <div class="color-section">
+                        <div class="color-picker-group">
+                            <label for="primaryColor">Primary</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" id="primaryColor" value="#1e3a5f" aria-label="Primary team color">
+                                <span class="color-hex" id="primaryHex">#1e3a5f</span>
+                            </div>
+                        </div>
+                        <div class="color-picker-group">
+                            <label for="secondaryColor">Secondary</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" id="secondaryColor" value="#c9a227" aria-label="Secondary team color">
+                                <span class="color-hex" id="secondaryHex">#c9a227</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mascotName">Mascot Name</label>
+                    <input type="text" id="mascotName" placeholder="e.g., Captain Salty, Stormy" aria-describedby="mascot-help" maxlength="25">
+                    <p class="help-text" id="mascot-help">A character that brings your brand to life</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="mascotDescription">Mascot Description</label>
+                    <textarea id="mascotDescription" placeholder="Describe your mascot's appearance and personality..." aria-describedby="mascot-desc-help"></textarea>
+                    <p class="help-text" id="mascot-desc-help">What does your mascot look like? What's their story?</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="logoDescription">Logo Concept</label>
+                    <textarea id="logoDescription" placeholder="Describe your logo design concept..." aria-describedby="logo-help"></textarea>
+                    <p class="help-text" id="logo-help">Describe the visual elements, symbolism, and style</p>
+                </div>
+            </div>
+
+            <!-- Output Panel -->
+            <div class="output-panel">
+                <!-- Brand Preview Card -->
+                <div class="brand-preview">
+                    <div class="preview-header" id="previewHeader">
+                        <h2 id="previewTeamName">Your Team Name</h2>
+                        <p class="tagline" id="previewTagline">Your tagline here</p>
+                    </div>
+                    <div class="preview-body">
+                        <!-- Jersey Mockups -->
+                        <div class="jersey-mockup">
+                            <div class="jersey" id="homeJersey" aria-label="Home jersey mockup">
+                                <span class="jersey-number" id="homeNumber">00</span>
+                                <span class="jersey-label">Home</span>
+                            </div>
+                            <div class="jersey" id="awayJersey" aria-label="Away jersey mockup">
+                                <span class="jersey-number" id="awayNumber">00</span>
+                                <span class="jersey-label">Away</span>
+                            </div>
+                        </div>
+
+                        <!-- Color Swatches -->
+                        <div class="color-swatches">
+                            <div class="swatch">
+                                <div class="swatch-color" id="primarySwatch"></div>
+                                <span class="swatch-label">Primary</span>
+                            </div>
+                            <div class="swatch">
+                                <div class="swatch-color" id="secondarySwatch"></div>
+                                <span class="swatch-label">Secondary</span>
+                            </div>
+                            <div class="swatch">
+                                <div class="swatch-color" style="background: white; border: 1px solid #e5e5e5;"></div>
+                                <span class="swatch-label">White</span>
+                            </div>
+                        </div>
+
+                        <!-- Brand Info -->
+                        <div class="brand-info">
+                            <h3>Brand Book Preview</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Market</span>
+                                    <span class="info-value" id="infoCity">--</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Mascot</span>
+                                    <span class="info-value" id="infoMascot">--</span>
+                                </div>
+                                <div class="info-item full-width">
+                                    <span class="info-label">Logo Concept</span>
+                                    <p class="mascot-description" id="infoLogo">Enter your logo concept description...</p>
+                                </div>
+                                <div class="info-item full-width">
+                                    <span class="info-label">Mascot Character</span>
+                                    <p class="mascot-description" id="infoMascotDesc">Enter your mascot description...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Brand Metrics -->
+                <div class="brand-metrics" role="region" aria-label="Brand performance metrics">
+                    <h3>Brand Potential Analysis</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-value" id="uniquenessScore">--</div>
+                            <div class="metric-label">Uniqueness</div>
+                            <div class="metric-bar">
+                                <div class="metric-fill" id="uniquenessFill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="localRelevanceScore">--</div>
+                            <div class="metric-label">Local Relevance</div>
+                            <div class="metric-bar">
+                                <div class="metric-fill" id="localRelevanceFill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="merchPotentialScore">--</div>
+                            <div class="metric-label">Merch Potential</div>
+                            <div class="metric-bar">
+                                <div class="metric-fill" id="merchPotentialFill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="overallScore">--</div>
+                            <div class="metric-label">Overall Score</div>
+                            <div class="metric-bar">
+                                <div class="metric-fill" id="overallFill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insights -->
+                <div class="insights-section" role="region" aria-label="Brand insights and recommendations">
+                    <h3>Strategic Insights</h3>
+                    <div id="insightsContainer">
+                        <div class="insight-item neutral">
+                            Start building your brand to see strategic insights...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="resetBrand()" aria-label="Reset all brand inputs">Reset</button>
+                    <button class="btn btn-primary" onclick="exportBrandPackage()" aria-label="Export brand package as text file">Export Brand Package</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Presets
+        const presets = {
+            atlantic: {
+                city: 'Halifax',
+                teamName: 'Schooners',
+                tagline: 'Rise With The Tide',
+                primaryColor: '#1e3a5f',
+                secondaryColor: '#c9a227',
+                mascotName: 'Captain Salty',
+                mascotDescription: 'A friendly bearded sea captain with a blue peacoat, gold buttons, and a captain\'s hat. Known for leading the crowd in ship\'s horn blasts and tossing mini footballs from a wooden ship prop.',
+                logoDescription: 'A bold schooner ship silhouette sailing through stylized waves, with the team name arched above in nautical-inspired lettering. The hull incorporates a subtle football shape.'
+            },
+            quebec: {
+                city: 'Quebec City',
+                teamName: 'Voyageurs',
+                tagline: 'En Avant Toujours',
+                primaryColor: '#00205b',
+                secondaryColor: '#e31837',
+                mascotName: 'Jacques',
+                mascotDescription: 'A rugged voyageur explorer in traditional capote coat and red sash, carrying a paddle and wearing a team tuque. Represents the adventurous spirit of Quebec\'s fur trade history.',
+                logoDescription: 'A voyageur canoe silhouette with a football as the sun rising behind it, framed by stylized fleur-de-lis accents. Bold blue and red honor Quebec\'s heritage.'
+            },
+            saskatoon: {
+                city: 'Saskatoon',
+                teamName: 'Prairie Thunder',
+                tagline: 'Hear Us Roar',
+                primaryColor: '#2d5a27',
+                secondaryColor: '#f4b41a',
+                mascotName: 'Bolt',
+                mascotDescription: 'A powerful bison with lightning bolt markings, representing the raw energy of prairie thunderstorms. Wears a custom helmet and leads stadium-shaking stomps.',
+                logoDescription: 'A charging bison silhouette with lightning bolts emanating from its form, set against a prairie wheat backdrop. Green and gold capture Saskatchewan\'s agricultural heritage.'
+            },
+            london: {
+                city: 'London',
+                teamName: 'Forest',
+                tagline: 'Rooted In Strength',
+                primaryColor: '#1a472a',
+                secondaryColor: '#8b7355',
+                mascotName: 'Oakley',
+                mascotDescription: 'A powerful oak tree character with muscular branch arms and a friendly face carved into the trunk. Wears a football helmet made of bark and leads the crowd in "timber" chants.',
+                logoDescription: 'A mighty oak tree with a football nestled in its roots, branches reaching upward in a victory pose. Forest green and bronze capture the Forest City identity with natural strength.'
+            }
+        };
+
+        // City data for relevance scoring
+        const cityData = {
+            'Halifax': { population: 465000, region: 'Atlantic', heritage: ['maritime', 'naval', 'fishing'], rivalries: ['Montreal', 'Toronto'] },
+            'Moncton': { population: 145000, region: 'Atlantic', heritage: ['Acadian', 'railway', 'tidal'], rivalries: ['Halifax', 'Montreal'] },
+            'Quebec City': { population: 550000, region: 'Quebec', heritage: ['French', 'historic', 'winter'], rivalries: ['Montreal', 'Ottawa'] },
+            'London': { population: 420000, region: 'Ontario', heritage: ['forest', 'university', 'industry'], rivalries: ['Toronto', 'Hamilton'] },
+            'Saskatoon': { population: 320000, region: 'Prairies', heritage: ['prairie', 'agriculture', 'indigenous'], rivalries: ['Regina', 'Winnipeg'] },
+            'Victoria': { population: 395000, region: 'BC', heritage: ['coastal', 'British', 'gardens'], rivalries: ['Vancouver', 'Calgary'] },
+            'Kitchener-Waterloo': { population: 575000, region: 'Ontario', heritage: ['German', 'tech', 'university'], rivalries: ['Toronto', 'Hamilton'] }
+        };
+
+        // Existing CFL team names to check uniqueness
+        const existingNames = ['Argonauts', 'Tiger-Cats', 'Stampeders', 'Elks', 'Lions', 'Blue Bombers', 'Roughriders', 'Redblacks', 'Alouettes'];
+
+        // DOM Elements
+        const citySelect = document.getElementById('city');
+        const teamNameInput = document.getElementById('teamName');
+        const taglineInput = document.getElementById('tagline');
+        const primaryColorInput = document.getElementById('primaryColor');
+        const secondaryColorInput = document.getElementById('secondaryColor');
+        const mascotNameInput = document.getElementById('mascotName');
+        const mascotDescInput = document.getElementById('mascotDescription');
+        const logoDescInput = document.getElementById('logoDescription');
+
+        // Initialize
+        function init() {
+            // Add event listeners
+            citySelect.addEventListener('change', updateBrand);
+            teamNameInput.addEventListener('input', updateBrand);
+            taglineInput.addEventListener('input', updateBrand);
+            primaryColorInput.addEventListener('input', updateColors);
+            secondaryColorInput.addEventListener('input', updateColors);
+            mascotNameInput.addEventListener('input', updateBrand);
+            mascotDescInput.addEventListener('input', updateBrand);
+            logoDescInput.addEventListener('input', updateBrand);
+
+            // Initial update
+            updateColors();
+        }
+
+        function updateColors() {
+            const primary = primaryColorInput.value;
+            const secondary = secondaryColorInput.value;
+
+            // Update hex displays
+            document.getElementById('primaryHex').textContent = primary;
+            document.getElementById('secondaryHex').textContent = secondary;
+
+            // Update preview header
+            const header = document.getElementById('previewHeader');
+            header.style.backgroundColor = primary;
+            header.querySelector('h2').style.color = getContrastColor(primary);
+            header.querySelector('.tagline').style.color = getContrastColor(primary, 0.85);
+
+            // Update jerseys
+            const homeJersey = document.getElementById('homeJersey');
+            homeJersey.style.backgroundColor = primary;
+            homeJersey.style.color = secondary;
+            document.getElementById('homeNumber').style.color = secondary;
+
+            const awayJersey = document.getElementById('awayJersey');
+            awayJersey.style.backgroundColor = '#ffffff';
+            awayJersey.style.color = primary;
+            awayJersey.style.border = `3px solid ${primary}`;
+            document.getElementById('awayNumber').style.color = primary;
+
+            // Update swatches
+            document.getElementById('primarySwatch').style.backgroundColor = primary;
+            document.getElementById('secondarySwatch').style.backgroundColor = secondary;
+
+            updateBrand();
+        }
+
+        function updateBrand() {
+            const city = citySelect.value;
+            const teamName = teamNameInput.value.trim();
+            const tagline = taglineInput.value.trim();
+            const mascotName = mascotNameInput.value.trim();
+            const mascotDesc = mascotDescInput.value.trim();
+            const logoDesc = logoDescInput.value.trim();
+
+            // Update preview
+            document.getElementById('previewTeamName').textContent = city && teamName ? `${city} ${teamName}` : 'Your Team Name';
+            document.getElementById('previewTagline').textContent = tagline || 'Your tagline here';
+            document.getElementById('infoCity').textContent = city || '--';
+            document.getElementById('infoMascot').textContent = mascotName || '--';
+            document.getElementById('infoLogo').textContent = logoDesc || 'Enter your logo concept description...';
+            document.getElementById('infoMascotDesc').textContent = mascotDesc || 'Enter your mascot description...';
+
+            // Calculate and update scores
+            calculateScores();
+        }
+
+        function calculateScores() {
+            const city = citySelect.value;
+            const teamName = teamNameInput.value.trim().toLowerCase();
+            const tagline = taglineInput.value.trim();
+            const mascotName = mascotNameInput.value.trim();
+            const mascotDesc = mascotDescInput.value.trim();
+            const logoDesc = logoDescInput.value.trim();
+            const primary = primaryColorInput.value;
+            const secondary = secondaryColorInput.value;
+
+            // Uniqueness Score (0-100)
+            let uniqueness = 50; // Base score
+            if (teamName) {
+                // Check against existing CFL names
+                const isUnique = !existingNames.some(name =>
+                    teamName.includes(name.toLowerCase()) || name.toLowerCase().includes(teamName)
+                );
+                if (isUnique) uniqueness += 25;
+
+                // Check name length (medium names score better)
+                if (teamName.length >= 6 && teamName.length <= 12) uniqueness += 15;
+
+                // Bonus for creative/distinctive names
+                const genericTerms = ['team', 'city', 'football', 'sports'];
+                if (!genericTerms.some(term => teamName.includes(term))) uniqueness += 10;
+            }
+            uniqueness = Math.min(100, uniqueness);
+
+            // Local Relevance Score (0-100)
+            let localRelevance = 30; // Base score
+            if (city && cityData[city]) {
+                const heritage = cityData[city].heritage;
+                // Check if team name or descriptions reference local heritage
+                const allText = `${teamName} ${tagline} ${mascotDesc} ${logoDesc}`.toLowerCase();
+                heritage.forEach(term => {
+                    if (allText.includes(term)) localRelevance += 20;
+                });
+                localRelevance = Math.min(100, localRelevance);
+            }
+
+            // Merchandise Potential Score (0-100)
+            let merchPotential = 40; // Base score
+
+            // Color contrast affects merch appeal
+            const colorContrast = getColorContrast(primary, secondary);
+            if (colorContrast > 4.5) merchPotential += 20;
+            else if (colorContrast > 3) merchPotential += 10;
+
+            // Team name length (shorter = better for merch)
+            if (teamName && teamName.length <= 10) merchPotential += 15;
+
+            // Mascot presence boosts merch
+            if (mascotName && mascotDesc) merchPotential += 15;
+
+            // Logo concept detail
+            if (logoDesc && logoDesc.length > 50) merchPotential += 10;
+
+            merchPotential = Math.min(100, merchPotential);
+
+            // Overall Score
+            const overall = Math.round((uniqueness + localRelevance + merchPotential) / 3);
+
+            // Update displays
+            updateScoreDisplay('uniqueness', uniqueness);
+            updateScoreDisplay('localRelevance', localRelevance);
+            updateScoreDisplay('merchPotential', merchPotential);
+            updateScoreDisplay('overall', overall);
+
+            // Generate insights
+            generateInsights(uniqueness, localRelevance, merchPotential, city, teamName);
+        }
+
+        function updateScoreDisplay(metric, score) {
+            const scoreEl = document.getElementById(`${metric}Score`);
+            const fillEl = document.getElementById(`${metric}Fill`);
+
+            scoreEl.textContent = score > 0 ? score : '--';
+            fillEl.style.width = `${score}%`;
+
+            // Update color class
+            fillEl.classList.remove('high', 'medium', 'low');
+            if (score >= 70) fillEl.classList.add('high');
+            else if (score >= 40) fillEl.classList.add('medium');
+            else fillEl.classList.add('low');
+        }
+
+        function generateInsights(uniqueness, localRelevance, merchPotential, city, teamName) {
+            const container = document.getElementById('insightsContainer');
+            const insights = [];
+
+            if (!city || !teamName) {
+                container.innerHTML = '<div class="insight-item neutral">Start building your brand to see strategic insights...</div>';
+                return;
+            }
+
+            // Uniqueness insights
+            if (uniqueness >= 80) {
+                insights.push({ type: 'positive', text: `Strong brand differentiation! "${teamName}" stands out in the CFL landscape.` });
+            } else if (uniqueness < 50) {
+                insights.push({ type: 'negative', text: 'Consider a more distinctive team name to stand out from existing CFL brands.' });
+            }
+
+            // Local relevance insights
+            if (localRelevance >= 70) {
+                insights.push({ type: 'positive', text: `Excellent local connection to ${city}'s identity and heritage.` });
+            } else if (localRelevance < 50) {
+                insights.push({ type: 'neutral', text: `Tip: Incorporate ${city}'s local heritage (${cityData[city]?.heritage.join(', ')}) into your brand story.` });
+            }
+
+            // Merch insights
+            if (merchPotential >= 75) {
+                insights.push({ type: 'positive', text: 'High merchandise potential! Strong colors and brand elements will sell well.' });
+            } else if (merchPotential < 50) {
+                insights.push({ type: 'neutral', text: 'Add a mascot and detailed logo concept to boost merchandise appeal.' });
+            }
+
+            // Color-specific insights
+            const colorContrast = getColorContrast(primaryColorInput.value, secondaryColorInput.value);
+            if (colorContrast < 3) {
+                insights.push({ type: 'negative', text: 'Low color contrast may affect visibility on merchandise and broadcasts. Consider more distinct colors.' });
+            }
+
+            // Rivalry insight
+            if (cityData[city]) {
+                const rivals = cityData[city].rivalries;
+                insights.push({ type: 'neutral', text: `Natural rivalries: ${rivals.join(', ')}. Consider how your brand will play against these markets.` });
+            }
+
+            // Render insights
+            container.innerHTML = insights.map(insight =>
+                `<div class="insight-item ${insight.type}">${insight.text}</div>`
+            ).join('');
+        }
+
+        function loadPreset(presetName) {
+            const preset = presets[presetName];
+            if (!preset) return;
+
+            citySelect.value = preset.city;
+            teamNameInput.value = preset.teamName;
+            taglineInput.value = preset.tagline;
+            primaryColorInput.value = preset.primaryColor;
+            secondaryColorInput.value = preset.secondaryColor;
+            mascotNameInput.value = preset.mascotName;
+            mascotDescInput.value = preset.mascotDescription;
+            logoDescInput.value = preset.logoDescription;
+
+            updateColors();
+        }
+
+        function resetBrand() {
+            citySelect.value = '';
+            teamNameInput.value = '';
+            taglineInput.value = '';
+            primaryColorInput.value = '#1e3a5f';
+            secondaryColorInput.value = '#c9a227';
+            mascotNameInput.value = '';
+            mascotDescInput.value = '';
+            logoDescInput.value = '';
+
+            updateColors();
+        }
+
+        function exportBrandPackage() {
+            const city = citySelect.value || 'TBD';
+            const teamName = teamNameInput.value.trim() || 'TBD';
+            const tagline = taglineInput.value.trim() || 'TBD';
+            const primary = primaryColorInput.value;
+            const secondary = secondaryColorInput.value;
+            const mascotName = mascotNameInput.value.trim() || 'TBD';
+            const mascotDesc = mascotDescInput.value.trim() || 'TBD';
+            const logoDesc = logoDescInput.value.trim() || 'TBD';
+
+            const brandPackage = `
+═══════════════════════════════════════════════════════════════
+                    CFL EXPANSION BRAND PACKAGE
+═══════════════════════════════════════════════════════════════
+
+TEAM IDENTITY
+─────────────────────────────────────────────────────────────
+Team Name:      ${city} ${teamName}
+Tagline:        "${tagline}"
+Market:         ${city}
+
+COLOR PALETTE
+─────────────────────────────────────────────────────────────
+Primary Color:    ${primary}
+Secondary Color:  ${secondary}
+Accent Color:     #FFFFFF (White)
+
+MASCOT
+─────────────────────────────────────────────────────────────
+Name:           ${mascotName}
+Description:    ${mascotDesc}
+
+LOGO CONCEPT
+─────────────────────────────────────────────────────────────
+${logoDesc}
+
+BRAND METRICS
+─────────────────────────────────────────────────────────────
+Uniqueness Score:      ${document.getElementById('uniquenessScore').textContent}/100
+Local Relevance:       ${document.getElementById('localRelevanceScore').textContent}/100
+Merchandise Potential: ${document.getElementById('merchPotentialScore').textContent}/100
+Overall Brand Score:   ${document.getElementById('overallScore').textContent}/100
+
+═══════════════════════════════════════════════════════════════
+Generated: ${new Date().toLocaleDateString()}
+CFL League Expansion Project - Business of Sports Marketing
+═══════════════════════════════════════════════════════════════
+`;
+
+            // Create and download file
+            const blob = new Blob([brandPackage], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${city.replace(/\s+/g, '-')}-${teamName.replace(/\s+/g, '-')}-brand-package.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Utility functions
+        function getContrastColor(hexColor, opacity = 1) {
+            const r = parseInt(hexColor.slice(1, 3), 16);
+            const g = parseInt(hexColor.slice(3, 5), 16);
+            const b = parseInt(hexColor.slice(5, 7), 16);
+            const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            const color = luminance > 0.5 ? '0, 0, 0' : '255, 255, 255';
+            return `rgba(${color}, ${opacity})`;
+        }
+
+        function getColorContrast(hex1, hex2) {
+            const lum1 = getLuminance(hex1);
+            const lum2 = getLuminance(hex2);
+            const brightest = Math.max(lum1, lum2);
+            const darkest = Math.min(lum1, lum2);
+            return (brightest + 0.05) / (darkest + 0.05);
+        }
+
+        function getLuminance(hex) {
+            const r = parseInt(hex.slice(1, 3), 16) / 255;
+            const g = parseInt(hex.slice(3, 5), 16) / 255;
+            const b = parseInt(hex.slice(5, 7), 16) / 255;
+
+            const rs = r <= 0.03928 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4);
+            const gs = g <= 0.03928 ? g / 12.92 : Math.pow((g + 0.055) / 1.055, 2.4);
+            const bs = b <= 0.03928 ? b / 12.92 : Math.pow((b + 0.055) / 1.055, 2.4);
+
+            return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

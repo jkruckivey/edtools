@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsorship ROI Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        *:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .widget-box {
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+
+        h1 {
+            color: var(--color-neutral-900);
+            margin-bottom: 0.25rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: var(--color-neutral-600);
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .panel h2 {
+            color: var(--color-neutral-900);
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--color-neutral-900);
+            padding-bottom: 0.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 4px;
+            color: var(--color-neutral-900);
+            font-size: 1rem;
+        }
+
+        .input-group input:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+            border-color: var(--color-neutral-900);
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .calculate-btn:hover {
+            background: var(--color-neutral-700);
+            transform: translateY(-2px);
+        }
+
+        .results {
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .results h2 {
+            color: var(--color-neutral-900);
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: var(--color-neutral-600);
+            font-size: 0.9rem;
+        }
+
+        .roi-rating {
+            padding: 1.5rem;
+            background: white;
+            border-radius: 4px;
+            border-left: 3px solid var(--color-neutral-400);
+            margin-bottom: 1.5rem;
+        }
+
+        .roi-rating h3 {
+            color: var(--color-neutral-900);
+            margin-bottom: 0.75rem;
+        }
+
+        .breakdown {
+            margin-top: 1.5rem;
+        }
+
+        .breakdown h3 {
+            color: var(--color-neutral-900);
+            margin-bottom: 1rem;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem;
+            background: var(--color-neutral-50);
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+        }
+
+        .breakdown-label {
+            color: var(--color-neutral-600);
+        }
+
+        .breakdown-value {
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .help-text {
+            font-size: 0.85rem;
+            color: var(--color-neutral-500);
+            margin-top: 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+        <h1>Sponsorship ROI Calculator</h1>
+        <p class="subtitle">Calculate return on investment for sports sponsorship activations</p>
+
+        <div class="grid">
+            <div class="panel">
+                <h2>Sponsorship Investment</h2>
+
+                <div class="input-group">
+                    <label for="rights-fee">Rights Fee (Annual)</label>
+                    <input type="number" id="rights-fee" value="500000" min="0" step="10000">
+                    <div class="help-text">Base sponsorship rights payment</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="activation"><abbr title="Marketing spend to promote and leverage the sponsorship beyond the rights fee - includes advertising, events, content creation">Activation</abbr> Budget</label>
+                    <input type="number" id="activation" value="200000" min="0" step="10000">
+                    <div class="help-text">Marketing, events, content creation</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="hospitality">Hospitality & Experiences</label>
+                    <input type="number" id="hospitality" value="100000" min="0" step="10000">
+                    <div class="help-text">Suite, tickets, client entertainment</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="production">Content Production</label>
+                    <input type="number" id="production" value="50000" min="0" step="10000">
+                    <div class="help-text">Photos, videos, social content</div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>Expected Returns</h2>
+
+                <div class="input-group">
+                    <label for="impressions">Media Impressions (Millions)</label>
+                    <input type="number" id="impressions" value="50" min="0" step="1">
+                    <div class="help-text">Logo visibility, mentions, reach</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="cpm">Value per 1000 Impressions (CPM)</label>
+                    <input type="number" id="cpm" value="25" min="0" step="0.5">
+                    <div class="help-text">Industry benchmark: $15-$35</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="leads">Marketing Leads Generated</label>
+                    <input type="number" id="leads" value="500" min="0" step="10">
+                    <div class="help-text">Qualified leads from activation</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="lead-value">Value per Lead</label>
+                    <input type="number" id="lead-value" value="200" min="0" step="10">
+                    <div class="help-text">Average customer acquisition value</div>
+                </div>
+            </div>
+
+            <div class="panel full-width">
+                <h2>Additional Value Drivers</h2>
+
+                <div class="grid">
+                    <div class="input-group">
+                        <label for="brand-lift">Brand Awareness Lift (%)</label>
+                        <input type="number" id="brand-lift" value="15" min="0" max="100" step="1">
+                        <div class="help-text">Measured increase in brand awareness</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="brand-value">Estimated Value of Brand Lift</label>
+                        <input type="number" id="brand-value" value="300000" min="0" step="10000">
+                        <div class="help-text">Marketing equivalent value</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="sales-lift">Direct Sales Attributed</label>
+                        <input type="number" id="sales-lift" value="150000" min="0" step="10000">
+                        <div class="help-text">Revenue directly tied to sponsorship</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="b2b-value">B2B Relationship Value</label>
+                        <input type="number" id="b2b-value" value="100000" min="0" step="10000">
+                        <div class="help-text">Client entertainment, employee engagement</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="calculate-btn" onclick="calculateROI()">Calculate Sponsorship ROI</button>
+
+        <div id="results" style="display: none;">
+            <div class="results">
+                <h2>ROI Analysis</h2>
+
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" id="total-investment">$0</div>
+                        <div class="metric-label">Total Investment</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="total-return">$0</div>
+                        <div class="metric-label">Total Return</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="net-value">$0</div>
+                        <div class="metric-label">Net Value</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="roi-percentage">0%</div>
+                        <div class="metric-label">ROI</div>
+                    </div>
+                </div>
+
+                <div class="roi-rating" id="roi-rating">
+                    <!-- Rating will be generated dynamically -->
+                </div>
+
+                <div class="breakdown">
+                    <h3>Investment Breakdown</h3>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Rights Fee</span>
+                        <span class="breakdown-value" id="bd-rights">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Activation</span>
+                        <span class="breakdown-value" id="bd-activation">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Hospitality</span>
+                        <span class="breakdown-value" id="bd-hospitality">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Production</span>
+                        <span class="breakdown-value" id="bd-production">$0</span>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h3>Return Breakdown</h3>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Media Value (Impressions)</span>
+                        <span class="breakdown-value" id="bd-media">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Lead Generation Value</span>
+                        <span class="breakdown-value" id="bd-leads">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Brand Awareness Lift</span>
+                        <span class="breakdown-value" id="bd-brand">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Direct Sales</span>
+                        <span class="breakdown-value" id="bd-sales">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">B2B Relationship Value</span>
+                        <span class="breakdown-value" id="bd-b2b">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        function formatCurrency(value) {
+            return '$' + value.toLocaleString('en-US', {maximumFractionDigits: 0});
+        }
+
+        function calculateROI() {
+            // Get all inputs
+            const rightsFee = parseFloat(document.getElementById('rights-fee').value) || 0;
+            const activation = parseFloat(document.getElementById('activation').value) || 0;
+            const hospitality = parseFloat(document.getElementById('hospitality').value) || 0;
+            const production = parseFloat(document.getElementById('production').value) || 0;
+
+            const impressions = parseFloat(document.getElementById('impressions').value) || 0;
+            const cpm = parseFloat(document.getElementById('cpm').value) || 0;
+            const leads = parseFloat(document.getElementById('leads').value) || 0;
+            const leadValue = parseFloat(document.getElementById('lead-value').value) || 0;
+            const brandLift = parseFloat(document.getElementById('brand-lift').value) || 0;
+            const brandValue = parseFloat(document.getElementById('brand-value').value) || 0;
+            const salesLift = parseFloat(document.getElementById('sales-lift').value) || 0;
+            const b2bValue = parseFloat(document.getElementById('b2b-value').value) || 0;
+
+            // Calculate investment
+            const totalInvestment = rightsFee + activation + hospitality + production;
+
+            // Calculate returns
+            const mediaValue = (impressions * cpm * 1000);
+            const leadGenValue = leads * leadValue;
+            const brandLiftValue = (brandLift / 100) * brandValue;
+            const directSales = salesLift;
+            const b2bRelationshipValue = b2bValue;
+
+            const totalReturn = mediaValue + leadGenValue + brandLiftValue + directSales + b2bRelationshipValue;
+
+            // Calculate ROI
+            const netValue = totalReturn - totalInvestment;
+            const roiPercentage = ((netValue / totalInvestment) * 100).toFixed(1);
+
+            // Display results
+            document.getElementById('total-investment').textContent = formatCurrency(totalInvestment);
+            document.getElementById('total-return').textContent = formatCurrency(totalReturn);
+            document.getElementById('net-value').textContent = formatCurrency(netValue);
+            document.getElementById('roi-percentage').textContent = roiPercentage + '%';
+
+            // Color code ROI
+            const roiElement = document.getElementById('roi-percentage');
+            if (roiPercentage >= 100) {
+                roiElement.style.color = '#4ade80';
+            } else if (roiPercentage >= 50) {
+                roiElement.style.color = '#fbbf24';
+            } else {
+                roiElement.style.color = '#f87171';
+            }
+
+            // Investment breakdown
+            document.getElementById('bd-rights').textContent = formatCurrency(rightsFee);
+            document.getElementById('bd-activation').textContent = formatCurrency(activation);
+            document.getElementById('bd-hospitality').textContent = formatCurrency(hospitality);
+            document.getElementById('bd-production').textContent = formatCurrency(production);
+
+            // Return breakdown
+            document.getElementById('bd-media').textContent = formatCurrency(mediaValue);
+            document.getElementById('bd-leads').textContent = formatCurrency(leadGenValue);
+            document.getElementById('bd-brand').textContent = formatCurrency(brandLiftValue);
+            document.getElementById('bd-sales').textContent = formatCurrency(directSales);
+            document.getElementById('bd-b2b').textContent = formatCurrency(b2bRelationshipValue);
+
+            // ROI Rating
+            let rating, ratingText, ratingColor;
+            if (roiPercentage >= 150) {
+                rating = 'Excellent';
+                ratingText = 'Outstanding ROI - well above industry benchmarks. Strong case for renewal and expansion.';
+                ratingColor = 'var(--color-neutral-700)';
+            } else if (roiPercentage >= 100) {
+                rating = 'Good';
+                ratingText = 'Solid ROI meeting industry benchmarks. Sponsorship is delivering value, consider optimizing activation.';
+                ratingColor = 'var(--color-neutral-700)';
+            } else if (roiPercentage >= 50) {
+                rating = 'Fair';
+                ratingText = 'Moderate ROI - below expectations. Review activation strategy and measurement methodology.';
+                ratingColor = 'var(--color-neutral-600)';
+            } else if (roiPercentage >= 0) {
+                rating = 'Poor';
+                ratingText = 'Low ROI - not meeting objectives. Consider renegotiating terms or ending partnership.';
+                ratingColor = 'var(--color-neutral-600)';
+            } else {
+                rating = 'Negative';
+                ratingText = 'Negative ROI - losing money on this sponsorship. Immediate action required.';
+                ratingColor = 'var(--color-neutral-600)';
+            }
+
+            document.getElementById('roi-rating').innerHTML = `
+                <h3 style="color: ${ratingColor}">Rating: ${rating} (${roiPercentage}% ROI)</h3>
+                <p style="color: var(--color-neutral-900); line-height: 1.6;">${ratingText}</p>
+                <p style="color: var(--color-neutral-600); margin-top: 1rem; font-size: 0.9rem;">
+                    <strong>Industry Benchmark:</strong> Most B2C sponsors target 100-200% ROI for sports partnerships.
+                    Activation budget typically matches rights fee (1:1 ratio).
+                </p>
+                <p style="color: var(--color-neutral-500); margin-top: 0.75rem; font-size: 0.85rem; font-style: italic;">
+                    <strong>Context:</strong> B2B sponsors often accept lower measurable ROI for relationship-building value.
+                    Endemic brands (sports-related companies) may have different expectations.
+                    First-year partnerships rarely hit target ROI—value typically grows in years 2-3.
+                </p>
+            `;
+
+            // Show results
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>

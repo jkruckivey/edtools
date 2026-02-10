@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Athlete Brand Calculator - Build Revenue Portfolios</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-error: #ef4444;
+            --color-success: #c0d1cd;
+            --color-warning: #f0ede0;
+            --color-info: #bfe5e7;
+            --color-purple: #d5cae0;
+            --color-green: #c0d1cd;
+            --color-turquoise: #bfe5e7;
+            --color-sand: #f0ede0;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: white;
+            color: var(--color-neutral-700);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--color-neutral-50);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--color-neutral-200);
+        }
+
+        /* Two-column horizontal layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            color: var(--color-neutral-900);
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--color-neutral-500);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Live region for screen reader announcements */
+        #sr-live-region {
+            position: absolute;
+            left: -10000px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--color-neutral-200);
+            background: white;
+            padding: 4px 4px 0 4px;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 20px;
+            background: transparent;
+            color: var(--color-neutral-500);
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .tab-btn:hover {
+            background: var(--color-neutral-50);
+            color: var(--color-neutral-700);
+        }
+
+        .tab-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: -2px;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--color-neutral-900);
+            font-weight: 600;
+            border-bottom-color: var(--color-neutral-900);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Section Styles */
+        .allocation-section,
+        .calculations-section,
+        .comparison-section {
+            background: white;
+            padding: 24px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--color-neutral-200);
+        }
+
+        .section-title {
+            color: var(--color-neutral-900);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .budget-indicator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            background: var(--color-neutral-50);
+            border-radius: 6px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--color-neutral-500);
+        }
+
+        .budget-label {
+            color: var(--color-neutral-600);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .budget-values {
+            text-align: right;
+        }
+
+        .budget-allocated {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--color-neutral-700);
+        }
+
+        .budget-remaining {
+            font-size: 0.85rem;
+            color: var(--color-neutral-500);
+            margin-top: 2px;
+        }
+
+        .slider-group {
+            margin-bottom: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--color-neutral-200);
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .stream-name {
+            font-weight: 600;
+            color: var(--color-neutral-700);
+            font-size: 0.85rem;
+        }
+
+        .stream-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-neutral-700);
+        }
+
+        .stream-description {
+            font-size: 0.8rem;
+            color: var(--color-neutral-500);
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--color-neutral-300);
+            outline: none;
+            -webkit-appearance: none;
+            transition: background 0.2s;
+        }
+
+        input[type="range"]:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-neutral-500);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: background 0.2s;
+        }
+
+        input[type="range"]:hover::-webkit-slider-thumb {
+            background: var(--color-neutral-600);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-neutral-500);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: background 0.2s;
+        }
+
+        input[type="range"]:hover::-moz-range-thumb {
+            background: var(--color-neutral-600);
+        }
+
+        /* Slider columns for horizontal layout */
+        .slider-column {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* Metrics panel for horizontal layout */
+        .metrics-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .metric-card {
+            padding: 12px;
+            background: var(--color-neutral-50);
+            border-radius: 6px;
+            border-left: 3px solid var(--color-neutral-500);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .metric-label {
+            color: var(--color-neutral-500);
+            font-size: 0.8rem;
+        }
+
+        .metric-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-neutral-700);
+        }
+
+        .metric-unit {
+            font-size: 0.8rem;
+            color: var(--color-neutral-500);
+            font-weight: 400;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 180px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--color-neutral-200);
+        }
+
+        /* Comparison Section */
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .preset-btn {
+            padding: 12px 16px;
+            background: white;
+            color: var(--color-neutral-700);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: var(--color-neutral-50);
+            border-color: var(--color-neutral-300);
+            transform: translateY(-1px);
+        }
+
+        .preset-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .preset-btn.active {
+            background: var(--color-neutral-900);
+            color: white;
+            border-color: var(--color-neutral-900);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .comparison-table th {
+            text-align: left;
+            padding: 12px;
+            background: var(--color-neutral-50);
+            color: var(--color-neutral-600);
+            font-weight: 600;
+            border-bottom: 2px solid var(--color-neutral-200);
+        }
+
+        .comparison-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--color-neutral-200);
+            color: var(--color-neutral-700);
+        }
+
+        .comparison-table tr:hover {
+            background: var(--color-neutral-50);
+        }
+
+        .comparison-table .highlight {
+            background: var(--color-neutral-50);
+            font-weight: 600;
+        }
+
+        /* Export Button */
+        .export-btn {
+            width: 100%;
+            padding: 12px 24px;
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 16px;
+        }
+
+        .export-btn:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .export-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .tab-nav {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .tab-btn {
+                border-bottom: none;
+                border-left: 3px solid transparent;
+            }
+
+            .tab-btn.active {
+                border-left-color: var(--color-neutral-900);
+                border-bottom-color: transparent;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .preset-buttons {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .chart-container {
+                height: 200px;
+            }
+
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Splash Screen Styles */
+        .splash-screen { text-align: center; padding: 2rem 1.5rem; }
+        .splash-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.5rem; }
+        .splash-subtitle { font-size: 0.9rem; color: var(--color-neutral-600); margin-bottom: 1.5rem; }
+        .splash-box { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.25rem; margin-bottom: 1.5rem; text-align: left; }
+        .splash-box-title { font-size: 0.8rem; font-weight: 600; color: var(--color-neutral-700); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .splash-box ul { list-style: none; padding: 0; margin: 0; }
+        .splash-box li { font-size: 0.85rem; color: var(--color-neutral-600); padding: 0.4rem 0; padding-left: 1.25rem; position: relative; line-height: 1.5; }
+        .splash-box li::before { content: "•"; position: absolute; left: 0; color: var(--color-neutral-400); }
+        .splash-disclaimer { font-size: 0.75rem; color: var(--color-neutral-500); font-style: italic; margin-bottom: 1.5rem; line-height: 1.5; }
+        .splash-btn { padding: 0.75rem 2rem; background: var(--color-neutral-800); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+        .splash-btn:hover { background: var(--color-neutral-700); }
+        .splash-btn:focus { outline: 3px solid var(--color-neutral-900); outline-offset: 2px; }
+        .simulator-screen { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Splash Screen -->
+        <div class="splash-screen" id="splashScreen">
+            <h1 class="splash-title">Athlete Brand Calculator</h1>
+            <p class="splash-subtitle">Explore how portfolio allocation affects long-term wealth</p>
+
+            <div class="splash-box">
+                <div class="splash-box-title">What This Tool Does</div>
+                <ul>
+                    <li>Allocates a hypothetical $50M budget across five revenue streams (endorsements, owned businesses, investments, media, licensing)</li>
+                    <li>Projects 20-year wealth trajectories based on different growth assumptions</li>
+                    <li>Compares your allocation to preset strategies (Serena Williams, LeBron James, Michael Jordan)</li>
+                </ul>
+            </div>
+
+            <div class="splash-box">
+                <div class="splash-box-title">Model Simplifications</div>
+                <ul>
+                    <li><strong>Growth rates are illustrative, not predictive:</strong> Owned businesses at 25% annual growth is aggressive — many businesses fail. Investments at 10% assumes consistent market returns.</li>
+                    <li><strong>Endorsement decline is modeled, not guaranteed:</strong> The -8% post-retirement decline is a pattern, not a rule. Some athletes maintain endorsement value; others lose it faster.</li>
+                    <li><strong>No taxes, fees, or costs modeled:</strong> Real wealth is reduced by management fees, taxes, and operating costs not captured here.</li>
+                    <li><strong>Celebrity portfolios are estimates:</strong> Serena, LeBron, and MJ allocations are approximated from public reporting — not verified financial disclosures.</li>
+                </ul>
+            </div>
+
+            <p class="splash-disclaimer">
+                This tool illustrates how allocation choices affect compounding outcomes. It's designed to build intuition about athlete wealth strategies, not to provide financial advice.
+            </p>
+
+            <button class="splash-btn" onclick="startSimulator()">I Understand — Explore the Calculator</button>
+        </div>
+
+        <!-- Main Calculator (hidden until splash acknowledged) -->
+        <div class="simulator-screen" id="simulatorScreen">
+        <h1>Athlete Brand Calculator</h1>
+        <p class="subtitle">Build revenue portfolios and compare 20-year wealth outcomes</p>
+
+        <!-- Screen Reader Live Region -->
+        <div id="sr-live-region" aria-live="polite" aria-atomic="true"></div>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav" role="tablist" aria-label="Calculator sections">
+            <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="tab-portfolio" id="tab-btn-portfolio" data-tab="portfolio">
+                Build Portfolio
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-results" id="tab-btn-results" data-tab="results">
+                View Results
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-compare" id="tab-btn-compare" data-tab="compare">
+                Compare Strategies
+            </button>
+        </nav>
+
+        <!-- Tab 1: Portfolio Allocation -->
+        <div class="tab-content active" id="tab-portfolio" role="tabpanel" aria-labelledby="tab-btn-portfolio">
+            <section class="allocation-section">
+                <h2 class="section-title">Build Your Portfolio ($50M Budget)</h2>
+
+                <div class="budget-indicator">
+                    <span class="budget-label">Total Allocated</span>
+                    <div class="budget-values">
+                        <div class="budget-allocated" id="total-allocated">$0M</div>
+                        <div class="budget-remaining" id="remaining-budget">$50M remaining</div>
+                    </div>
+                </div>
+
+                <div class="two-col">
+                    <div class="slider-column">
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <span class="stream-name">Endorsements</span>
+                                <span class="stream-value" id="endorsements-value">$0M</span>
+                            </div>
+                            <p class="stream-description">Fee-based income. Guaranteed cash, doesn't compound.</p>
+                            <label for="endorsements-slider" class="sr-only">Endorsements allocation in millions</label>
+                            <input type="range" id="endorsements-slider" min="0" max="50" value="0" step="0.5"
+                                   aria-valuemin="0" aria-valuemax="50" aria-valuenow="0" aria-label="Endorsements allocation">
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <span class="stream-name">Owned Businesses</span>
+                                <span class="stream-value" id="owned-value">$0M</span>
+                            </div>
+                            <p class="stream-description">Equity in ventures. High risk, compounds exponentially.</p>
+                            <label for="owned-slider" class="sr-only">Owned businesses allocation in millions</label>
+                            <input type="range" id="owned-slider" min="0" max="50" value="0" step="0.5"
+                                   aria-valuemin="0" aria-valuemax="50" aria-valuenow="0" aria-label="Owned businesses allocation">
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <span class="stream-name">Investments</span>
+                                <span class="stream-value" id="investments-value">$0M</span>
+                            </div>
+                            <p class="stream-description">Stock/VC funds. Moderate risk, steady compounding.</p>
+                            <label for="investments-slider" class="sr-only">Investments allocation in millions</label>
+                            <input type="range" id="investments-slider" min="0" max="50" value="0" step="0.5"
+                                   aria-valuemin="0" aria-valuemax="50" aria-valuenow="0" aria-label="Investments allocation">
+                        </div>
+                    </div>
+
+                    <div class="slider-column">
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <span class="stream-name">Media & Content</span>
+                                <span class="stream-value" id="media-value">$0M</span>
+                            </div>
+                            <p class="stream-description">Production/IP ownership. Generates residuals long-term.</p>
+                            <label for="media-slider" class="sr-only">Media and content allocation in millions</label>
+                            <input type="range" id="media-slider" min="0" max="50" value="0" step="0.5"
+                                   aria-valuemin="0" aria-valuemax="50" aria-valuenow="0" aria-label="Media and content allocation">
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <span class="stream-name">Licensing & IP</span>
+                                <span class="stream-value" id="licensing-value">$0M</span>
+                            </div>
+                            <p class="stream-description">Royalties from name/likeness. Passive, post-career income.</p>
+                            <label for="licensing-slider" class="sr-only">Licensing allocation in millions</label>
+                            <input type="range" id="licensing-slider" min="0" max="50" value="0" step="0.5"
+                                   aria-valuemin="0" aria-valuemax="50" aria-valuenow="0" aria-label="Licensing allocation">
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Tab 2: Results -->
+        <div class="tab-content" id="tab-results" role="tabpanel" aria-labelledby="tab-btn-results">
+            <section class="calculations-section">
+                <h2 class="section-title">Your 20-Year Wealth Projection</h2>
+
+                <div class="two-col">
+                    <div class="metrics-panel">
+                        <div class="metric-card">
+                            <div class="metric-label">Year 1 Income</div>
+                            <div class="metric-value" id="year1-income">$0<span class="metric-unit">M</span></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Year 20 Wealth</div>
+                            <div class="metric-value" id="year20-wealth">$0<span class="metric-unit">M</span></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Diversification</div>
+                            <div class="metric-value" id="diversification-score">0<span class="metric-unit">/100</span></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Risk-Adjusted</div>
+                            <div class="metric-value" id="risk-adjusted">0.00<span class="metric-unit">x</span></div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="wealthChart" role="img" aria-label="Line chart showing wealth trajectory from Year 0 to Year 20 based on your portfolio allocation."></canvas>
+                    </div>
+                </div>
+
+                <button class="export-btn" id="export-btn" aria-label="Export analysis to CSV file">
+                    Export Analysis to CSV
+                </button>
+            </section>
+        </div>
+
+        <!-- Tab 3: Compare Strategies -->
+        <div class="tab-content" id="tab-compare" role="tabpanel" aria-labelledby="tab-btn-compare">
+            <section class="comparison-section">
+                <h2 class="section-title">Compare to Proven Strategies</h2>
+
+                <div class="preset-buttons">
+                    <button class="preset-btn" data-preset="serena">Serena Williams</button>
+                    <button class="preset-btn" data-preset="lebron">LeBron James</button>
+                    <button class="preset-btn" data-preset="mj">Michael Jordan</button>
+                    <button class="preset-btn" data-preset="conservative">Conservative</button>
+                    <button class="preset-btn" data-preset="builder">Wealth Builder</button>
+                </div>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Strategy</th>
+                            <th>Endorsements</th>
+                            <th>Owned</th>
+                            <th>Investments</th>
+                            <th>Media</th>
+                            <th>Licensing</th>
+                            <th>20-Year Wealth</th>
+                            <th>Div. Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="comparison-tbody">
+                        <tr class="highlight">
+                            <td><strong>Your Strategy</strong></td>
+                            <td id="comp-your-end">$0M</td>
+                            <td id="comp-your-owned">$0M</td>
+                            <td id="comp-your-inv">$0M</td>
+                            <td id="comp-your-media">$0M</td>
+                            <td id="comp-your-lic">$0M</td>
+                            <td id="comp-your-wealth">$0M</td>
+                            <td id="comp-your-div">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+        </div><!-- End simulator-screen -->
+    </div>
+
+    <script>
+        function startSimulator() {
+            document.getElementById('splashScreen').style.display = 'none';
+            document.getElementById('simulatorScreen').style.display = 'block';
+        }
+
+        // ===== DATA STRUCTURES =====
+
+        const GROWTH_RATES = {
+            endorsements_active: 0.08,      // 8% during career (Years 1-10)
+            endorsements_retired: -0.08,    // -8% after retirement (Years 11-20)
+            owned_business: 0.25,            // 25% annual (all years)
+            investments: 0.10,               // 10% market returns (all years)
+            media_content: 0.15,             // 15% IP appreciation (all years)
+            licensing: 0.12                  // 12% passive income (all years)
+        };
+
+        const PRESET_PORTFOLIOS = {
+            serena: {
+                name: "Serena Williams",
+                endorsements: 15,
+                owned: 20,
+                investments: 10,
+                media: 3,
+                licensing: 2
+            },
+            lebron: {
+                name: "LeBron James",
+                endorsements: 10,
+                owned: 25,
+                investments: 12,
+                media: 3,
+                licensing: 0
+            },
+            mj: {
+                name: "Michael Jordan",
+                endorsements: 5,
+                owned: 15,
+                investments: 5,
+                media: 0,
+                licensing: 25
+            },
+            conservative: {
+                name: "Conservative Athlete",
+                endorsements: 35,
+                owned: 5,
+                investments: 8,
+                media: 2,
+                licensing: 0
+            },
+            builder: {
+                name: "Wealth Builder",
+                endorsements: 15,
+                owned: 20,
+                investments: 10,
+                media: 5,
+                licensing: 0
+            }
+        };
+
+        // ===== STATE =====
+        let currentAllocation = {
+            endorsements: 0,
+            owned: 0,
+            investments: 0,
+            media: 0,
+            licensing: 0
+        };
+
+        let wealthChart = null;
+        let currentTab = 'portfolio';
+
+        // ===== TAB MANAGEMENT =====
+
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                const isActive = btn.dataset.tab === tabName;
+                btn.classList.toggle('active', isActive);
+                btn.setAttribute('aria-selected', isActive);
+            });
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                const isActive = content.id === `tab-${tabName}`;
+                content.classList.toggle('active', isActive);
+            });
+
+            currentTab = tabName;
+
+            // Update chart if switching to results tab
+            if (tabName === 'results' && wealthChart) {
+                wealthChart.resize();
+            }
+
+            announceToScreenReader(`Switched to ${tabName} tab`);
+        }
+
+        function setupTabNavigation() {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    switchTab(e.target.dataset.tab);
+                });
+            });
+        }
+
+        // ===== CALCULATIONS =====
+
+        function calculateWealthTrajectory(allocation) {
+            const wealth = [0]; // Year 0
+
+            for (let year = 1; year <= 20; year++) {
+                let yearWealth = wealth[year - 1];
+
+                // Endorsements (decline after Year 10)
+                if (year <= 10) {
+                    yearWealth += allocation.endorsements * Math.pow(1 + GROWTH_RATES.endorsements_active, year);
+                } else {
+                    const peak = allocation.endorsements * Math.pow(1 + GROWTH_RATES.endorsements_active, 10);
+                    yearWealth += peak * Math.pow(1 + GROWTH_RATES.endorsements_retired, year - 10);
+                }
+
+                // Owned businesses (compound all years)
+                yearWealth += allocation.owned * Math.pow(1 + GROWTH_RATES.owned_business, year);
+
+                // Investments (compound all years)
+                yearWealth += allocation.investments * Math.pow(1 + GROWTH_RATES.investments, year);
+
+                // Media/Content (compound all years)
+                yearWealth += allocation.media * Math.pow(1 + GROWTH_RATES.media_content, year);
+
+                // Licensing (compound all years)
+                yearWealth += allocation.licensing * Math.pow(1 + GROWTH_RATES.licensing, year);
+
+                wealth.push(yearWealth);
+            }
+
+            return wealth;
+        }
+
+        function calculateDiversificationScore(allocation) {
+            const total = allocation.endorsements + allocation.owned + allocation.investments +
+                         allocation.media + allocation.licensing;
+
+            if (total === 0) return 0;
+
+            const percentages = [
+                allocation.endorsements / total,
+                allocation.owned / total,
+                allocation.investments / total,
+                allocation.media / total,
+                allocation.licensing / total
+            ];
+
+            const mean = 0.20; // Perfect diversification = 20% each
+            const variance = percentages.reduce((sum, p) => sum + Math.pow(p - mean, 2), 0) / 5;
+            const stdDev = Math.sqrt(variance);
+
+            return Math.max(0, Math.round(100 - (stdDev * 500)));
+        }
+
+        function calculateRiskAdjustedReturn(allocation) {
+            const wealth = calculateWealthTrajectory(allocation);
+            const finalWealth = wealth[20];
+            const initialInvestment = allocation.endorsements + allocation.owned +
+                                     allocation.investments + allocation.media + allocation.licensing;
+
+            if (initialInvestment === 0) return 0;
+
+            const totalReturn = (finalWealth - initialInvestment) / initialInvestment;
+
+            // Simple risk adjustment based on allocation volatility
+            const equityPct = (allocation.owned + allocation.investments) / initialInvestment;
+            const riskFactor = 1 + (equityPct * 0.5); // Higher equity = higher risk
+
+            return totalReturn / riskFactor;
+        }
+
+        // ===== UI UPDATES =====
+
+        function updateBudgetDisplay() {
+            const total = currentAllocation.endorsements + currentAllocation.owned +
+                         currentAllocation.investments + currentAllocation.media +
+                         currentAllocation.licensing;
+            const remaining = 50 - total;
+
+            document.getElementById('total-allocated').textContent = `$${total.toFixed(1)}M`;
+
+            // Update budget text with accessibility-friendly feedback
+            const remainingText = document.getElementById('remaining-budget');
+            if (remaining < 0) {
+                remainingText.textContent = `$${Math.abs(remaining).toFixed(1)}M over budget`;
+                remainingText.style.color = 'var(--color-neutral-900)';
+                remainingText.style.fontWeight = '600';
+            } else if (remaining === 0) {
+                remainingText.textContent = 'Complete: Budget fully allocated';
+                remainingText.style.color = 'var(--color-neutral-900)';
+                remainingText.style.fontWeight = '600';
+            } else {
+                remainingText.textContent = `$${remaining.toFixed(1)}M remaining`;
+                remainingText.style.color = 'var(--color-neutral-500)';
+                remainingText.style.fontWeight = '400';
+            }
+        }
+
+        function updateCalculations() {
+            const wealth = calculateWealthTrajectory(currentAllocation);
+            const year1 = wealth[1];
+            const year20 = wealth[20];
+            const divScore = calculateDiversificationScore(currentAllocation);
+            const riskAdj = calculateRiskAdjustedReturn(currentAllocation);
+
+            document.getElementById('year1-income').innerHTML =
+                `$${year1.toFixed(1)}<span class="metric-unit">M</span>`;
+            document.getElementById('year20-wealth').innerHTML =
+                `$${year20.toFixed(0)}<span class="metric-unit">M</span>`;
+            document.getElementById('diversification-score').innerHTML =
+                `${divScore}<span class="metric-unit">/100</span>`;
+            document.getElementById('risk-adjusted').innerHTML =
+                `${riskAdj.toFixed(2)}<span class="metric-unit">x</span>`;
+
+            updateChart(wealth);
+            updateComparisonTable();
+
+            // Screen reader announcement
+            announceToScreenReader(`Portfolio updated. Year 20 wealth: $${year20.toFixed(0)} million. Diversification score: ${divScore} out of 100.`);
+        }
+
+        function updateChart(wealthData) {
+            const ctx = document.getElementById('wealthChart').getContext('2d');
+            const labels = Array.from({length: 21}, (_, i) => `Year ${i}`);
+
+            if (wealthChart) {
+                wealthChart.destroy();
+            }
+
+            wealthChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total Wealth',
+                        data: wealthData,
+                        borderColor: 'var(--color-neutral-500)',
+                        backgroundColor: 'rgba(115, 115, 115, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true,
+                        pointRadius: 0,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: 'var(--color-neutral-500)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => `Wealth: $${context.parsed.y.toFixed(1)}M`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: (value) => `$${value}M`,
+                                color: 'var(--color-neutral-500)'
+                            },
+                            grid: {
+                                color: 'var(--color-neutral-200)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'var(--color-neutral-500)',
+                                maxTicksLimit: 11
+                            },
+                            grid: {
+                                color: 'var(--color-neutral-200)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateComparisonTable() {
+            // Update "Your Strategy" row
+            document.getElementById('comp-your-end').textContent = `$${currentAllocation.endorsements}M`;
+            document.getElementById('comp-your-owned').textContent = `$${currentAllocation.owned}M`;
+            document.getElementById('comp-your-inv').textContent = `$${currentAllocation.investments}M`;
+            document.getElementById('comp-your-media').textContent = `$${currentAllocation.media}M`;
+            document.getElementById('comp-your-lic').textContent = `$${currentAllocation.licensing}M`;
+
+            const wealth = calculateWealthTrajectory(currentAllocation);
+            document.getElementById('comp-your-wealth').textContent = `$${wealth[20].toFixed(0)}M`;
+            document.getElementById('comp-your-div').textContent = calculateDiversificationScore(currentAllocation);
+
+            // Add preset rows if not already added
+            const tbody = document.getElementById('comparison-tbody');
+            if (tbody.rows.length === 1) {
+                Object.entries(PRESET_PORTFOLIOS).forEach(([key, preset]) => {
+                    const wealth = calculateWealthTrajectory(preset);
+                    const divScore = calculateDiversificationScore(preset);
+
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td>${preset.name}</td>
+                        <td>$${preset.endorsements}M</td>
+                        <td>$${preset.owned}M</td>
+                        <td>$${preset.investments}M</td>
+                        <td>$${preset.media}M</td>
+                        <td>$${preset.licensing}M</td>
+                        <td>$${wealth[20].toFixed(0)}M</td>
+                        <td>${divScore}</td>
+                    `;
+                });
+            }
+        }
+
+        function announceToScreenReader(message) {
+            const liveRegion = document.getElementById('sr-live-region');
+            liveRegion.textContent = message;
+        }
+
+        // ===== EVENT HANDLERS =====
+
+        function setupSliderListeners() {
+            const sliders = {
+                endorsements: document.getElementById('endorsements-slider'),
+                owned: document.getElementById('owned-slider'),
+                investments: document.getElementById('investments-slider'),
+                media: document.getElementById('media-slider'),
+                licensing: document.getElementById('licensing-slider')
+            };
+
+            Object.entries(sliders).forEach(([key, slider]) => {
+                slider.addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    currentAllocation[key] = value;
+
+                    // Update display
+                    document.getElementById(`${key}-value`).textContent = `$${value}M`;
+
+                    // Update ARIA
+                    slider.setAttribute('aria-valuenow', value);
+
+                    updateBudgetDisplay();
+                    updateCalculations();
+                });
+            });
+        }
+
+        function setupPresetButtons() {
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const presetKey = e.target.dataset.preset;
+                    const preset = PRESET_PORTFOLIOS[presetKey];
+
+                    // Update sliders
+                    document.getElementById('endorsements-slider').value = preset.endorsements;
+                    document.getElementById('owned-slider').value = preset.owned;
+                    document.getElementById('investments-slider').value = preset.investments;
+                    document.getElementById('media-slider').value = preset.media;
+                    document.getElementById('licensing-slider').value = preset.licensing;
+
+                    // Update state
+                    currentAllocation = {...preset};
+
+                    // Update displays
+                    document.getElementById('endorsements-value').textContent = `$${preset.endorsements}M`;
+                    document.getElementById('owned-value').textContent = `$${preset.owned}M`;
+                    document.getElementById('investments-value').textContent = `$${preset.investments}M`;
+                    document.getElementById('media-value').textContent = `$${preset.media}M`;
+                    document.getElementById('licensing-value').textContent = `$${preset.licensing}M`;
+
+                    updateBudgetDisplay();
+                    updateCalculations();
+
+                    // Update button states
+                    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+
+                    announceToScreenReader(`Loaded ${preset.name} portfolio strategy`);
+
+                    // Switch to portfolio tab to see the changes
+                    switchTab('portfolio');
+                });
+            });
+        }
+
+        function setupExportButton() {
+            document.getElementById('export-btn').addEventListener('click', () => {
+                const wealth = calculateWealthTrajectory(currentAllocation);
+                let csv = 'Year,Endorsements,Owned Business,Investments,Media/Content,Licensing,Total Wealth\n';
+
+                for (let year = 0; year <= 20; year++) {
+                    csv += `${year},${currentAllocation.endorsements},${currentAllocation.owned},`;
+                    csv += `${currentAllocation.investments},${currentAllocation.media},`;
+                    csv += `${currentAllocation.licensing},${wealth[year].toFixed(2)}\n`;
+                }
+
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'athlete-brand-analysis.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                announceToScreenReader('Analysis exported to CSV file');
+            });
+        }
+
+        // ===== INITIALIZATION =====
+
+        function init() {
+            setupTabNavigation();
+            setupSliderListeners();
+            setupPresetButtons();
+            setupExportButton();
+            updateBudgetDisplay();
+            updateCalculations();
+        }
+
+        // Run when DOM loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>

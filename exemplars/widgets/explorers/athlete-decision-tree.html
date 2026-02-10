@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Athlete Decision Tree - Endorsement vs Equity</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-error: #ef4444;
+            --color-success: #c0d1cd;
+            --color-warning: #f0ede0;
+            --color-info: #bfe5e7;
+            --color-purple: #d5cae0;
+            --color-green: #c0d1cd;
+            --color-turquoise: #bfe5e7;
+            --color-sand: #f0ede0;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--color-neutral-600);
+            margin-bottom: 32px;
+            font-size: 0.95rem;
+        }
+
+        .progress-indicator {
+            text-align: center;
+            background: var(--color-turquoise);
+            padding: 12px;
+            border-radius: var(--border-radius);
+            margin-bottom: 24px;
+            font-weight: 600;
+            color: var(--color-neutral-700);
+            font-size: 0.9rem;
+        }
+
+        .decision-node {
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            display: none;
+        }
+
+        .decision-node.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .decision-question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 16px;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .option-btn {
+            padding: 16px;
+            background: white;
+            border: 2px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            position: relative;
+        }
+
+        .option-btn:hover {
+            border-color: var(--color-neutral-500);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .option-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .option-btn.selected {
+            background: var(--color-neutral-900);
+            border-color: var(--color-neutral-900);
+            color: white;
+        }
+
+        .option-label {
+            font-weight: 600;
+            font-size: 1rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .option-desc {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        .info-icon {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 20px;
+            height: 20px;
+            background: var(--color-neutral-400);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: help;
+        }
+
+        .option-btn.selected .info-icon {
+            background: white;
+            color: var(--color-neutral-900);
+        }
+
+        .tooltip {
+            position: absolute;
+            background: var(--color-neutral-900);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            white-space: normal;
+            max-width: 250px;
+            z-index: 10;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .info-icon:hover + .tooltip {
+            display: block;
+        }
+
+        /* Recommendation */
+        .recommendation {
+            display: none;
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            padding: 32px;
+        }
+
+        .recommendation.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .rec-header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--color-neutral-300);
+            margin-bottom: 24px;
+        }
+
+        .rec-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 12px;
+        }
+
+        .rec-strategy {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+
+        .rec-section {
+            margin-bottom: 24px;
+        }
+
+        .rec-section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--color-neutral-600);
+            margin-bottom: 8px;
+        }
+
+        .rec-content {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            color: var(--color-neutral-900);
+            line-height: 1.7;
+        }
+
+        .rec-content strong {
+            color: var(--color-neutral-900);
+        }
+
+        .rec-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .comparison-item {
+            background: var(--color-neutral-50);
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .comparison-label {
+            font-size: 0.75rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 4px;
+        }
+
+        .comparison-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .risk-low { background: #d1fae5; color: #065f46; }
+        .risk-moderate { background: var(--color-neutral-100); color: var(--color-neutral-800); }
+        .risk-high { background: #fee2e2; color: #991b1b; }
+
+        .athlete-example {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 16px;
+            border-radius: var(--border-radius);
+            margin-top: 12px;
+        }
+
+        .athlete-name {
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 4px;
+        }
+
+        .athlete-details {
+            font-size: 0.9rem;
+            color: #1e3a8a;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-900);
+            border: 2px solid var(--color-neutral-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-100);
+        }
+
+        .btn-primary {
+            background: var(--color-neutral-900);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            h1 { font-size: 1.5rem; }
+            .options-grid { grid-template-columns: 1fr; }
+            .action-buttons { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Athlete Decision Tree</h1>
+        <p class="subtitle">Navigate endorsement vs. equity trade-offs with personalized recommendations</p>
+
+        <div id="sr-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+        <div class="progress-indicator" id="progress">
+            Question 1 of 5
+        </div>
+
+        <!-- Decision 1: Career Stage -->
+        <div class="decision-node active" id="decision-1">
+            <div class="decision-question">What stage of your career are you in?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-decision="1" data-value="rookie" data-next="2a">
+                    <span class="option-label">Rookie (ages 22-26)</span>
+                    <span class="option-desc">Early career, building reputation, need cash flow</span>
+                    <span class="info-icon">i</span>
+                    <div class="tooltip">Focus on building financial foundation and learning business fundamentals</div>
+                </button>
+                <button class="option-btn" data-decision="1" data-value="peak" data-next="2b">
+                    <span class="option-label">Peak (ages 27-32)</span>
+                    <span class="option-desc">Maximum brand value, highest earning potential</span>
+                    <span class="info-icon">i</span>
+                    <div class="tooltip">Your window to build generational wealth - act now</div>
+                </button>
+                <button class="option-btn" data-decision="1" data-value="veteran" data-next="2c">
+                    <span class="option-label">Veteran (ages 33+)</span>
+                    <span class="option-desc">Planning post-career transition, preserve wealth</span>
+                    <span class="info-icon">i</span>
+                    <div class="tooltip">Protect what you've built and plan for life after sport</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Decision 2a: Rookie - Current Salary -->
+        <div class="decision-node" id="decision-2a">
+            <div class="decision-question">What's your current annual salary?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-decision="2a" data-value="low" data-next="3a">
+                    <span class="option-label">Under $2M/year</span>
+                    <span class="option-desc">Need cash flow, prioritize liquidity</span>
+                </button>
+                <button class="option-btn" data-decision="2a" data-value="high" data-next="3a">
+                    <span class="option-label">Over $5M/year</span>
+                    <span class="option-desc">Can afford to build equity</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Decision 2b: Peak - Brand Strength -->
+        <div class="decision-node" id="decision-2b">
+            <div class="decision-question">How would you describe your brand strength?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-decision="2b" data-value="elite" data-next="3b">
+                    <span class="option-label">Elite (household name)</span>
+                    <span class="option-desc">Maximum leverage in negotiations</span>
+                </button>
+                <button class="option-btn" data-decision="2b" data-value="strong" data-next="3b">
+                    <span class="option-label">Strong (recognized in sport)</span>
+                    <span class="option-desc">Good opportunities available</span>
+                </button>
+                <button class="option-btn" data-decision="2b" data-value="developing" data-next="3b">
+                    <span class="option-label">Developing (rising star)</span>
+                    <span class="option-desc">Building foundation for future</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Decision 2c: Veteran - Years Until Retirement -->
+        <div class="decision-node" id="decision-2c">
+            <div class="decision-question">How many years until you retire from playing?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-decision="2c" data-value="immediate" data-next="3c">
+                    <span class="option-label">1-2 years</span>
+                    <span class="option-desc">Preserve wealth, minimize risk</span>
+                </button>
+                <button class="option-btn" data-decision="2c" data-value="transition" data-next="3c">
+                    <span class="option-label">3-5 years</span>
+                    <span class="option-desc">Transition strategy</span>
+                </button>
+                <button class="option-btn" data-decision="2c" data-value="building" data-next="3c">
+                    <span class="option-label">5+ years</span>
+                    <span class="option-desc">Still building wealth</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Decision 3a: Rookie - Risk Tolerance -->
+        <div class="decision-node" id="decision-3a">
+            <div class="decision-question">What's your risk tolerance?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-decision="3a" data-value="conservative" data-next="4">
+                    <span class="option-label">Conservative</span>
+                    <span class="option-desc">Need guaranteed income</span>
+                </button>
+                <button class="option-btn" data-decision="3a" data-value="moderate" data-next="4">
+                    <span class="option-label">Moderate</span>
+                    <span class="option-desc">Balanced approach</span>
+                </button>
+                <button class="option-btn" data-decision="3a" data-value="aggressive" data-next="4">
+                    <span class="option-label">Aggressive</span>
+                    <span class="option-desc">Maximize long-term wealth</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Decision 3b: Peak - Capital Available -->
+        <div class="decision-node" id="decision-3b">
+            <div class="decision-question">How much capital do you have saved?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-decision="3b" data-value="low" data-next="4">
+                    <span class="option-label">Under $1M</span>
+                    <span class="option-desc">Take endorsements to build capital</span>
+                </button>
+                <button class="option-btn" data-decision="3b" data-value="medium" data-next="4">
+                    <span class="option-label">$1M-$5M</span>
+                    <span class="option-desc">Can start equity investments</span>
+                </button>
+                <button class="option-btn" data-decision="3b" data-value="high" data-next="4">
+                    <span class="option-label">Over $5M</span>
+                    <span class="option-desc">Aggressive equity building</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Decision 3c: Veteran - Post-Career Plans -->
+        <div class="decision-node" id="decision-3c">
+            <div class="decision-question">What are your post-career plans?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-decision="3c" data-value="media" data-next="4">
+                    <span class="option-label">Media/Broadcasting</span>
+                    <span class="option-desc">Build media brand now</span>
+                </button>
+                <button class="option-btn" data-decision="3c" data-value="business" data-next="4">
+                    <span class="option-label">Business Ventures</span>
+                    <span class="option-desc">Launch owned businesses</span>
+                </button>
+                <button class="option-btn" data-decision="3c" data-value="retirement" data-next="4">
+                    <span class="option-label">Full Retirement</span>
+                    <span class="option-desc">Preserve & compound assets</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Decision 4: Current Offer -->
+        <div class="decision-node" id="decision-4">
+            <div class="decision-question">You have an offer on the table. Which appeals more?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-decision="4" data-value="endorsement" data-next="5">
+                    <span class="option-label">$10M/year endorsement</span>
+                    <span class="option-desc">3-year deal (guaranteed $30M)</span>
+                </button>
+                <button class="option-btn" data-decision="4" data-value="equity" data-next="5">
+                    <span class="option-label">$2M equity investment</span>
+                    <span class="option-desc">In owned business (risky but high upside)</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Decision 5: Time Horizon -->
+        <div class="decision-node" id="decision-5">
+            <div class="decision-question">What's your wealth-building time horizon?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-decision="5" data-value="short" data-next="recommendation">
+                    <span class="option-label">Need income now</span>
+                    <span class="option-desc">Next 5 years - immediate needs</span>
+                </button>
+                <button class="option-btn" data-decision="5" data-value="long" data-next="recommendation">
+                    <span class="option-label">Building for future</span>
+                    <span class="option-desc">Next 20+ years - long-term wealth</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Recommendation -->
+        <div class="recommendation" id="recommendation">
+            <div class="rec-header">
+                <div class="rec-title">Your Personalized Strategy</div>
+                <div class="rec-strategy" id="rec-strategy">Loading...</div>
+            </div>
+
+            <div class="rec-section">
+                <div class="rec-section-title">Rationale</div>
+                <div class="rec-content" id="rec-rationale"></div>
+            </div>
+
+            <div class="rec-section">
+                <div class="rec-section-title">Specific Action - Current Offer</div>
+                <div class="rec-content" id="rec-action"></div>
+            </div>
+
+            <div class="rec-section">
+                <div class="rec-section-title">20-Year Wealth Projection (from today)</div>
+                <div class="rec-content">
+                    <div class="rec-comparison">
+                        <div class="comparison-item">
+                            <div class="comparison-label">Endorsement-Only</div>
+                            <div class="comparison-value" id="rec-endorse-only">$87M</div>
+                        </div>
+                        <div class="comparison-item">
+                            <div class="comparison-label">Your Strategy</div>
+                            <div class="comparison-value" id="rec-your-strategy">$214M</div>
+                        </div>
+                        <div class="comparison-item">
+                            <div class="comparison-label">Advantage</div>
+                            <div class="comparison-value" id="rec-advantage">+146%</div>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--color-neutral-500); margin-top: 12px; font-style: italic;">All dollar amounts are modeled examples based on typical endorsement and equity returns. They are not actual financial results for any specific athlete.</p>
+                </div>
+            </div>
+
+            <div class="rec-section">
+                <div class="rec-section-title">Risk Assessment</div>
+                <div class="rec-content">
+                    <div style="margin-bottom: 12px;">
+                        <strong>Risk Level:</strong> <span class="risk-badge" id="rec-risk-badge">Moderate</span>
+                    </div>
+                    <div id="rec-risk-details"></div>
+                </div>
+            </div>
+
+            <div class="rec-section">
+                <div class="rec-section-title">Athlete Archetype for This Path</div>
+                <div class="athlete-example">
+                    <div class="athlete-name" id="rec-athlete-name">LeBron James</div>
+                    <div class="athlete-details" id="rec-athlete-details"></div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-secondary" id="restart-btn">← Start Over</button>
+                <button class="btn btn-primary" id="export-btn">Export Strategy PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const state = {
+            decision1: null,
+            decision2: null,
+            decision3: null,
+            decision4: null,
+            decision5: null,
+            currentStep: 1
+        };
+
+        const recommendations = {
+            'rookie-low-conservative': {
+                strategy: '90% Endorsement, 10% Equity',
+                rationale: 'You\'re early in your career with limited cash flow. Prioritize guaranteed income to cover expenses and build a financial cushion. Save 10% for future equity opportunities when your earnings increase.',
+                action: 'Take the $10M/year endorsement deal<br>Save $1M annually for future equity investments<br>Focus on building your brand and increasing salary<br>Revisit equity investments when salary exceeds $5M/year',
+                projection: { endorseOnly: 78, yourStrategy: 87, advantage: '+12%' },
+                risk: 'Very Low',
+                riskDetails: 'Guaranteed income minimizes downside risk. Steady wealth building with minimal volatility.',
+                athleteName: 'Early Career Foundation Builder',
+                athleteDetails: 'Conservative approach common for rookies establishing financial stability. Focus on building cash reserves and learning about equity investments for future opportunities.'
+            },
+            'peak-elite-high': {
+                strategy: '70% Equity, 30% Endorsement',
+                rationale: 'You\'re at peak brand value with significant capital. This is your window to build generational wealth. Take the endorsement for cash flow, but aggressively invest in owned businesses and equity.',
+                action: 'Negotiate the endorsement deal for equity component (5-10% stake)<br>Accept $10M/year but use cash flow to fund $2M business investment<br>Structure as: $10M endorsement + $2M equity = 70/30 split<br>Diversify equity across 3-5 businesses',
+                projection: { endorseOnly: 87, yourStrategy: 312, advantage: '+259%' },
+                risk: 'Moderate-High',
+                riskDetails: 'Equity investments carry risk but your capital position allows diversification. Maintain $4M cash reserve for stability.',
+                athleteName: 'LeBron James (endorsements + equity in SpringHill, Blaze Pizza, etc.)',
+                athleteDetails: '2010-2015: Accepted Nike lifetime deal (endorsement cash) while investing in Blaze Pizza and SpringHill Entertainment (equity). Result: $1B+ net worth, businesses worth $500M+ that continue generating value post-career.'
+            },
+            'veteran-immediate-retirement': {
+                strategy: '20% Equity, 80% Conservative Investments',
+                rationale: 'With 1-2 years until retirement, your priority is wealth preservation. Avoid risky equity investments and focus on stable, liquid assets that will support you post-career.',
+                action: 'Pass on the $2M equity investment (too risky near retirement)<br>Take endorsement if low effort required<br>Move existing assets to conservative 60/40 portfolio<br>Establish 4% annual withdrawal rate for post-career income',
+                projection: { endorseOnly: 124, yourStrategy: 124, advantage: '±0%' },
+                risk: 'Low',
+                riskDetails: 'Conservative allocation protects wealth. 4% withdrawal provides stable income while preserving capital.',
+                athleteName: 'Magic Johnson (preservation phase: Starbucks franchises, movie theaters, real estate)',
+                athleteDetails: 'After aggressive equity building during career, shifted to preservation mode near retirement. Maintained business holdings (Starbucks franchises, movie theaters, real estate) but stopped new high-risk ventures, focusing on stable income generation from existing portfolio.'
+            }
+        };
+
+        function getRecommendationKey() {
+            // Simplified logic - in production, would have full branching
+            const career = state.decision1;
+            const detail2 = state.decision2;
+            const detail3 = state.decision3;
+
+            // Map to nearest predefined recommendation
+            if (career === 'rookie' && detail2 === 'low' && detail3 === 'conservative') {
+                return 'rookie-low-conservative';
+            } else if (career === 'peak' && detail2 === 'elite' && detail3 === 'high') {
+                return 'peak-elite-high';
+            } else if (career === 'veteran' && detail2 === 'immediate' && detail3 === 'retirement') {
+                return 'veteran-immediate-retirement';
+            } else {
+                // Default to peak-elite-high for demo
+                return 'peak-elite-high';
+            }
+        }
+
+        function showRecommendation() {
+            const key = getRecommendationKey();
+            const rec = recommendations[key];
+
+            document.getElementById('rec-strategy').textContent = rec.strategy;
+            document.getElementById('rec-rationale').textContent = rec.rationale;
+            document.getElementById('rec-action').innerHTML = rec.action;
+
+            document.getElementById('rec-endorse-only').textContent = `$${rec.projection.endorseOnly}M`;
+            document.getElementById('rec-your-strategy').textContent = `$${rec.projection.yourStrategy}M`;
+            document.getElementById('rec-advantage').textContent = rec.projection.advantage;
+
+            const riskBadge = document.getElementById('rec-risk-badge');
+            riskBadge.textContent = rec.risk;
+            riskBadge.className = 'risk-badge ' + (rec.risk.includes('High') ? 'risk-high' : rec.risk.includes('Low') ? 'risk-low' : 'risk-moderate');
+
+            document.getElementById('rec-risk-details').textContent = rec.riskDetails;
+            document.getElementById('rec-athlete-name').textContent = rec.athleteName;
+            document.getElementById('rec-athlete-details').textContent = rec.athleteDetails;
+
+            document.querySelectorAll('.decision-node').forEach(el => el.classList.remove('active'));
+            document.getElementById('recommendation').classList.add('active');
+            document.getElementById('progress').textContent = 'Strategy Complete';
+
+            announceToScreenReader('Personalized strategy recommendation ready. ' + rec.strategy);
+        }
+
+        function setupOptionButtons() {
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const button = e.target.closest('.option-btn');
+                    const decision = button.dataset.decision;
+                    const value = button.dataset.value;
+                    const next = button.dataset.next;
+
+                    // Store state
+                    if (decision === '1') {
+                        state.decision1 = value;
+                        state.currentStep = 2;
+                    } else if (decision.startsWith('2')) {
+                        state.decision2 = value;
+                        state.currentStep = 3;
+                    } else if (decision.startsWith('3')) {
+                        state.decision3 = value;
+                        state.currentStep = 4;
+                    } else if (decision === '4') {
+                        state.decision4 = value;
+                        state.currentStep = 5;
+                    } else if (decision === '5') {
+                        state.decision5 = value;
+                    }
+
+                    // Visual feedback
+                    button.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                    button.classList.add('selected');
+
+                    // Navigate to next decision
+                    setTimeout(() => {
+                        document.querySelectorAll('.decision-node').forEach(el => el.classList.remove('active'));
+
+                        if (next === 'recommendation') {
+                            showRecommendation();
+                        } else {
+                            document.getElementById(`decision-${next}`).classList.add('active');
+                            document.getElementById('progress').textContent = `Question ${state.currentStep} of 5`;
+                        }
+                    }, 300);
+
+                    announceToScreenReader(`Selected ${button.querySelector('.option-label').textContent}. Moving to next question.`);
+                });
+            });
+        }
+
+        function announceToScreenReader(message) {
+            document.getElementById('sr-live-region').textContent = message;
+        }
+
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            location.reload();
+        });
+
+        document.getElementById('export-btn').addEventListener('click', () => {
+            const key = getRecommendationKey();
+            const rec = recommendations[key];
+
+            const text = `ATHLETE DECISION TREE - STRATEGY REPORT\n\n` +
+                        `RECOMMENDED STRATEGY: ${rec.strategy}\n\n` +
+                        `RATIONALE:\n${rec.rationale}\n\n` +
+                        `ACTION STEPS:\n${rec.action.replace(/<br>/g, '\n')}\n\n` +
+                        `20-YEAR PROJECTIONS:\n` +
+                        `Endorsement-Only: $${rec.projection.endorseOnly}M\n` +
+                        `Your Strategy: $${rec.projection.yourStrategy}M\n` +
+                        `Advantage: ${rec.projection.advantage}\n\n` +
+                        `RISK ASSESSMENT: ${rec.risk}\n${rec.riskDetails}\n\n` +
+                        `REAL EXAMPLE: ${rec.athleteName}\n${rec.athleteDetails}`;
+
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'athlete-strategy-recommendation.txt';
+            a.click();
+
+            announceToScreenReader('Strategy report exported');
+        });
+
+        // Initialize
+        setupOptionButtons();
+        announceToScreenReader('Athlete Decision Tree loaded. Answer 5 questions to get your personalized endorsement versus equity recommendation.');
+    </script>
+</body>
+</html>

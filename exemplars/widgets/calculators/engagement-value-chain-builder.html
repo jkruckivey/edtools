@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fan Engagement Value Chain Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+        body { font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: white; color: var(--color-neutral-800); padding: 1.5rem; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .widget-box { background: var(--color-neutral-50); border: 2px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.5rem; }
+        .widget-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--color-neutral-800); color: white; padding: 0.25rem 0.75rem; border-radius: var(--border-radius-sm); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+        .widget-badge::before { content: ''; width: 6px; height: 6px; background: #22c55e; border-radius: 50%; }
+        .widget-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.25rem; }
+        .widget-subtitle { font-size: 0.85rem; color: var(--color-neutral-600); margin-bottom: 0.5rem; }
+        .widget-disclaimer { font-size: 0.75rem; color: var(--color-neutral-500); font-style: italic; margin-bottom: 0.75rem; }
+        .key-simplifications { background: var(--color-neutral-100); border-radius: var(--border-radius-sm); padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.75rem; }
+        .key-simplifications-title { font-weight: 600; color: var(--color-neutral-700); margin-bottom: 0.5rem; }
+        .key-simplifications ul { margin: 0; padding-left: 1.25rem; color: var(--color-neutral-600); }
+        .key-simplifications li { margin-bottom: 0.25rem; }
+
+        /* Baseline box */
+        .baseline-box { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); padding: 0.75rem 1rem; border-radius: var(--border-radius-sm); margin-bottom: 1rem; }
+        .baseline-label { font-size: 0.7rem; font-weight: 600; color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.5px; }
+        .baseline-text { font-size: 0.85rem; color: var(--color-neutral-700); }
+
+        /* Two column layout */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+
+        /* Tactics panel */
+        .tactics-panel { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; }
+        .panel-label { font-size: 0.75rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+
+        /* Tactic checkbox */
+        .tactic-item { display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.5rem; margin-bottom: 0.5rem; background: var(--color-neutral-50); border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); cursor: pointer; transition: all 0.2s; }
+        .tactic-item:hover { border-color: var(--color-neutral-400); }
+        .tactic-item.selected { border-color: var(--color-accent); background: var(--color-accent-light); }
+        .tactic-item input[type="checkbox"] { margin-top: 2px; width: 16px; height: 16px; cursor: pointer; }
+        .tactic-info { flex: 1; }
+        .tactic-name { font-size: 0.85rem; font-weight: 600; color: var(--color-neutral-800); }
+        .tactic-stats { display: flex; gap: 0.75rem; font-size: 0.7rem; color: var(--color-neutral-500); margin-top: 0.25rem; }
+        .tactic-stats span { display: flex; gap: 0.25rem; }
+
+        /* Results panel */
+        .results-panel { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); border-radius: var(--border-radius-sm); padding: 1rem; }
+        .result-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--color-neutral-100); }
+        .result-row:last-child { border-bottom: none; }
+        .result-label { font-size: 0.8rem; color: var(--color-neutral-600); }
+        .result-value { font-size: 0.95rem; font-weight: 700; color: var(--color-neutral-800); }
+        .result-value.highlight { font-size: 1.1rem; color: var(--color-accent); }
+
+        /* Chart section */
+        .chart-section { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; margin-bottom: 1rem; }
+        .chart-title { font-size: 0.8rem; font-weight: 600; color: var(--color-neutral-700); margin-bottom: 0.5rem; text-align: center; }
+        .chart-container { height: 180px; }
+
+        /* Insights section */
+        .insights-section { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; margin-bottom: 1rem; }
+        .insights-title { font-size: 0.75rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .insights-list { margin-left: 1rem; font-size: 0.8rem; color: var(--color-neutral-600); }
+        .insights-list li { margin-bottom: 0.25rem; }
+
+        /* Action row */
+        .action-row { display: flex; justify-content: flex-end; gap: 0.5rem; }
+        .btn { padding: 0.5rem 1rem; border: none; border-radius: var(--border-radius-sm); font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .btn-secondary { background: var(--color-neutral-200); color: var(--color-neutral-700); }
+        .btn-secondary:hover { background: var(--color-neutral-300); }
+        .btn-primary { background: var(--color-neutral-800); color: white; }
+        .btn-primary:hover { background: var(--color-neutral-700); }
+
+        /* Tooltips */
+        .tooltip-wrapper { position: relative; display: inline-flex; align-items: center; gap: 0.25rem; }
+        .tooltip-icon { width: 14px; height: 14px; border-radius: 50%; background: var(--color-neutral-300); color: var(--color-neutral-600); font-size: 0.65rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; cursor: help; flex-shrink: 0; }
+        .tooltip-icon:hover { background: var(--color-neutral-400); color: white; }
+        .tooltip-content { position: absolute; bottom: calc(100% + 8px); left: 0; background: var(--color-neutral-800); color: white; padding: 0.5rem 0.75rem; border-radius: var(--border-radius-sm); font-size: 0.75rem; font-weight: 400; line-height: 1.5; width: 200px; text-align: left; opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .tooltip-content::after { content: ''; position: absolute; top: 100%; left: 20px; border: 6px solid transparent; border-top-color: var(--color-neutral-800); }
+        .tooltip-wrapper:hover .tooltip-content, .tooltip-wrapper:focus-within .tooltip-content { opacity: 1; visibility: visible; }
+
+        /* Model note */
+        .model-note { background: #fef3c7; border: 1px solid #fcd34d; border-radius: var(--border-radius-sm); padding: 0.5rem 0.75rem; font-size: 0.75rem; color: #92400e; margin-bottom: 1rem; }
+
+        /* Splash page styles */
+        .splash-screen { text-align: center; }
+        .splash-scenario { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-neutral-800); padding: 1.25rem; border-radius: var(--border-radius-sm); margin-bottom: 1.25rem; text-align: left; }
+        .splash-scenario-label { font-size: 0.7rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .splash-scenario-text { font-size: 0.9rem; color: var(--color-neutral-700); line-height: 1.7; }
+        .splash-scenario-text strong { color: var(--color-neutral-900); }
+        .splash-simplifications { background: var(--color-neutral-100); border-radius: var(--border-radius-sm); padding: 1.25rem; margin-bottom: 1.5rem; text-align: left; }
+        .splash-simplifications-title { font-size: 0.85rem; font-weight: 700; color: var(--color-neutral-800); margin-bottom: 0.75rem; }
+        .splash-simplifications-subtitle { font-size: 0.75rem; color: var(--color-neutral-500); font-style: italic; margin-bottom: 0.75rem; }
+        .splash-simplifications ul { margin: 0; padding-left: 1.25rem; color: var(--color-neutral-600); font-size: 0.85rem; }
+        .splash-simplifications li { margin-bottom: 0.5rem; line-height: 1.5; }
+        .splash-simplifications li strong { color: var(--color-neutral-700); }
+        .splash-disclaimer { font-size: 0.85rem; color: var(--color-neutral-600); font-style: italic; margin-bottom: 1.5rem; }
+        .start-btn { background: var(--color-neutral-800); color: white; border: none; padding: 0.875rem 2rem; font-size: 0.95rem; font-weight: 600; border-radius: var(--border-radius-sm); cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .start-btn:hover { background: var(--color-neutral-700); }
+        .start-btn-hint { font-size: 0.75rem; color: var(--color-neutral-500); margin-top: 0.75rem; }
+        .simulator-screen { display: none; }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            .widget-box { padding: 1rem; }
+            .two-col { grid-template-columns: 1fr; }
+            .tactic-stats { flex-wrap: wrap; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+            <!-- SPLASH SCREEN -->
+            <div class="splash-screen" id="splash-screen">
+                <div class="widget-badge">Interactive Simulator</div>
+                <h1 class="widget-title">Fan Engagement Value Chain Builder</h1>
+                <p class="widget-subtitle">Select engagement tactics and see how they affect total fan value and affordable rights budgets.</p>
+
+                <div class="splash-scenario">
+                    <div class="splash-scenario-label">Your Role</div>
+                    <p class="splash-scenario-text">You're a <strong>league executive</strong> with 1 million fans generating <strong>$10/year each</strong> through passive viewing (ads). Your goal: select engagement tactics (apps, fantasy, betting, content) that increase fan value and grow your affordable rights budget. Each tactic has adoption rates, revenue-per-fan, and costs.</p>
+                </div>
+
+                <div class="splash-simplifications">
+                    <div class="splash-simplifications-title">Before You Start: What This Model Simplifies</div>
+                    <div class="splash-simplifications-subtitle">These assumptions make the model explorable but less realistic:</div>
+                    <ul>
+                        <li><strong>Parallel adoption:</strong> Each tactic draws from the full fan base independently — in reality, many fans participate in multiple tactics, and this model treats them as separate for clarity</li>
+                        <li><strong>No diminishing returns:</strong> Adding more tactics always helps — real strategies face saturation and cannibalization</li>
+                        <li><strong>Static fan segments:</strong> Fans don't evolve — real fans move through lifecycle stages (casual → engaged → superfan → lapsed)</li>
+                        <li><strong>Direct monetization:</strong> Engagement = revenue — some engagement builds long-term value that's hard to measure</li>
+                    </ul>
+                </div>
+
+                <p class="splash-disclaimer">The numbers are illustrative, not forecasts. Company names are used for context; scenarios are hypothetical and do not represent real financial data.</p>
+
+                <button class="start-btn" id="start-btn">I Understand — Start Building</button>
+                <p class="start-btn-hint">You can adjust all assumptions once inside the simulator.</p>
+            </div>
+
+            <!-- SIMULATOR SCREEN -->
+            <div class="simulator-screen" id="simulator-screen">
+                <div class="widget-badge">Interactive Simulator</div>
+                <h1 class="widget-title">Fan Engagement Value Chain Builder</h1>
+
+            <div class="baseline-box">
+                <div class="baseline-label">Starting Baseline</div>
+                <div class="baseline-text">1,000,000 fans × $10/year = <strong>$10M/year</strong> (passive viewing only)</div>
+            </div>
+
+            <div class="two-col">
+                <div class="tactics-panel">
+                    <div class="panel-label">Select Engagement Tactics</div>
+
+                    <label class="tactic-item" for="tactic-app">
+                        <input type="checkbox" id="tactic-app" data-tactic="app">
+                        <div class="tactic-info">
+                            <div class="tactic-name">
+                                <span class="tooltip-wrapper">
+                                    Mobile App
+                                    <span class="tooltip-icon" tabindex="0" role="button" aria-label="More info">?</span>
+                                    <span class="tooltip-content">Team/league app with scores, news, and notifications. High reach but modest per-fan value — it's a gateway to deeper engagement.</span>
+                                </span>
+                            </div>
+                            <div class="tactic-stats">
+                                <span>Cost: <strong>$2M</strong></span>
+                                <span>Adopt: <strong>30%</strong></span>
+                                <span>+$5/fan</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="tactic-item" for="tactic-fantasy">
+                        <input type="checkbox" id="tactic-fantasy" data-tactic="fantasy">
+                        <div class="tactic-info">
+                            <div class="tactic-name">
+                                <span class="tooltip-wrapper">
+                                    Fantasy Integration
+                                    <span class="tooltip-icon" tabindex="0" role="button" aria-label="More info">?</span>
+                                    <span class="tooltip-content">Partnership with fantasy platforms. Fantasy players watch ~40% more games and engage across multiple teams, not just their favorite.</span>
+                                </span>
+                            </div>
+                            <div class="tactic-stats">
+                                <span>Cost: <strong>$0.5M</strong></span>
+                                <span>Adopt: <strong>15%</strong></span>
+                                <span>+$15/fan</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="tactic-item" for="tactic-betting">
+                        <input type="checkbox" id="tactic-betting" data-tactic="betting">
+                        <div class="tactic-info">
+                            <div class="tactic-name">
+                                <span class="tooltip-wrapper">
+                                    Betting Partnerships
+                                    <span class="tooltip-icon" tabindex="0" role="button" aria-label="More info">?</span>
+                                    <span class="tooltip-content">Revenue-share deals with sportsbooks. Zero cost to the league — the betting company pays for access. Highest value per fan but lower adoption.</span>
+                                </span>
+                            </div>
+                            <div class="tactic-stats">
+                                <span>Cost: <strong>$0</strong></span>
+                                <span>Adopt: <strong>10%</strong></span>
+                                <span>+$30/fan</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="tactic-item" for="tactic-content">
+                        <input type="checkbox" id="tactic-content" data-tactic="content">
+                        <div class="tactic-info">
+                            <div class="tactic-name">
+                                <span class="tooltip-wrapper">
+                                    Exclusive Content
+                                    <span class="tooltip-icon" tabindex="0" role="button" aria-label="More info">?</span>
+                                    <span class="tooltip-content">Behind-the-scenes docs, player interviews, archive games. Creates "must-have" content that justifies premium pricing or subscription.</span>
+                                </span>
+                            </div>
+                            <div class="tactic-stats">
+                                <span>Cost: <strong>$3M</strong></span>
+                                <span>Adopt: <strong>20%</strong></span>
+                                <span>+$25/fan</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="tactic-item" for="tactic-social">
+                        <input type="checkbox" id="tactic-social" data-tactic="social">
+                        <div class="tactic-info">
+                            <div class="tactic-name">
+                                <span class="tooltip-wrapper">
+                                    Social Media Strategy
+                                    <span class="tooltip-icon" tabindex="0" role="button" aria-label="More info">?</span>
+                                    <span class="tooltip-content">Active presence on TikTok, Instagram, X. Highest reach (50%) but lower direct revenue — value comes from brand awareness and driving traffic to other channels.</span>
+                                </span>
+                            </div>
+                            <div class="tactic-stats">
+                                <span>Cost: <strong>$1M</strong></span>
+                                <span>Adopt: <strong>50%</strong></span>
+                                <span>+$8/fan</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="tactic-item" for="tactic-gamification">
+                        <input type="checkbox" id="tactic-gamification" data-tactic="gamification">
+                        <div class="tactic-info">
+                            <div class="tactic-name">
+                                <span class="tooltip-wrapper">
+                                    Gamification
+                                    <span class="tooltip-icon" tabindex="0" role="button" aria-label="More info">?</span>
+                                    <span class="tooltip-content">Predictions, leaderboards, badges, rewards. Turns passive viewers into active participants competing with friends.</span>
+                                </span>
+                            </div>
+                            <div class="tactic-stats">
+                                <span>Cost: <strong>$1.5M</strong></span>
+                                <span>Adopt: <strong>25%</strong></span>
+                                <span>+$12/fan</span>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="results-panel" role="region" aria-label="Calculated results" aria-live="polite">
+                    <div class="panel-label">Results</div>
+                    <div class="result-row">
+                        <span class="result-label">Total Fan Value</span>
+                        <span class="result-value highlight" id="total-value">$10.0M/yr</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Investment Cost</span>
+                        <span class="result-value" id="total-cost">$0</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">ROI</span>
+                        <span class="result-value" id="roi">N/A</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">
+                            <span class="tooltip-wrapper">
+                                Rights Budget (at 70%)
+                                <span class="tooltip-icon" tabindex="0" role="button" aria-label="More info">?</span>
+                                <span class="tooltip-content">Typical range is 40–80% of fan value, varying by league and market. This model uses 70% as an illustrative midpoint.</span>
+                            </span>
+                        </span>
+                        <span class="result-value" id="affordable-rights">$7.0M/yr</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Avg Value/Fan</span>
+                        <span class="result-value" id="avg-fan-value">$10.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-title">Fan Distribution by Engagement Level</div>
+                <div class="chart-container">
+                    <canvas id="funnelChart" role="img" aria-label="Stacked bar chart showing fan distribution"></canvas>
+                </div>
+                <div style="font-size: 0.7rem; color: var(--color-neutral-500); text-align: center; margin-top: 0.5rem; font-style: italic;">Super-fans defined as high-value engaged fans (simplified threshold: $20+/fan)</div>
+            </div>
+
+            <div class="insights-section">
+                <div class="insights-title">Strategic Insights</div>
+                <ul class="insights-list" id="insights-list">
+                    <li>Select engagement tactics to see personalized insights</li>
+                    <li>Each tactic increases fan value and justifies higher media rights costs</li>
+                </ul>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="reset-btn">Reset</button>
+                <button class="btn btn-primary" id="export-btn">Export CSV</button>
+            </div>
+            </div><!-- end simulator-screen -->
+        </div>
+    </div>
+
+    <script>
+        const tacticsData = {
+            app: { name: "Mobile App", cost: 2000000, adoptionRate: 0.30, valuePerFan: 5 },
+            fantasy: { name: "Fantasy Integration", cost: 500000, adoptionRate: 0.15, valuePerFan: 15 },
+            betting: { name: "Betting Partnerships", cost: 0, adoptionRate: 0.10, valuePerFan: 30 },
+            content: { name: "Exclusive Content", cost: 3000000, adoptionRate: 0.20, valuePerFan: 25 },
+            social: { name: "Social Media Strategy", cost: 1000000, adoptionRate: 0.50, valuePerFan: 8 },
+            gamification: { name: "Gamification", cost: 1500000, adoptionRate: 0.25, valuePerFan: 12 }
+        };
+
+        const baseFans = 1000000;
+        const baseFanValue = 10;
+        let chart = null;
+
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const resetBtn = document.getElementById('reset-btn');
+        const exportBtn = document.getElementById('export-btn');
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', () => {
+                cb.closest('.tactic-item').classList.toggle('selected', cb.checked);
+                calculateResults();
+            });
+        });
+
+        resetBtn.addEventListener('click', () => {
+            checkboxes.forEach(cb => {
+                cb.checked = false;
+                cb.closest('.tactic-item').classList.remove('selected');
+            });
+            calculateResults();
+        });
+
+        exportBtn.addEventListener('click', exportData);
+
+        function calculateResults() {
+            const selected = [];
+            checkboxes.forEach(cb => {
+                if (cb.checked) selected.push(tacticsData[cb.dataset.tactic]);
+            });
+
+            let totalValue = baseFans * baseFanValue;
+            let totalCost = 0;
+            let breakdown = { passive: baseFans, engaged: 0, superfan: 0 };
+
+            selected.forEach(t => {
+                const engagedFans = baseFans * t.adoptionRate;
+                totalValue += engagedFans * t.valuePerFan;
+                totalCost += t.cost;
+                if (t.valuePerFan >= 20) breakdown.superfan += engagedFans;
+                else breakdown.engaged += engagedFans;
+            });
+
+            const roi = totalCost > 0 ? ((totalValue - baseFans * baseFanValue - totalCost) / totalCost) * 100 : 0;
+            const affordableRights = totalValue * 0.70;
+            const avgFanValue = totalValue / baseFans;
+
+            document.getElementById('total-value').textContent = formatCurrency(totalValue) + '/yr';
+            document.getElementById('total-cost').textContent = formatCurrency(totalCost);
+            document.getElementById('roi').textContent = totalCost > 0 ? roi.toFixed(0) + '%' : 'N/A';
+            document.getElementById('affordable-rights').textContent = formatCurrency(affordableRights) + '/yr';
+            document.getElementById('avg-fan-value').textContent = '$' + avgFanValue.toFixed(2);
+
+            updateChart(breakdown);
+            generateInsights(selected, totalValue, totalCost, roi, affordableRights);
+        }
+
+        function updateChart(breakdown) {
+            const ctx = document.getElementById('funnelChart').getContext('2d');
+            if (chart) chart.destroy();
+
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Fan Distribution'],
+                    datasets: [
+                        { label: 'Passive Viewers', data: [breakdown.passive], backgroundColor: 'rgba(163,163,163,0.7)', borderColor: '#a3a3a3', borderWidth: 1 },
+                        { label: 'Engaged Fans', data: [breakdown.engaged], backgroundColor: 'rgba(38,38,38,0.7)', borderColor: '#262626', borderWidth: 1 },
+                        { label: 'Super-Fans', data: [breakdown.superfan], backgroundColor: 'rgba(107,144,133,0.7)', borderColor: '#6b9085', borderWidth: 1 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => {
+                                    const pct = ((ctx.parsed.x / baseFans) * 100).toFixed(1);
+                                    return ctx.dataset.label + ': ' + formatNumber(ctx.parsed.x) + ' (' + pct + '%)';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { stacked: true, ticks: { callback: v => formatNumber(v) } },
+                        y: { stacked: true }
+                    }
+                }
+            });
+        }
+
+        function generateInsights(tactics, totalValue, totalCost, roi, affordableRights) {
+            const insights = [];
+            if (tactics.length === 0) {
+                insights.push('Select engagement tactics to see personalized insights');
+                insights.push('Each tactic increases fan value and justifies higher media rights costs');
+                insights.push('Strong engagement strategies can help leagues justify significantly higher rights fees');
+            } else {
+                const multiplier = (totalValue / (baseFans * baseFanValue)).toFixed(2);
+                insights.push(`Strategy increases total fan value by ${multiplier}x ($10M → ${formatCurrency(totalValue)})`);
+                if (roi > 0) insights.push(`ROI of ${roi.toFixed(0)}% suggests this strategy is financially viable`);
+                else if (totalCost > 0) insights.push(`Negative ROI - consider different mix`);
+                insights.push(`With this strategy, you can afford ${formatCurrency(affordableRights)}/year in rights`);
+
+                if (tactics.some(t => t.valuePerFan === 30)) insights.push('Betting: $0 cost with high value ($30/fan) - revenue share model works');
+                if (tactics.some(t => t.valuePerFan === 15)) insights.push('Fantasy: Creates stickiness - fans watch 40% more games');
+                if (tactics.some(t => t.adoptionRate === 0.50)) insights.push('Social media: Highest reach (50%) but lower per-fan value');
+                if (tactics.filter(t => t.cost >= 2000000).length >= 2) insights.push('Multiple high-cost tactics selected - ensure ROI justifies investment');
+            }
+            document.getElementById('insights-list').innerHTML = insights.map(t => `<li>${t}</li>`).join('');
+        }
+
+        function formatCurrency(val) {
+            if (val >= 1000000000) return '$' + (val / 1000000000).toFixed(2) + 'B';
+            if (val >= 1000000) return '$' + (val / 1000000).toFixed(1) + 'M';
+            return '$' + (val / 1000).toFixed(0) + 'K';
+        }
+
+        function formatNumber(val) {
+            if (val >= 1000000) return (val / 1000000).toFixed(1) + 'M';
+            if (val >= 1000) return (val / 1000).toFixed(0) + 'K';
+            return val.toString();
+        }
+
+        function exportData() {
+            const selected = [];
+            checkboxes.forEach(cb => { if (cb.checked) selected.push(tacticsData[cb.dataset.tactic].name); });
+            const rows = [
+                'Category,Item,Value',
+                ...selected.map(t => `Selected Tactic,${t},`),
+                selected.length === 0 ? 'Selected Tactic,None selected,' : '',
+                `Result,Total Fan Value,${document.getElementById('total-value').textContent}`,
+                `Result,Investment Cost,${document.getElementById('total-cost').textContent}`,
+                `Result,ROI,${document.getElementById('roi').textContent}`,
+                `Result,Affordable Rights Budget,${document.getElementById('affordable-rights').textContent}`,
+                `Result,Avg Value/Fan,${document.getElementById('avg-fan-value').textContent}`
+            ].filter(r => r);
+
+            const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `engagement-strategy-${Date.now()}.csv`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        // Splash screen handler
+        document.getElementById('start-btn').addEventListener('click', () => {
+            document.getElementById('splash-screen').style.display = 'none';
+            document.getElementById('simulator-screen').style.display = 'block';
+        });
+
+        calculateResults();
+    </script>
+</body>
+</html>

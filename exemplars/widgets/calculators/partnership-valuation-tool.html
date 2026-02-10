@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partnership Valuation Tool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            /* Neutral Palette */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Accent Colors */
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+
+            /* Course Color Palette */
+            --color-purple: #d5cae0;
+            --color-sand: #f0ede0;
+            --color-turquoise: #bfe5e7;
+            --color-green: #c0d1cd;
+
+            /* Layout */
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .preset-btn {
+            padding: 0.5rem 1rem;
+            background: var(--color-purple);
+            color: var(--color-neutral-700);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: var(--color-neutral-200);
+            border-color: var(--color-neutral-400);
+        }
+
+        .preset-btn:focus {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .section {
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            background: var(--color-sand);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            user-select: none;
+            background: var(--color-neutral-50);
+            border-radius: 8px 8px 0 0;
+            transition: background 0.2s;
+        }
+
+        .section-header:hover {
+            background: var(--color-neutral-100);
+        }
+
+        .section-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin: 0;
+        }
+
+        .toggle-icon {
+            font-size: 1.2rem;
+            color: var(--color-neutral-600);
+            transition: transform 0.2s ease;
+        }
+
+        .toggle-icon.expanded {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .section-content.expanded {
+            max-height: 2000px;
+        }
+
+        .section-inner {
+            padding: 1.5rem;
+        }
+
+        .input-section {
+            margin-bottom: 0;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .input-with-value {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 6px;
+            background: var(--color-neutral-200);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--color-neutral-700);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--color-neutral-700);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        input[type="range"]:focus::-webkit-slider-thumb {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        input[type="range"]:focus::-moz-range-thumb {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .value-display {
+            min-width: 100px;
+            padding: 0.5rem 0.75rem;
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            text-align: right;
+        }
+
+        .results {
+            margin: 0;
+        }
+
+        .chart-container {
+            background: var(--color-turquoise);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .metric {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .metric-subtext {
+            font-size: 0.75rem;
+            color: var(--color-neutral-600);
+            margin-top: 0.25rem;
+        }
+
+        .comparison-section {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .comparison-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 1rem;
+        }
+
+        .comparison-table {
+            width: 100%;
+        }
+
+        .comparison-table th {
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--color-neutral-300);
+        }
+
+        .comparison-table td {
+            padding: 0.75rem 0.5rem;
+            font-size: 0.875rem;
+            color: var(--color-neutral-700);
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .insight-box {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .insight-box h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.75rem;
+        }
+
+        .insight-box p {
+            font-size: 0.875rem;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+        }
+
+        .confidence-band {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .confidence-band h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-neutral-700);
+            margin-bottom: 0.75rem;
+        }
+
+        .scenario-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+        }
+
+        .scenario-row.highlight {
+            background: var(--color-neutral-100);
+            font-weight: 600;
+        }
+
+        .scenario-label {
+            font-size: 0.8rem;
+            color: var(--color-neutral-600);
+        }
+
+        .scenario-value {
+            font-size: 0.8rem;
+            color: var(--color-neutral-800);
+            font-weight: 500;
+        }
+
+        .scenario-note {
+            font-size: 0.7rem;
+            color: var(--color-neutral-500);
+            font-style: italic;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--color-neutral-200);
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid;
+        }
+
+        .btn-primary {
+            background: var(--color-neutral-900);
+            color: white;
+            border-color: var(--color-neutral-900);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-neutral-800);
+            border-color: var(--color-neutral-800);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-700);
+            border-color: var(--color-neutral-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-100);
+            border-color: var(--color-neutral-400);
+        }
+
+        .btn:focus {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .presets {
+                flex-direction: column;
+            }
+
+            .preset-btn {
+                width: 100%;
+            }
+
+            .input-with-value {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .value-display {
+                text-align: center;
+            }
+
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Splash Screen Styles */
+        .splash-screen {
+            text-align: center;
+            padding: 2rem 1.5rem;
+        }
+
+        .splash-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .splash-subtitle {
+            font-size: 0.9rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .splash-box {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .splash-box-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-neutral-700);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .splash-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .splash-box li {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            padding: 0.4rem 0;
+            padding-left: 1.25rem;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .splash-box li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--color-neutral-400);
+        }
+
+        .splash-disclaimer {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .splash-btn {
+            padding: 0.75rem 2rem;
+            background: var(--color-neutral-800);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .splash-btn:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .splash-btn:focus {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .simulator-screen {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Splash Screen -->
+        <div class="splash-screen" id="splashScreen">
+            <h1 class="splash-title">Partnership Valuation Tool</h1>
+            <p class="splash-subtitle">Explore the economics of betting sponsor premiums</p>
+
+            <div class="splash-box">
+                <div class="splash-box-title">What This Tool Does</div>
+                <ul>
+                    <li>Compares the value proposition of traditional sponsors vs. betting sponsors</li>
+                    <li>Shows why betting companies can pay premium prices for sponsorship rights</li>
+                    <li>Illustrates the role of engagement multipliers and attribution data</li>
+                </ul>
+            </div>
+
+            <div class="splash-box">
+                <div class="splash-box-title">Model Simplifications</div>
+                <ul>
+                    <li><strong>CPM premiums are illustrative:</strong> Real premiums vary by market, property, and negotiation — the 20-35% ranges shown are plausible but not universal</li>
+                    <li><strong>Engagement boost is hard to measure:</strong> "Bettors watch 40% more" is based on survey data, not direct observation — actual figures are proprietary</li>
+                    <li><strong>Overlap treated as incremental:</strong> The model treats increased engagement as additional effective impressions, even though bettors are already part of the baseline audience</li>
+                    <li><strong>Attribution advantage is real but complex:</strong> Betting sponsors can track conversions, but attribution models vary significantly</li>
+                    <li><strong>Linear relationships assumed:</strong> Real value curves are likely nonlinear with diminishing returns</li>
+                </ul>
+            </div>
+
+            <p class="splash-disclaimer">
+                The numbers are illustrative, not forecasts. This tool helps build intuition for why betting sponsors command premiums, not to calculate precise valuations.
+            </p>
+
+            <button class="splash-btn" onclick="startSimulator()">I Understand — Explore the Model</button>
+        </div>
+
+        <!-- Main Simulator (hidden until splash acknowledged) -->
+        <div class="simulator-screen" id="simulatorScreen">
+        <h1>Partnership Valuation Tool</h1>
+        <p class="subtitle">Calculate betting sponsor value premium over traditional sponsors using engagement multipliers and attribution advantages.</p>
+
+        <div class="presets" role="group" aria-label="Partnership scenario presets">
+            <button class="preset-btn" onclick="loadPreset('nfl')">NFL Jersey (20% premium)</button>
+            <button class="preset-btn" onclick="loadPreset('nba')">NBA Court Ad (25% premium)</button>
+            <button class="preset-btn" onclick="loadPreset('nhl')">NHL Betting Kiosk (35% premium)</button>
+        </div>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('inputs')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('inputs');}" tabindex="0" role="button" aria-expanded="true" aria-controls="inputs-content">
+                <h2>Partnership Inputs</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded" id="inputs-content">
+                <div class="section-inner input-section">
+            <div class="input-group">
+                <label for="traditionalCPM">Traditional Sponsor CPM</label>
+                <div class="input-with-value">
+                    <input type="range" id="traditionalCPM" min="500" max="2000" value="1000" step="50"
+                           oninput="updateCalculations()" aria-describedby="tradCPMValue">
+                    <span class="value-display" id="tradCPMValue" aria-live="polite">$1,000</span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="bettingCPM">Betting Sponsor CPM (Premium)</label>
+                <div class="input-with-value">
+                    <input type="range" id="bettingCPM" min="500" max="2000" value="1250" step="50"
+                           oninput="updateCalculations()" aria-describedby="bettingCPMValue">
+                    <span class="value-display" id="bettingCPMValue" aria-live="polite">$1,250</span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="engagementBoost">Bettor Engagement Boost (%)</label>
+                <div class="input-with-value">
+                    <input type="range" id="engagementBoost" min="20" max="60" value="40" step="5"
+                           oninput="updateCalculations()" aria-describedby="boostValue">
+                    <span class="value-display" id="boostValue" aria-live="polite">40%</span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="bettorPercent">% of Fans Who Bet</label>
+                <div class="input-with-value">
+                    <input type="range" id="bettorPercent" min="5" max="20" value="12" step="1"
+                           oninput="updateCalculations()" aria-describedby="bettorPercentValue">
+                    <span class="value-display" id="bettorPercentValue" aria-live="polite">12%</span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="rightsFee">Traditional Rights Fee</label>
+                <div class="input-with-value">
+                    <input type="range" id="rightsFee" min="1" max="50" value="10" step="1"
+                           oninput="updateCalculations()" aria-describedby="rightsFeeValue">
+                    <span class="value-display" id="rightsFeeValue" aria-live="polite">$10M</span>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('comparison')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('comparison');}" tabindex="0" role="button" aria-expanded="true" aria-controls="comparison-content">
+                <h2>Value Comparison</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded" id="comparison-content">
+                <div class="section-inner">
+                    <div class="chart-container">
+                <canvas id="valueChart" role="img" aria-label="Sponsor value comparison chart"></canvas>
+            </div>
+
+            <div class="metric-grid">
+                <div class="metric">
+                    <div class="metric-label">Traditional Weighted Engagement</div>
+                    <div class="metric-value" id="tradReach" aria-live="polite">0B</div>
+                    <div class="metric-subtext">Engagement index</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Betting Weighted Engagement</div>
+                    <div class="metric-value" id="bettingReach" aria-live="polite">0B</div>
+                    <div class="metric-subtext">Engagement index</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Incremental Engagement</div>
+                    <div class="metric-value" id="incrementalValue" aria-live="polite">0B</div>
+                    <div class="metric-subtext">Additional engagement value</div>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('premium')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('premium');}" tabindex="0" role="button" aria-expanded="true" aria-controls="premium-content">
+                <h2>Premium Analysis</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded" id="premium-content">
+                <div class="section-inner">
+                    <div class="comparison-section">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Traditional</th>
+                            <th>Betting</th>
+                            <th>Premium</th>
+                        </tr>
+                    </thead>
+                    <tbody id="comparisonTableBody">
+                    </tbody>
+                </table>
+                    </div>
+
+                    <div class="insight-box" role="complementary" aria-label="Premium justification">
+                        <h3>Premium Justification</h3>
+                        <p id="justificationText"></p>
+                    </div>
+
+                    <div class="confidence-band" role="complementary" aria-label="Scenario sensitivity">
+                        <h3>Scenario Sensitivity</h3>
+                        <div class="scenario-row">
+                            <span class="scenario-label">Conservative</span>
+                            <span class="scenario-value" id="conservativeScenario">—</span>
+                        </div>
+                        <div class="scenario-row highlight">
+                            <span class="scenario-label">Base Case</span>
+                            <span class="scenario-value" id="baseScenario">—</span>
+                        </div>
+                        <div class="scenario-row">
+                            <span class="scenario-label">Aggressive</span>
+                            <span class="scenario-value" id="aggressiveScenario">—</span>
+                        </div>
+                        <p class="scenario-note">Engagement boost ±15 percentage points from base case</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" onclick="exportData()">Export Valuation</button>
+            <button class="btn btn-secondary" onclick="resetTool()">Reset Tool</button>
+        </div>
+        </div><!-- End simulator-screen -->
+    </div>
+
+    <script>
+        function startSimulator() {
+            document.getElementById('splashScreen').style.display = 'none';
+            document.getElementById('simulatorScreen').style.display = 'block';
+        }
+
+        let valueChart = null;
+
+        const presets = {
+            nfl: {
+                traditionalCPM: 1200,
+                bettingCPM: 1440,
+                engagementBoost: 40,
+                bettorPercent: 15,
+                rightsFee: 25
+            },
+            nba: {
+                traditionalCPM: 1000,
+                bettingCPM: 1250,
+                engagementBoost: 50,
+                bettorPercent: 12,
+                rightsFee: 15
+            },
+            nhl: {
+                traditionalCPM: 800,
+                bettingCPM: 1080,
+                engagementBoost: 35,
+                bettorPercent: 10,
+                rightsFee: 8
+            }
+        };
+
+        function loadPreset(type) {
+            const preset = presets[type];
+            document.getElementById('traditionalCPM').value = preset.traditionalCPM;
+            document.getElementById('bettingCPM').value = preset.bettingCPM;
+            document.getElementById('engagementBoost').value = preset.engagementBoost;
+            document.getElementById('bettorPercent').value = preset.bettorPercent;
+            document.getElementById('rightsFee').value = preset.rightsFee;
+
+            updateCalculations();
+        }
+
+        function updateCalculations() {
+            // Get input values
+            const tradCPM = parseFloat(document.getElementById('traditionalCPM').value);
+            const bettingCPM = parseFloat(document.getElementById('bettingCPM').value);
+            const engagementBoost = parseFloat(document.getElementById('engagementBoost').value) / 100;
+            const bettorPercent = parseFloat(document.getElementById('bettorPercent').value) / 100;
+            const rightsFee = parseFloat(document.getElementById('rightsFee').value) * 1000000;
+
+            // Update value displays
+            document.getElementById('tradCPMValue').textContent = `$${tradCPM.toLocaleString()}`;
+            document.getElementById('bettingCPMValue').textContent = `$${bettingCPM.toLocaleString()}`;
+            document.getElementById('boostValue').textContent = `${(engagementBoost * 100).toFixed(0)}%`;
+            document.getElementById('bettorPercentValue').textContent = `${(bettorPercent * 100).toFixed(0)}%`;
+            document.getElementById('rightsFeeValue').textContent = `$${(rightsFee / 1000000).toFixed(0)}M`;
+
+            // Calculate effective impressions (Rights fee / CPM × 1000)
+            const tradImpressions = (rightsFee / tradCPM) * 1000;
+
+            // Betting sponsor gets engagement boost on bettor segment
+            const bettingImpressions = tradImpressions * (1 + (engagementBoost * bettorPercent));
+
+            const incrementalImpressions = bettingImpressions - tradImpressions;
+
+            // Calculate premiums
+            const pricePremium = ((bettingCPM - tradCPM) / tradCPM) * 100;
+            const reachPremium = ((bettingImpressions - tradImpressions) / tradImpressions) * 100;
+
+            // Update results
+            document.getElementById('tradReach').textContent = `${(tradImpressions / 1000000000).toFixed(2)}B`;
+            document.getElementById('bettingReach').textContent = `${(bettingImpressions / 1000000000).toFixed(2)}B`;
+            document.getElementById('incrementalValue').textContent = `${(incrementalImpressions / 1000000000).toFixed(2)}B`;
+
+            // Update comparison table
+            updateComparisonTable(rightsFee, tradCPM, bettingCPM, pricePremium, tradImpressions, bettingImpressions, reachPremium);
+
+            // Update justification
+            const justifiedPremium = Math.abs(pricePremium - reachPremium) < 10;
+            let justification = `Betting sponsor pays ${pricePremium.toFixed(1)}% more (${(bettingCPM - tradCPM).toFixed(0)} CPM premium) but delivers ${reachPremium.toFixed(1)}% more weighted engagement (${(incrementalImpressions / 1000000000).toFixed(2)}B incremental engagement value). `;
+
+            if (justifiedPremium) {
+                justification += `Under these assumptions, the premium appears economically defensible based on the engagement advantage. Additionally, betting sponsors gain enhanced attribution data—they can track conversions through the sponsorship, providing clearer ROI measurement than traditional sponsors typically access.`;
+            } else if (pricePremium > reachPremium) {
+                justification += `The price premium exceeds the engagement advantage under these assumptions, though betting sponsors may justify this through enhanced attribution data and conversion tracking.`;
+            } else {
+                justification += `Under these assumptions, betting sponsors appear to be getting favorable terms—paying less premium than the engagement advantage they receive, plus gaining enhanced attribution data.`;
+            }
+            justification += ` These advantages coexist with regulatory, reputational, and ethical risks that are not captured in this model.`;
+
+            document.getElementById('justificationText').textContent = justification;
+
+            // Update scenario sensitivity (Upgrade 6)
+            const conservativeBoost = Math.max(0.05, engagementBoost - 0.15);
+            const aggressiveBoost = engagementBoost + 0.15;
+
+            const conservativeImpressions = tradImpressions * (1 + (conservativeBoost * bettorPercent));
+            const aggressiveImpressions = tradImpressions * (1 + (aggressiveBoost * bettorPercent));
+
+            const conservativePremium = ((conservativeImpressions - tradImpressions) / tradImpressions) * 100;
+            const aggressivePremium = ((aggressiveImpressions - tradImpressions) / tradImpressions) * 100;
+
+            document.getElementById('conservativeScenario').textContent = `+${conservativePremium.toFixed(1)}% engagement (${(conservativeBoost * 100).toFixed(0)}% boost)`;
+            document.getElementById('baseScenario').textContent = `+${reachPremium.toFixed(1)}% engagement (${(engagementBoost * 100).toFixed(0)}% boost)`;
+            document.getElementById('aggressiveScenario').textContent = `+${aggressivePremium.toFixed(1)}% engagement (${(aggressiveBoost * 100).toFixed(0)}% boost)`;
+
+            // Update chart
+            updateValueChart(tradImpressions, bettingImpressions);
+        }
+
+        function updateComparisonTable(rightsFee, tradCPM, bettingCPM, pricePremium, tradImpressions, bettingImpressions, reachPremium) {
+            const tbody = document.getElementById('comparisonTableBody');
+            tbody.innerHTML = '';
+
+            const rows = [
+                {
+                    metric: 'Rights Fee',
+                    trad: `$${(rightsFee / 1000000).toFixed(1)}M`,
+                    betting: `$${(rightsFee * (1 + pricePremium/100) / 1000000).toFixed(1)}M`,
+                    premium: `${pricePremium.toFixed(1)}%`
+                },
+                {
+                    metric: 'CPM',
+                    trad: `$${tradCPM.toLocaleString()}`,
+                    betting: `$${bettingCPM.toLocaleString()}`,
+                    premium: `${pricePremium.toFixed(1)}%`
+                },
+                {
+                    metric: 'Weighted Engagement',
+                    trad: `${(tradImpressions / 1000000000).toFixed(2)}B`,
+                    betting: `${(bettingImpressions / 1000000000).toFixed(2)}B`,
+                    premium: `${reachPremium.toFixed(1)}%`
+                },
+                {
+                    metric: 'Attribution Data',
+                    trad: 'Limited',
+                    betting: 'Enhanced',
+                    premium: 'Significant advantage'
+                }
+            ];
+
+            rows.forEach(row => {
+                const tr = tbody.insertRow();
+                tr.innerHTML = `
+                    <td><strong>${row.metric}</strong></td>
+                    <td>${row.trad}</td>
+                    <td>${row.betting}</td>
+                    <td>${row.premium}</td>
+                `;
+            });
+        }
+
+        function updateValueChart(tradImpressions, bettingImpressions) {
+            const ctx = document.getElementById('valueChart').getContext('2d');
+
+            if (valueChart) {
+                valueChart.destroy();
+            }
+
+            valueChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Traditional Sponsor', 'Betting Sponsor'],
+                    datasets: [{
+                        label: 'Weighted Engagement Index',
+                        data: [tradImpressions / 1000000000, bettingImpressions / 1000000000],
+                        backgroundColor: [
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-400') + 'cc',
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-700') + 'cc'
+                        ],
+                        borderColor: [
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-400'),
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-700')
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Weighted Engagement Comparison',
+                            font: {
+                                family: 'Geist',
+                                size: 14,
+                                weight: '600'
+                            },
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-900')
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Weighted Engagement Index',
+                                font: {
+                                    family: 'Geist',
+                                    size: 12
+                                },
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-600')
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toFixed(2) + 'B';
+                                },
+                                font: {
+                                    family: 'Geist',
+                                    size: 11
+                                },
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-500')
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-200')
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    family: 'Geist',
+                                    size: 11
+                                },
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-500')
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function exportData() {
+            const tradCPM = parseFloat(document.getElementById('traditionalCPM').value);
+            const bettingCPM = parseFloat(document.getElementById('bettingCPM').value);
+            const engagementBoost = parseFloat(document.getElementById('engagementBoost').value);
+            const bettorPercent = parseFloat(document.getElementById('bettorPercent').value);
+            const rightsFee = parseFloat(document.getElementById('rightsFee').value);
+
+            const data = {
+                inputs: {
+                    traditionalCPM: `$${tradCPM.toLocaleString()}`,
+                    bettingCPM: `$${bettingCPM.toLocaleString()}`,
+                    engagementBoost: `${engagementBoost}%`,
+                    bettorPercentage: `${bettorPercent}%`,
+                    traditionalRightsFee: `$${rightsFee}M`
+                },
+                results: {
+                    traditionalEffectiveReach: document.getElementById('tradReach').textContent,
+                    bettingEffectiveReach: document.getElementById('bettingReach').textContent,
+                    incrementalValue: document.getElementById('incrementalValue').textContent
+                },
+                insights: {
+                    premiumJustification: document.getElementById('justificationText').textContent
+                },
+                timestamp: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'partnership-valuation.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function resetTool() {
+            document.getElementById('traditionalCPM').value = 1000;
+            document.getElementById('bettingCPM').value = 1250;
+            document.getElementById('engagementBoost').value = 40;
+            document.getElementById('bettorPercent').value = 12;
+            document.getElementById('rightsFee').value = 10;
+
+            updateCalculations();
+        }
+
+        function toggleSection(sectionId) {
+            const content = document.getElementById(`${sectionId}-content`);
+            const header = content.previousElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            const isExpanded = content.classList.contains('expanded');
+
+            content.classList.toggle('expanded');
+            icon.classList.toggle('expanded');
+            header.setAttribute('aria-expanded', !isExpanded);
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            updateCalculations();
+        });
+    </script>
+</body>
+</html>

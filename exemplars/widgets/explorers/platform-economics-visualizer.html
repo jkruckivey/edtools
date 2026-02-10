@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Economics Visualizer - Linear TV vs. Streaming</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+            --color-linear: #4a7c89;
+            --color-streaming: #8b6b8a;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+        body { font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: white; color: var(--color-neutral-800); padding: 1.5rem; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .widget-box { background: var(--color-neutral-50); border: 2px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.5rem; }
+        .widget-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--color-neutral-800); color: white; padding: 0.25rem 0.75rem; border-radius: var(--border-radius-sm); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+        .widget-badge::before { content: ''; width: 6px; height: 6px; background: #22c55e; border-radius: 50%; }
+        .widget-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.5rem; }
+        .widget-subtitle { font-size: 0.85rem; color: var(--color-neutral-600); margin-bottom: 0.5rem; }
+        .widget-disclaimer { font-size: 0.75rem; color: var(--color-neutral-500); font-style: italic; margin-bottom: 0.75rem; }
+        .key-simplifications { background: var(--color-neutral-100); border-radius: var(--border-radius-sm); padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.75rem; }
+        .key-simplifications-title { font-weight: 600; color: var(--color-neutral-700); margin-bottom: 0.5rem; }
+        .key-simplifications ul { margin: 0; padding-left: 1.25rem; color: var(--color-neutral-600); }
+        .key-simplifications li { margin-bottom: 0.25rem; }
+
+        /* Model toggle */
+        .toggle-row { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; }
+        .toggle-btn { padding: 0.5rem 1.25rem; border: 2px solid var(--color-neutral-300); background: white; border-radius: var(--border-radius-sm); font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; color: var(--color-neutral-600); }
+        .toggle-btn:hover { border-color: var(--color-neutral-400); }
+        .toggle-btn.active { border-color: var(--color-neutral-800); background: var(--color-neutral-800); color: white; }
+
+        /* Presets row */
+        .presets-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; justify-content: center; }
+        .preset-btn { background: var(--color-neutral-200); color: var(--color-neutral-700); border: none; border-radius: var(--border-radius-sm); padding: 0.375rem 0.75rem; font-size: 0.75rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .preset-btn:hover { background: var(--color-neutral-300); }
+        .preset-btn.active { background: var(--color-accent); color: white; }
+
+        /* Two-column layout */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1rem; }
+
+        /* Input panel */
+        .input-panel { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; }
+        .panel-label { font-size: 0.75rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+
+        .form-row { margin-bottom: 0.875rem; }
+        .form-row:last-child { margin-bottom: 0; }
+        .form-label { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 500; color: var(--color-neutral-700); margin-bottom: 0.25rem; }
+        .form-value { font-weight: 600; color: var(--color-neutral-900); min-width: 70px; text-align: right; }
+        input[type="range"] { width: 100%; height: 6px; border-radius: 3px; background: var(--color-neutral-300); -webkit-appearance: none; appearance: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--color-neutral-800); cursor: pointer; }
+        input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--color-neutral-800); cursor: pointer; border: none; }
+
+        /* Results panel */
+        .results-panel { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); border-radius: var(--border-radius-sm); padding: 1rem; }
+        .result-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--color-neutral-100); }
+        .result-row:last-child { border-bottom: none; }
+        .result-label { font-size: 0.85rem; color: var(--color-neutral-600); }
+        .result-value { font-size: 0.95rem; font-weight: 600; color: var(--color-neutral-800); }
+        .result-value.positive { color: var(--color-accent); }
+        .result-value.negative { color: #b45555; }
+        .result-value.highlight { font-size: 1.1rem; }
+
+        /* Chart section */
+        .chart-section { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; margin-bottom: 1rem; }
+        .chart-container { height: 220px; }
+
+        /* Insight box */
+        .insight-box { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); padding: 1rem; border-radius: var(--border-radius-sm); margin-bottom: 1rem; }
+        .insight-label { font-size: 0.75rem; font-weight: 600; color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .insight-text { font-size: 0.85rem; color: var(--color-neutral-600); line-height: 1.6; }
+
+        /* Action row */
+        .action-row { display: flex; justify-content: flex-end; gap: 0.5rem; }
+        .btn { padding: 0.5rem 1rem; border: none; border-radius: var(--border-radius-sm); font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .btn-secondary { background: var(--color-neutral-200); color: var(--color-neutral-700); }
+        .btn-secondary:hover { background: var(--color-neutral-300); }
+        .btn-primary { background: var(--color-neutral-800); color: white; }
+        .btn-primary:hover { background: var(--color-neutral-700); }
+
+        .hidden { display: none; }
+
+        /* Splash page styles */
+        .splash-screen { text-align: center; }
+        .splash-scenario { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-neutral-800); padding: 1.25rem; border-radius: var(--border-radius-sm); margin-bottom: 1.25rem; text-align: left; }
+        .splash-scenario-label { font-size: 0.7rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .splash-scenario-text { font-size: 0.9rem; color: var(--color-neutral-700); line-height: 1.7; }
+        .splash-scenario-text strong { color: var(--color-neutral-900); }
+        .splash-simplifications { background: var(--color-neutral-100); border-radius: var(--border-radius-sm); padding: 1.25rem; margin-bottom: 1.5rem; text-align: left; }
+        .splash-simplifications-title { font-size: 0.85rem; font-weight: 700; color: var(--color-neutral-800); margin-bottom: 0.75rem; }
+        .splash-simplifications-subtitle { font-size: 0.75rem; color: var(--color-neutral-500); font-style: italic; margin-bottom: 0.75rem; }
+        .splash-simplifications ul { margin: 0; padding-left: 1.25rem; color: var(--color-neutral-600); font-size: 0.85rem; }
+        .splash-simplifications li { margin-bottom: 0.5rem; line-height: 1.5; }
+        .splash-simplifications li strong { color: var(--color-neutral-700); }
+        .splash-disclaimer { font-size: 0.85rem; color: var(--color-neutral-600); font-style: italic; margin-bottom: 1.5rem; }
+        .start-btn { background: var(--color-neutral-800); color: white; border: none; padding: 0.875rem 2rem; font-size: 0.95rem; font-weight: 600; border-radius: var(--border-radius-sm); cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .start-btn:hover { background: var(--color-neutral-700); }
+        .start-btn-hint { font-size: 0.75rem; color: var(--color-neutral-500); margin-top: 0.75rem; }
+
+        .simulator-screen { display: none; }
+
+        /* Tooltips */
+        .tooltip-wrapper { position: relative; display: inline-flex; align-items: center; gap: 0.25rem; }
+        .tooltip-icon { width: 14px; height: 14px; border-radius: 50%; background: var(--color-neutral-300); color: var(--color-neutral-600); font-size: 0.65rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; cursor: help; flex-shrink: 0; }
+        .tooltip-icon:hover { background: var(--color-neutral-400); color: white; }
+        .tooltip-content { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: var(--color-neutral-800); color: white; padding: 0.5rem 0.75rem; border-radius: var(--border-radius-sm); font-size: 0.75rem; font-weight: 400; line-height: 1.5; width: 220px; text-align: left; opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .tooltip-content::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--color-neutral-800); }
+        .tooltip-wrapper:hover .tooltip-content, .tooltip-wrapper:focus-within .tooltip-content { opacity: 1; visibility: visible; }
+
+        /* Insight enhancements */
+        .insight-metric { display: inline-block; background: var(--color-neutral-100); padding: 0.125rem 0.375rem; border-radius: 2px; font-weight: 600; color: var(--color-neutral-800); }
+        .insight-warning { background: #fef3c7; color: #92400e; }
+        .insight-positive { background: var(--color-accent-light); color: #2d5a4e; }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            .widget-box { padding: 1rem; }
+            .two-col { grid-template-columns: 1fr; }
+            .chart-container { height: 180px; }
+            .toggle-row { flex-wrap: wrap; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+            <!-- SPLASH SCREEN -->
+            <div class="splash-screen" id="splash-screen">
+                <div class="widget-badge">Interactive Simulator</div>
+                <h1 class="widget-title">Platform Economics Visualizer</h1>
+                <p class="widget-subtitle">Compare 10-year financial trajectories: Linear TV's declining base vs. Streaming's growth-dependent model.</p>
+
+                <div class="splash-scenario">
+                    <div class="splash-scenario-label">Your Role</div>
+                    <p class="splash-scenario-text">You're a <strong>media executive</strong> evaluating whether to bid on sports broadcasting rights. You'll model two scenarios: <strong>Linear TV</strong> (traditional cable with declining subscribers) vs. <strong>Streaming</strong> (digital platform starting from scratch). Adjust rights costs, subscriber bases, and growth rates to see how economics evolve over 10 years.</p>
+                </div>
+
+                <div class="splash-simplifications">
+                    <div class="splash-simplifications-title">Before You Start: What This Model Simplifies</div>
+                    <div class="splash-simplifications-subtitle">These assumptions make the model explorable but less realistic:</div>
+                    <ul>
+                        <li><strong>Smooth growth:</strong> Subscriber change is modeled as steady — no external shocks, content hits/flops, or competitive disruption</li>
+                        <li><strong>No competition:</strong> Model assumes you operate in isolation — no rival platforms affecting pricing or churn</li>
+                        <li><strong>Simplified costs:</strong> Real costs are hybrid (marketing, tech investment, rights renegotiation) — not purely fixed or variable</li>
+                        <li><strong>Single pricing tier:</strong> No ad-supported, bundles, or freemium options that real platforms use</li>
+                    </ul>
+                </div>
+
+                <p class="splash-disclaimer">The numbers are illustrative, not forecasts. Company names are used for context; scenarios are hypothetical and do not represent real financial data.</p>
+
+                <button class="start-btn" id="start-btn">I Understand — Start Exploring</button>
+                <p class="start-btn-hint">You can adjust all assumptions once inside the simulator.</p>
+            </div>
+
+            <!-- SIMULATOR SCREEN -->
+            <div class="simulator-screen" id="simulator-screen">
+                <div class="widget-badge">Interactive Simulator</div>
+                <h1 class="widget-title">Platform Economics Visualizer</h1>
+
+            <div class="toggle-row" role="tablist">
+                <button class="toggle-btn active" id="toggle-linear" role="tab" aria-selected="true">Linear TV</button>
+                <button class="toggle-btn" id="toggle-streaming" role="tab" aria-selected="false">Streaming</button>
+            </div>
+
+            <div class="presets-row" role="group" aria-label="Load example">
+                <button class="preset-btn active" data-preset="rogers">Rogers (illustrative)</button>
+                <button class="preset-btn" data-preset="dazn">DAZN-style Streamer</button>
+                <button class="preset-btn" data-preset="apple">Apple TV+ Scenario</button>
+            </div>
+
+            <div class="two-col">
+                <!-- Linear TV Controls -->
+                <div class="input-panel" id="linear-panel">
+                    <div class="panel-label">Linear TV Inputs</div>
+
+                    <div class="form-row">
+                        <div class="form-label">
+                            <span class="tooltip-wrapper">
+                                Rights Cost ($/yr)
+                                <span class="tooltip-icon" tabindex="0" role="button" aria-label="More info">?</span>
+                                <span class="tooltip-content">What the broadcaster pays the league annually for exclusive TV rights. Rogers paid $5.2B over 12 years ($433M/yr) for NHL rights in Canada.</span>
+                            </span>
+                            <span class="form-value" id="linear-cost-value">$433M</span>
+                        </div>
+                        <input type="range" id="linear-cost" min="50" max="800" step="10" value="433" aria-label="Annual rights cost">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-label">
+                            <span class="tooltip-wrapper">
+                                Starting Subscribers (M)
+                                <span class="tooltip-icon" tabindex="0" role="button" aria-label="More info">?</span>
+                                <span class="tooltip-content">Cable/satellite households that receive the channel. Revenue comes from carriage fees ($0.50/sub/month) plus ads. More subs = more revenue.</span>
+                            </span>
+                            <span class="form-value" id="linear-subs-value">11.2M</span>
+                        </div>
+                        <input type="range" id="linear-subs" min="1" max="20" step="0.5" value="11.2" aria-label="Starting subscribers in millions">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-label">
+                            <span class="tooltip-wrapper">
+                                Annual Decline (%)
+                                <span class="tooltip-icon" tabindex="0" role="button" aria-label="More info">?</span>
+                                <span class="tooltip-content">Cord-cutting rate — how fast people cancel cable each year. At 8%, you lose half your subscribers in ~8 years. This is linear TV's existential threat.</span>
+                            </span>
+                            <span class="form-value" id="linear-decline-value">8%</span>
+                        </div>
+                        <input type="range" id="linear-decline" min="0" max="15" step="1" value="8" aria-label="Annual subscriber decline rate">
+                    </div>
+                </div>
+
+                <!-- Streaming Controls -->
+                <div class="input-panel hidden" id="streaming-panel">
+                    <div class="panel-label">Streaming Inputs</div>
+
+                    <div class="form-row">
+                        <div class="form-label">
+                            <span class="tooltip-wrapper">
+                                Rights Cost ($/yr)
+                                <span class="tooltip-icon" tabindex="0" role="button" aria-label="More info">?</span>
+                                <span class="tooltip-content">Annual content licensing fee. Streaming platforms often pay less than linear TV but must build audience from scratch. Apple pays ~$250M/yr for MLS.</span>
+                            </span>
+                            <span class="form-value" id="streaming-cost-value">$50M</span>
+                        </div>
+                        <input type="range" id="streaming-cost" min="10" max="300" step="10" value="50" aria-label="Annual rights cost">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-label">
+                            <span class="tooltip-wrapper">
+                                Monthly Price ($)
+                                <span class="tooltip-icon" tabindex="0" role="button" aria-label="More info">?</span>
+                                <span class="tooltip-content">What subscribers pay per month. Higher price = more revenue per user, but slower growth. Most sports streaming is $15-25/month.</span>
+                            </span>
+                            <span class="form-value" id="streaming-price-value">$20</span>
+                        </div>
+                        <input type="range" id="streaming-price" min="5" max="40" step="1" value="20" aria-label="Monthly subscription price">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-label">
+                            <span class="tooltip-wrapper">
+                                Net Monthly Growth (%)
+                                <span class="tooltip-icon" tabindex="0" role="button" aria-label="More info">?</span>
+                                <span class="tooltip-content">New subscribers minus cancellations. 2% monthly = ~27% annual growth. Negative means you're shrinking. This is the key metric for streaming viability.</span>
+                            </span>
+                            <span class="form-value" id="streaming-growth-value">2%</span>
+                        </div>
+                        <input type="range" id="streaming-growth" min="-5" max="10" step="0.5" value="2" aria-label="Net monthly subscriber growth rate">
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="results-panel" role="region" aria-label="Results" aria-live="polite">
+                    <div class="panel-label">10-Year Outlook</div>
+
+                    <div class="result-row">
+                        <span class="result-label">Break-Even Year</span>
+                        <span class="result-value highlight" id="break-even">Never</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Year 10 Profit</span>
+                        <span class="result-value" id="year10-profit">-$150M</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Cumulative (10yr)</span>
+                        <span class="result-value" id="cumulative">-$1.2B</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-container">
+                    <canvas id="profitChart" role="img" aria-label="10-year profit projection chart"></canvas>
+                </div>
+            </div>
+
+            <div class="insight-box">
+                <div class="insight-label">Strategic Insight</div>
+                <div class="insight-text" id="insight-text">Loading...</div>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="reset-btn">Reset</button>
+                <button class="btn btn-primary" id="export-btn">Export CSV</button>
+            </div>
+            </div><!-- end simulator-screen -->
+        </div>
+    </div>
+
+    <script>
+        let currentModel = 'linear';
+        let chart = null;
+
+        const toggleLinear = document.getElementById('toggle-linear');
+        const toggleStreaming = document.getElementById('toggle-streaming');
+        const linearPanel = document.getElementById('linear-panel');
+        const streamingPanel = document.getElementById('streaming-panel');
+        const presetBtns = document.querySelectorAll('.preset-btn');
+
+        // Linear inputs
+        const linearCost = document.getElementById('linear-cost');
+        const linearSubs = document.getElementById('linear-subs');
+        const linearDecline = document.getElementById('linear-decline');
+
+        // Streaming inputs
+        const streamingCost = document.getElementById('streaming-cost');
+        const streamingPrice = document.getElementById('streaming-price');
+        const streamingGrowth = document.getElementById('streaming-growth');
+
+        const presets = {
+            rogers: { model: 'linear', cost: 433, subs: 11.2, decline: 8 },
+            dazn: { model: 'streaming', cost: 50, price: 20, growth: 2 },
+            apple: { model: 'streaming', cost: 250, price: 15, growth: 4 }
+        };
+
+        function switchModel(model) {
+            currentModel = model;
+            toggleLinear.classList.toggle('active', model === 'linear');
+            toggleStreaming.classList.toggle('active', model === 'streaming');
+            toggleLinear.setAttribute('aria-selected', model === 'linear');
+            toggleStreaming.setAttribute('aria-selected', model === 'streaming');
+            linearPanel.classList.toggle('hidden', model !== 'linear');
+            streamingPanel.classList.toggle('hidden', model !== 'streaming');
+            calculate();
+        }
+
+        function loadPreset(key) {
+            const p = presets[key];
+            presetBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.preset === key));
+
+            if (p.model === 'linear') {
+                linearCost.value = p.cost;
+                linearSubs.value = p.subs;
+                linearDecline.value = p.decline;
+            } else {
+                streamingCost.value = p.cost;
+                streamingPrice.value = p.price;
+                streamingGrowth.value = p.growth;
+            }
+            switchModel(p.model);
+        }
+
+        function calculate() {
+            updateDisplays();
+            const data = currentModel === 'linear' ? calcLinear() : calcStreaming();
+            updateResults(data);
+            updateChart(data);
+            updateInsight(data);
+        }
+
+        function updateDisplays() {
+            document.getElementById('linear-cost-value').textContent = '$' + linearCost.value + 'M';
+            document.getElementById('linear-subs-value').textContent = linearSubs.value + 'M';
+            document.getElementById('linear-decline-value').textContent = linearDecline.value + '%';
+            document.getElementById('streaming-cost-value').textContent = '$' + streamingCost.value + 'M';
+            document.getElementById('streaming-price-value').textContent = '$' + streamingPrice.value;
+            document.getElementById('streaming-growth-value').textContent = streamingGrowth.value + '%';
+        }
+
+        function calcLinear() {
+            const cost = parseFloat(linearCost.value) * 1000000;
+            let subs = parseFloat(linearSubs.value) * 1000000;
+            const decline = parseFloat(linearDecline.value) / 100;
+            const results = [];
+
+            for (let year = 1; year <= 10; year++) {
+                subs *= (1 - decline);
+                const adRevenue = subs * 0.15 * 272 * 55 / 1000; // 15% tune-in, 272 games, $55 CPM
+                const carriageRevenue = subs * 0.50 * 12; // $0.50/sub/month
+                const revenue = adRevenue + carriageRevenue;
+                const profit = revenue - cost;
+                results.push({ year, revenue, cost, profit });
+            }
+            return results;
+        }
+
+        function calcStreaming() {
+            const cost = parseFloat(streamingCost.value) * 1000000;
+            const price = parseFloat(streamingPrice.value);
+            const growth = parseFloat(streamingGrowth.value) / 100;
+            let subs = 50000; // Start with 50K subscribers
+            const results = [];
+
+            for (let year = 1; year <= 10; year++) {
+                // Compound monthly growth for the year
+                for (let m = 0; m < 12; m++) {
+                    subs *= (1 + growth);
+                }
+                const revenue = subs * price * 12;
+                const opsCost = subs * 2; // $2/sub for platform ops
+                const totalCost = cost + opsCost;
+                const profit = revenue - totalCost;
+                results.push({ year, revenue, cost: totalCost, profit });
+            }
+            return results;
+        }
+
+        function updateResults(data) {
+            const breakEvenYear = data.findIndex(d => d.profit > 0) + 1 || null;
+            const year10 = data[9].profit;
+            const cumulative = data.reduce((sum, d) => sum + d.profit, 0);
+
+            const beEl = document.getElementById('break-even');
+            beEl.textContent = breakEvenYear ? `Year ${breakEvenYear}` : 'Never';
+            beEl.className = 'result-value highlight ' + (breakEvenYear ? 'positive' : 'negative');
+
+            const y10El = document.getElementById('year10-profit');
+            y10El.textContent = formatCurrency(year10);
+            y10El.className = 'result-value ' + (year10 >= 0 ? 'positive' : 'negative');
+
+            const cumEl = document.getElementById('cumulative');
+            cumEl.textContent = formatCurrency(cumulative);
+            cumEl.className = 'result-value ' + (cumulative >= 0 ? 'positive' : 'negative');
+        }
+
+        function updateChart(data) {
+            const ctx = document.getElementById('profitChart').getContext('2d');
+            if (chart) chart.destroy();
+
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(d => 'Y' + d.year),
+                    datasets: [{
+                        label: 'Profit ($M)',
+                        data: data.map(d => d.profit / 1000000),
+                        borderColor: currentModel === 'linear' ? '#4a7c89' : '#8b6b8a',
+                        backgroundColor: currentModel === 'linear' ? 'rgba(74, 124, 137, 0.1)' : 'rgba(139, 107, 138, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => formatCurrency(ctx.parsed.y * 1000000)
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { callback: v => '$' + v.toFixed(0) + 'M' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateInsight(data) {
+            const breakEvenYear = data.findIndex(d => d.profit > 0) + 1 || null;
+            const cumulative = data.reduce((sum, d) => sum + d.profit, 0);
+            const year1Loss = data[0].profit;
+            const year10Profit = data[9].profit;
+            let text = '';
+
+            if (currentModel === 'linear') {
+                const cost = parseFloat(linearCost.value);
+                const startSubs = parseFloat(linearSubs.value);
+                const decline = parseFloat(linearDecline.value);
+                const year10Subs = startSubs * Math.pow(1 - decline/100, 10);
+                const costPerSub = (cost / startSubs).toFixed(0);
+                const year10CostPerSub = (cost / year10Subs).toFixed(0);
+
+                if (!breakEvenYear) {
+                    text = `<span class="insight-metric insight-warning">Never profitable.</span> You're paying <span class="insight-metric">${costPerSub}/subscriber/year</span> for rights, but that rises to <span class="insight-metric">${year10CostPerSub}/sub</span> by Year 10 as cord-cutting shrinks your base from ${startSubs}M to ${year10Subs.toFixed(1)}M. The math gets worse every year.`;
+                } else if (year10Profit < year1Loss * -1) {
+                    text = `Break-even in <span class="insight-metric">Year ${breakEvenYear}</span>, but profits are shrinking. By Year 10, you've lost ${((startSubs - year10Subs) / startSubs * 100).toFixed(0)}% of your subscribers. You're profitable today, but this model is in decline.`;
+                } else {
+                    text = `<span class="insight-metric insight-positive">Solid model.</span> Break-even in Year ${breakEvenYear} with ${formatCurrency(cumulative)} cumulative profit. At ${decline}% annual decline, you still have ${year10Subs.toFixed(1)}M subscribers in Year 10. Lower decline = even better returns.`;
+                }
+            } else {
+                const cost = parseFloat(streamingCost.value);
+                const price = parseFloat(streamingPrice.value);
+                const growth = parseFloat(streamingGrowth.value);
+                const annualRevPerSub = price * 12;
+                const opsCostPerSub = 2;
+                const marginPerSub = annualRevPerSub - opsCostPerSub;
+
+                // Calculate break-even subscribers
+                const breakEvenSubs = Math.ceil(cost * 1000000 / marginPerSub);
+                const year10Subs = 50000 * Math.pow(1 + growth/100, 120); // 120 months
+
+                if (growth <= 0) {
+                    text = `<span class="insight-metric insight-warning">Shrinking platform.</span> At ${growth}% monthly growth, you're losing subscribers faster than gaining them. No path to profitability — you need positive net growth to have any chance.`;
+                } else if (!breakEvenYear) {
+                    text = `<span class="insight-metric insight-warning">Never profitable in 10 years.</span> You need <span class="insight-metric">${(breakEvenSubs/1000).toFixed(0)}K subscribers</span> to cover the $${cost}M rights cost, but you only reach ${(year10Subs/1000).toFixed(0)}K by Year 10. Either grow faster, charge more, or pay less for rights.`;
+                } else if (breakEvenYear <= 3) {
+                    text = `<span class="insight-metric insight-positive">Strong model!</span> Break-even in Year ${breakEvenYear}. At <span class="insight-metric">$${marginPerSub.toFixed(0)}/sub margin</span> and ${growth}% monthly growth, you hit ${(year10Subs/1000000).toFixed(1)}M subscribers by Year 10. This is why tech giants accept early losses for growth.`;
+                } else {
+                    text = `Break-even in <span class="insight-metric">Year ${breakEvenYear}</span> — that's a long time to burn cash. Cumulative loss before profit: <span class="insight-metric">${formatCurrency(data.slice(0, breakEvenYear - 1).reduce((s, d) => s + d.profit, 0))}</span>. Can you afford to wait? Consider raising price or finding cheaper rights.`;
+                }
+            }
+            document.getElementById('insight-text').innerHTML = text;
+        }
+
+        function formatCurrency(val) {
+            const abs = Math.abs(val);
+            const sign = val < 0 ? '-' : '';
+            if (abs >= 1000000000) return sign + '$' + (abs / 1000000000).toFixed(2) + 'B';
+            if (abs >= 1000000) return sign + '$' + (abs / 1000000).toFixed(0) + 'M';
+            return sign + '$' + (abs / 1000).toFixed(0) + 'K';
+        }
+
+        function exportData() {
+            const data = currentModel === 'linear' ? calcLinear() : calcStreaming();
+            const rows = ['Year,Revenue,Cost,Profit'];
+            data.forEach(d => rows.push(`${d.year},${d.revenue.toFixed(0)},${d.cost.toFixed(0)},${d.profit.toFixed(0)}`));
+            const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `platform-economics-${currentModel}-${Date.now()}.csv`;
+            a.click();
+        }
+
+        // Event listeners
+        toggleLinear.addEventListener('click', () => switchModel('linear'));
+        toggleStreaming.addEventListener('click', () => switchModel('streaming'));
+        presetBtns.forEach(btn => btn.addEventListener('click', () => loadPreset(btn.dataset.preset)));
+
+        [linearCost, linearSubs, linearDecline, streamingCost, streamingPrice, streamingGrowth].forEach(el => {
+            el.addEventListener('input', calculate);
+        });
+
+        document.getElementById('reset-btn').addEventListener('click', () => loadPreset('rogers'));
+        document.getElementById('export-btn').addEventListener('click', exportData);
+
+        // Splash screen handler
+        document.getElementById('start-btn').addEventListener('click', () => {
+            document.getElementById('splash-screen').style.display = 'none';
+            document.getElementById('simulator-screen').style.display = 'block';
+        });
+
+        // Initialize
+        loadPreset('rogers');
+    </script>
+</body>
+</html>

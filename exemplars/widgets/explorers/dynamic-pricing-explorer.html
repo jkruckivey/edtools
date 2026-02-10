@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Pricing Explorer</title>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --secondary: #2d3748;
+            --accent: #3182ce;
+            --success: #38a169;
+            --warning: #d69e2e;
+            --danger: #e53e3e;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #1a202c;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 24px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Phase Navigation */
+        .phase-nav {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .phase-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .phase-dot.active {
+            background: var(--accent);
+            transform: scale(1.2);
+        }
+
+        .phase-dot.completed {
+            background: var(--success);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .card-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        /* Hidden Phases */
+        .phase {
+            display: none;
+        }
+
+        .phase.active {
+            display: block;
+        }
+
+        /* Pre-Check Styling */
+        .precheck-icon { background: linear-gradient(135deg, #805ad5, #6b46c1); }
+
+        .precheck-question {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+
+        /* Option Buttons */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            padding: 16px 20px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--card-bg);
+            cursor: pointer;
+            text-align: left;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option-btn:hover {
+            border-color: var(--accent);
+            background: #ebf8ff;
+        }
+
+        .option-btn:focus {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .option-btn.selected {
+            border-color: var(--accent);
+            background: #ebf8ff;
+        }
+
+        .option-btn.correct {
+            border-color: var(--success);
+            background: #f0fff4;
+        }
+
+        .option-btn.incorrect {
+            border-color: var(--danger);
+            background: #fff5f5;
+        }
+
+        .option-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .option-btn.selected .option-letter {
+            background: var(--accent);
+            color: white;
+        }
+
+        .option-btn.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .option-btn.incorrect .option-letter {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Feedback */
+        .feedback {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: var(--radius);
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #f0fff4;
+            border: 1px solid var(--success);
+            color: #276749;
+        }
+
+        .feedback.incorrect {
+            background: #fff5f5;
+            border: 1px solid var(--danger);
+            color: #c53030;
+        }
+
+        .feedback.neutral {
+            background: #ebf8ff;
+            border: 1px solid var(--accent);
+            color: var(--primary);
+        }
+
+        /* Exploration Phase */
+        .explore-icon { background: linear-gradient(135deg, #3182ce, #2b6cb0); }
+
+        .pricing-display {
+            text-align: center;
+            padding: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: var(--radius);
+            color: white;
+            margin-bottom: 24px;
+        }
+
+        .base-price-label {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+
+        .base-price {
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+        }
+
+        .dynamic-price {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .price-change {
+            font-size: 1.1rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .price-change.positive {
+            background: rgba(56, 161, 105, 0.3);
+        }
+
+        .price-change.negative {
+            background: rgba(229, 62, 62, 0.3);
+        }
+
+        /* Factor Sliders */
+        .factors-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .factor {
+            background: var(--bg);
+            padding: 16px;
+            border-radius: var(--radius);
+        }
+
+        .factor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .factor-name {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .factor-value {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .factor-slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--border);
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .factor-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .factor-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .factor-slider:focus {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .factor-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        .factor-impact {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        /* Scenario Presets */
+        .presets {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .preset-btn {
+            padding: 10px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: var(--card-bg);
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--accent);
+            background: #ebf8ff;
+        }
+
+        .preset-btn:focus {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .preset-btn.active {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Insight Box */
+        .insight-box {
+            background: #fffbeb;
+            border: 1px solid var(--warning);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .insight-box h4 {
+            color: #744210;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .insight-box p {
+            color: #744210;
+            font-size: 0.95rem;
+        }
+
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:focus {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+        }
+
+        .btn-primary:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* AI Coach Prompt */
+        .coach-prompt {
+            background: linear-gradient(135deg, #ebf8ff, #e6fffa);
+            border: 2px solid var(--accent);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 24px;
+        }
+
+        .coach-prompt h4 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .coach-prompt p {
+            color: var(--secondary);
+            margin-bottom: 12px;
+        }
+
+        .coach-questions {
+            list-style: none;
+            padding: 0;
+        }
+
+        .coach-questions li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+            color: var(--text-muted);
+        }
+
+        .coach-questions li::before {
+            content: "?";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            body {
+                padding: 16px;
+            }
+
+            .dynamic-price {
+                font-size: 2.25rem;
+            }
+
+            .presets {
+                flex-direction: column;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Screen reader only */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Dynamic Pricing Explorer</h1>
+            <p class="subtitle">Discover how sports teams price tickets based on demand</p>
+        </header>
+
+        <div class="phase-nav" role="navigation" aria-label="Progress">
+            <div class="phase-dot active" aria-label="Pre-check"></div>
+            <div class="phase-dot" aria-label="Explore"></div>
+        </div>
+
+        <div aria-live="polite" id="announcer" class="sr-only"></div>
+
+        <!-- Phase 1: Pre-Check -->
+        <section id="phase-precheck" class="phase active" aria-labelledby="precheck-title">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon precheck-icon">?</div>
+                    <div>
+                        <div class="card-label">Pre-Check</div>
+                        <h2 class="card-title" id="precheck-title">What Do You Already Know?</h2>
+                    </div>
+                </div>
+
+                <p class="precheck-question">
+                    A team is playing their biggest rival on a Saturday night. The game is almost sold out.
+                    What would you expect to happen to remaining ticket prices?
+                </p>
+
+                <div class="options" role="radiogroup" aria-label="Pre-check answer options">
+                    <button class="option-btn" data-value="stay" role="radio" aria-checked="false">
+                        <span class="option-letter">A</span>
+                        <span>Stay the same - prices are set at the start of the season</span>
+                    </button>
+                    <button class="option-btn" data-value="decrease" role="radio" aria-checked="false">
+                        <span class="option-letter">B</span>
+                        <span>Decrease - teams want to fill every seat</span>
+                    </button>
+                    <button class="option-btn" data-value="increase" role="radio" aria-checked="false">
+                        <span class="option-letter">C</span>
+                        <span>Increase - high demand allows higher prices</span>
+                    </button>
+                    <button class="option-btn" data-value="random" role="radio" aria-checked="false">
+                        <span class="option-letter">D</span>
+                        <span>Vary randomly based on what the team needs</span>
+                    </button>
+                </div>
+
+                <div id="precheck-feedback" class="feedback"></div>
+
+                <div class="btn-group">
+                    <button id="precheck-submit" class="btn btn-primary" disabled>Check My Thinking</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 2: Exploration -->
+        <section id="phase-explore" class="phase" aria-labelledby="explore-title">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon explore-icon">📊</div>
+                    <div>
+                        <div class="card-label">Interactive Exploration</div>
+                        <h2 class="card-title" id="explore-title">See Dynamic Pricing in Action</h2>
+                    </div>
+                </div>
+
+                <p style="margin-bottom: 20px; color: var(--text-muted);">
+                    Adjust the factors below to see how ticket prices change. Try the preset scenarios or create your own.
+                </p>
+
+                <div class="presets" role="group" aria-label="Scenario presets">
+                    <button class="preset-btn" data-preset="rivalry">Rivalry Night</button>
+                    <button class="preset-btn" data-preset="tuesday">Tuesday vs Weak Team</button>
+                    <button class="preset-btn" data-preset="playoff">Playoff Atmosphere</button>
+                    <button class="preset-btn" data-preset="rain">Rainy Weeknight</button>
+                </div>
+
+                <div class="pricing-display">
+                    <div class="base-price-label">Base Ticket Price</div>
+                    <div class="base-price">$75.00</div>
+                    <div class="dynamic-price" id="dynamic-price">$75.00</div>
+                    <div class="price-change" id="price-change">No change</div>
+                </div>
+
+                <div class="factors-grid">
+                    <div class="factor">
+                        <div class="factor-header">
+                            <span class="factor-name">🏆 Opponent Quality</span>
+                            <span class="factor-value" id="opponent-value">Average</span>
+                        </div>
+                        <input type="range" class="factor-slider" id="opponent-slider"
+                               min="1" max="5" value="3"
+                               aria-label="Opponent quality from weak to rival">
+                        <div class="factor-labels">
+                            <span>Weak Team</span>
+                            <span>Division Rival</span>
+                        </div>
+                        <p class="factor-impact" id="opponent-impact">Impact: +0%</p>
+                    </div>
+
+                    <div class="factor">
+                        <div class="factor-header">
+                            <span class="factor-name">📅 Day of Week</span>
+                            <span class="factor-value" id="day-value">Wednesday</span>
+                        </div>
+                        <input type="range" class="factor-slider" id="day-slider"
+                               min="1" max="7" value="4"
+                               aria-label="Day of week from Monday to Sunday">
+                        <div class="factor-labels">
+                            <span>Monday</span>
+                            <span>Sunday</span>
+                        </div>
+                        <p class="factor-impact" id="day-impact">Impact: +0%</p>
+                    </div>
+
+                    <div class="factor">
+                        <div class="factor-header">
+                            <span class="factor-name">🎫 Tickets Remaining</span>
+                            <span class="factor-value" id="inventory-value">50%</span>
+                        </div>
+                        <input type="range" class="factor-slider" id="inventory-slider"
+                               min="5" max="80" value="50"
+                               aria-label="Percentage of tickets remaining">
+                        <div class="factor-labels">
+                            <span>Nearly Sold Out (5%)</span>
+                            <span>Many Available (80%)</span>
+                        </div>
+                        <p class="factor-impact" id="inventory-impact">Impact: +0%</p>
+                    </div>
+
+                    <div class="factor">
+                        <div class="factor-header">
+                            <span class="factor-name">🌤️ Weather Forecast</span>
+                            <span class="factor-value" id="weather-value">Clear</span>
+                        </div>
+                        <input type="range" class="factor-slider" id="weather-slider"
+                               min="1" max="4" value="4"
+                               aria-label="Weather from poor to perfect">
+                        <div class="factor-labels">
+                            <span>Poor</span>
+                            <span>Perfect</span>
+                        </div>
+                        <p class="factor-impact" id="weather-impact">Impact: +0%</p>
+                    </div>
+                </div>
+
+                <div class="insight-box">
+                    <h4>💡 Key Insight</h4>
+                    <p id="insight-text">Adjust the sliders to discover how different factors combine to affect ticket prices.</p>
+                </div>
+
+                <div class="btn-group">
+                    <button id="restart-btn" class="btn btn-secondary" onclick="location.reload()">Start Over</button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // State management
+        const state = {
+            currentPhase: 'precheck',
+            precheckAnswer: null,
+            explored: false
+        };
+
+        // DOM elements
+        const phases = {
+            precheck: document.getElementById('phase-precheck'),
+            explore: document.getElementById('phase-explore')
+        };
+
+        const phaseDots = document.querySelectorAll('.phase-dot');
+        const announcer = document.getElementById('announcer');
+
+        // Utility functions
+        function announce(message) {
+            announcer.textContent = message;
+        }
+
+        function showPhase(phaseName) {
+            // Hide all phases
+            Object.values(phases).forEach(phase => phase.classList.remove('active'));
+
+            // Show target phase
+            phases[phaseName].classList.add('active');
+            state.currentPhase = phaseName;
+
+            // Update dots
+            const phaseOrder = ['precheck', 'explore'];
+            const currentIndex = phaseOrder.indexOf(phaseName);
+
+            phaseDots.forEach((dot, index) => {
+                dot.classList.remove('active', 'completed');
+                if (index < currentIndex) {
+                    dot.classList.add('completed');
+                } else if (index === currentIndex) {
+                    dot.classList.add('active');
+                }
+            });
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Pre-check phase
+        function initPrecheck() {
+            const options = document.querySelectorAll('#phase-precheck .option-btn');
+            const submitBtn = document.getElementById('precheck-submit');
+            const feedback = document.getElementById('precheck-feedback');
+
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.setAttribute('aria-checked', 'false');
+                    });
+                    option.classList.add('selected');
+                    option.setAttribute('aria-checked', 'true');
+                    state.precheckAnswer = option.dataset.value;
+                    submitBtn.disabled = false;
+                });
+            });
+
+            submitBtn.addEventListener('click', () => {
+                const isCorrect = state.precheckAnswer === 'increase';
+
+                options.forEach(opt => {
+                    opt.disabled = true;
+                    if (opt.dataset.value === 'increase') {
+                        opt.classList.add('correct');
+                    } else if (opt.classList.contains('selected') && !isCorrect) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+
+                feedback.classList.add('show');
+                if (isCorrect) {
+                    feedback.classList.add('correct');
+                    feedback.innerHTML = `<strong>Excellent!</strong> You understand the basic principle. High demand + limited supply = higher prices. Let's explore how multiple factors combine to determine final prices.`;
+                } else {
+                    feedback.classList.add('neutral');
+                    feedback.innerHTML = `<strong>Interesting perspective!</strong> The answer is C - high demand allows for higher prices. This is the core principle of dynamic pricing. Let's explore how it works in detail.`;
+                }
+
+                submitBtn.textContent = 'Continue to Exploration';
+                submitBtn.onclick = () => showPhase('explore');
+                announce(isCorrect ? 'Correct answer! Click continue to explore dynamic pricing.' : 'The correct answer was C. Click continue to learn more.');
+            });
+        }
+
+        // Exploration phase
+        function initExploration() {
+            const basePrice = 75;
+            const sliders = {
+                opponent: document.getElementById('opponent-slider'),
+                day: document.getElementById('day-slider'),
+                inventory: document.getElementById('inventory-slider'),
+                weather: document.getElementById('weather-slider')
+            };
+
+            const values = {
+                opponent: document.getElementById('opponent-value'),
+                day: document.getElementById('day-value'),
+                inventory: document.getElementById('inventory-value'),
+                weather: document.getElementById('weather-value')
+            };
+
+            const impacts = {
+                opponent: document.getElementById('opponent-impact'),
+                day: document.getElementById('day-impact'),
+                inventory: document.getElementById('inventory-impact'),
+                weather: document.getElementById('weather-impact')
+            };
+
+            const priceDisplay = document.getElementById('dynamic-price');
+            const changeDisplay = document.getElementById('price-change');
+            const insightText = document.getElementById('insight-text');
+
+            const opponentLabels = ['Weak', 'Below Average', 'Average', 'Strong', 'Rival'];
+            const dayLabels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            const weatherLabels = ['Storm', 'Rain', 'Cloudy', 'Clear'];
+
+            function calculatePrice() {
+                const opponent = parseInt(sliders.opponent.value);
+                const day = parseInt(sliders.day.value);
+                const inventory = parseInt(sliders.inventory.value);
+                const weather = parseInt(sliders.weather.value);
+
+                // Calculate individual impacts
+                const opponentImpact = (opponent - 3) * 10; // -20% to +20%
+                const dayImpact = day >= 6 ? 15 : (day === 5 ? 5 : (day <= 2 ? -10 : 0)); // Weekend premium
+                const inventoryImpact = inventory <= 10 ? 50 : (inventory <= 25 ? 25 : (inventory >= 70 ? -15 : 0)); // Scarcity premium
+                const weatherImpact = (weather - 2.5) * 5; // -7.5% to +7.5%
+
+                const totalImpact = opponentImpact + dayImpact + inventoryImpact + weatherImpact;
+                const dynamicPrice = basePrice * (1 + totalImpact / 100);
+
+                // Update displays
+                values.opponent.textContent = opponentLabels[opponent - 1];
+                values.day.textContent = dayLabels[day - 1];
+                values.inventory.textContent = inventory + '%';
+                values.weather.textContent = weatherLabels[weather - 1];
+
+                impacts.opponent.textContent = `Impact: ${opponentImpact >= 0 ? '+' : ''}${opponentImpact}%`;
+                impacts.day.textContent = `Impact: ${dayImpact >= 0 ? '+' : ''}${dayImpact}%`;
+                impacts.inventory.textContent = `Impact: ${inventoryImpact >= 0 ? '+' : ''}${inventoryImpact}%`;
+                impacts.weather.textContent = `Impact: ${weatherImpact >= 0 ? '+' : ''}${weatherImpact.toFixed(1)}%`;
+
+                priceDisplay.textContent = '$' + dynamicPrice.toFixed(2);
+
+                if (totalImpact > 0) {
+                    changeDisplay.textContent = `+${totalImpact.toFixed(0)}% from base`;
+                    changeDisplay.className = 'price-change positive';
+                } else if (totalImpact < 0) {
+                    changeDisplay.textContent = `${totalImpact.toFixed(0)}% from base`;
+                    changeDisplay.className = 'price-change negative';
+                } else {
+                    changeDisplay.textContent = 'No change';
+                    changeDisplay.className = 'price-change';
+                }
+
+                // Dynamic insights
+                if (inventory <= 10) {
+                    insightText.textContent = 'Notice how scarcity has the biggest impact! When tickets are nearly sold out, prices can jump 50% or more regardless of other factors.';
+                } else if (opponent === 5 && day >= 6) {
+                    insightText.textContent = 'Rivalry games on weekends combine multiple premium factors. Teams call these "marquee matchups" and price them accordingly.';
+                } else if (totalImpact < -15) {
+                    insightText.textContent = 'Multiple negative factors stack up. Tuesday games against weak teams with poor weather often have the lowest prices - great deals for price-conscious fans!';
+                } else {
+                    insightText.textContent = 'Dynamic pricing continuously adjusts based on real-time demand signals. Teams use algorithms that process these factors instantly.';
+                }
+
+                state.explored = true;
+            }
+
+            // Attach slider listeners
+            Object.values(sliders).forEach(slider => {
+                slider.addEventListener('input', calculatePrice);
+            });
+
+            // Preset buttons
+            const presets = {
+                rivalry: { opponent: 5, day: 6, inventory: 15, weather: 4 },
+                tuesday: { opponent: 1, day: 2, inventory: 60, weather: 3 },
+                playoff: { opponent: 4, day: 7, inventory: 8, weather: 4 },
+                rain: { opponent: 3, day: 3, inventory: 45, weather: 1 }
+            };
+
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const preset = presets[btn.dataset.preset];
+                    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    sliders.opponent.value = preset.opponent;
+                    sliders.day.value = preset.day;
+                    sliders.inventory.value = preset.inventory;
+                    sliders.weather.value = preset.weather;
+
+                    calculatePrice();
+                    announce(`Loaded ${btn.textContent} scenario`);
+                });
+            });
+
+            // Initial calculation
+            calculatePrice();
+        }
+
+        // Initialize
+        initPrecheck();
+        initExploration();
+    </script>
+</body>
+</html>

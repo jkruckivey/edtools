@@ -31,6 +31,18 @@
             outline-offset: 2px;
         }
 
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -330,6 +342,8 @@
 
         <button class="calculate-btn" onclick="calculateROI()">Calculate Sponsorship ROI</button>
 
+        <div id="sr-announcement" role="status" aria-live="polite" class="sr-only"></div>
+
         <div id="results" style="display: none;">
             <div class="results">
                 <h2>ROI Analysis</h2>
@@ -512,6 +526,10 @@
             // Show results
             document.getElementById('results').style.display = 'block';
             document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // Announce results to screen readers
+            document.getElementById('sr-announcement').textContent =
+                `Results calculated. ROI is ${roiPercentage}%. Rating: ${rating}. ${ratingText}`;
         }
     </script>
 </body>

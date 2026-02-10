@@ -717,19 +717,21 @@ Remember: This quiz isn't graded, it's a diagnostic tool to help you learn effic
 
 **Introduction Text (Copy to Uplimit):**
 ```markdown
-### Visual Story: Explore This Week's Concepts
+### ⚙ Interactive Activity: The $5.2 Billion Bet Graphic Novel
 
-Before diving into the core content, explore this week's concepts through visual storytelling.
+**Explore: WLO 2.1 (Media rights valuation) and WLO 2.4 (Strategic deal evaluation)**
 
----
+You're now ready to see Week 2's concepts in action through visual storytelling. In this interactive graphic novel, you'll follow Raj Sharma—a Rogers Communications media executive—as he navigates the historic $5.2 billion NHL rights acquisition.
 
-**"The $5.2 Billion Bet: A Rogers Media Story"**
+**What you'll discover:**
+- The five strategic benefits Rogers projected (Cable Retention, Ad Revenue, Streaming Growth, Wireless Bundling, Competitive Moat)
+- How executives defend billion-dollar decisions to skeptical stakeholders
+- The real-world tension between short-term losses and long-term strategic positioning
 
-Follow Raj Sharma, a media executive, as Rogers Communications makes the historic $5.2 billion NHL rights acquisition—the largest sports media deal in Canadian history. When skeptics question whether any content is worth that price, Raj must defend a strategy built on five strategic benefits: Cable Retention, Ad Revenue, Streaming Growth, Wireless Bundling, and Competitive Moat.
+**Why this matters:** The story dramatizes the strategic thinking you'll analyze this week. Was Rogers right to bet big on live sports? You'll evaluate the deal's 10-year performance in Module 5 and decide what Rogers should do when the contract expires in 2026.
 
-**Why read this?** The story dramatizes the strategic thinking you'll analyze this week. Was Rogers right to bet big on live sports? You'll evaluate the deal's 10-year performance in the case study and decide what Rogers should do when the contract expires in 2026.
-
-*Reading time: ~10 minutes*
+*Time commitment: 10 minutes*
+*Learning outcomes practiced: WLO 2.1, WLO 2.4*
 ```
 
 **Graphic Novel File:** `modules/shared-resources/graphic-novels/02-the-bet-week2.md`

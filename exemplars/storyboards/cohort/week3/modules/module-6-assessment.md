@@ -51,20 +51,7 @@ Now capture what you learned. This isn't about getting the "right answer"—it's
 ```markdown
 Title: ▪ Assessment: Ethical Sponsorship Reflection (25 points)
 
-**Your Task:** In 300 words or less, reflect on what you learned about ethical considerations in sponsorship decisions.
-
-**Your reflection should address:**
-
-1. **The Core Tension** - What makes sponsorship decisions ethically complex? Use LIV Golf as your example.
-2. **Stakeholder Trade-offs** - How do different stakeholders (customers, employees, shareholders) view controversial sponsorships differently?
-3. **Your Framework** - Based on the Mickelson roleplay and case analysis, what's YOUR threshold for when ethical concerns should outweigh financial opportunity?
-
-**Grading (25 points):**
-- Ethical complexity understanding (10 pts)
-- Stakeholder trade-off analysis (8 pts)
-- Personal framework articulation (7 pts)
-
-**Tip:** Be specific. "Ethics matter" is vague. "Premium brands face higher reputational risk because 38% of consumers avoid sportswashing-associated brands, while challenger brands have less to lose" shows framework thinking.
+In 300 words or less, reflect on ethical considerations in sponsorship decisions. Address three areas: what makes sponsorship decisions ethically complex (use LIV Golf as your example), how different stakeholders view controversial sponsorships differently, and your personal threshold for when ethical concerns should outweigh financial opportunity. Grading: Ethical complexity understanding (10 pts), Stakeholder trade-off analysis (8 pts), Personal framework articulation (7 pts). Be specific with examples—"38% of consumers avoid sportswashing-associated brands" beats vague generalizations.
 ```
 
 ---

@@ -32,9 +32,10 @@
 | Order | Element | Content/Purpose | Source | Implementation Notes |
 |-------|---------|----------------|--------|---------------------|
 | 1 | **▬ Text** ⬤ Required | Connecting intro to case analysis | Type directly | The Serena puzzle |
-| 2 | **ⓘ Infobox (Callout)** ○ Optional | Background readings | Type directly | Links to Forbes, Reuters, Afrotech articles |
+| 2 | **▤ Details Accordion** ○ Optional | Background readings | Type directly | Links to Forbes, Reuters, Afrotech articles |
 | 3 | **▶ Video** ⬤ Required | "Serena Williams: Strategic Analysis Framework" (2 min) | Upload MP4 | Three strategic pivots |
 | 4 | **⚙ iFrame Widget** ⬤ Required | **Serena's Brand Portfolio Analyzer** | Embed widget | Interactive analysis of her actual strategy |
+| 5 | **▬ Text** ⬤ Required | Module complete + transition | Type directly | Summary and Module 6 preview |
 
 ---
 
@@ -74,25 +75,24 @@ Let's dive into the case.
 
 ---
 
-## Element 2: Infobox - Analysis Overview & Readings
+## Element 2: Details Accordion - Background Readings
 
 **Uplimit Implementation:**
-1. Select **Infobox** element
-2. Choose variant: **Callout**
-3. Copy markdown below:
+1. Select **Details Accordion** element
+2. Copy markdown below:
 
 ```markdown
-Title: 📚 Serena Williams Analysis: Background Readings
+Title: 📚 Background Readings (Optional, 20-30 min)
 
-Before diving into the analysis, review these recommended readings (20-30 minutes total):
+Explore these sources before analyzing Serena's strategy:
 
-**1. Reuters:** [Serena Williams' New Venture Fund Raises $111 Million](https://www.reuters.com/article/us-serena-williams-venture-fund/serena-williams-new-venture-fund-raises-111-million-idUSKCN1T02FJ) — Fund structure, thesis, early investments
+**Reuters:** [Serena Williams' New Venture Fund Raises $111 Million](https://www.reuters.com/article/us-serena-williams-venture-fund/serena-williams-new-venture-fund-raises-111-million-idUSKCN1T02FJ) — Fund structure and thesis
 
-**2. Forbes:** [Play To Win: Serena Williams Invested In 14 Unicorn Companies](https://www.forbes.com/sites/mattcraig/2023/01/23/play-to-win-serena-williams-invested-in-14-unicorn-companies/) — Portfolio returns, VC philosophy, Coinbase exit
+**Forbes:** [Play To Win: Serena Williams Invested In 14 Unicorn Companies](https://www.forbes.com/sites/mattcraig/2023/01/23/play-to-win-serena-williams-invested-in-14-unicorn-companies/) — Portfolio returns and Coinbase exit
 
-**3. Afrotech:** [Serena Williams on Raising VC](https://afrotech.com/serena-williams-vc-funding) — How she built her investor network and deal flow
+**Afrotech:** [Serena Williams on Raising VC](https://afrotech.com/serena-williams-vc-funding) — Building investor network and deal flow
 
-These articles provide the foundation for analyzing Serena's transition from athlete to investor. Keep the four analysis questions in mind while reading, then use the Brand Portfolio Analyzer to test her strategy against alternatives.
+These articles provide foundation for the case analysis. Use the Brand Portfolio Analyzer to test strategic alternatives after reading.
 ```
 
 ---
@@ -193,18 +193,20 @@ Use the "what if" sliders to explore alternative paths:
 
 ---
 
-## MODULE 5 Complete - Transition to Module 6
+## Element 5: Module Complete - Transition to Module 6
 
-**What You've Learned:**
-By exploring Serena's actual strategy through the Portfolio Analyzer, you discovered:
-- She allocated ~30% to endorsements (income), ~70% to owned businesses/investments (wealth)
-- S by Serena decision was strategic equity building, not just creative expression
-- She built assets during career (2014-2018) that generate value post-retirement (2023+)
-- Her women's sports investments captured 10-15x returns as first mover
+**Uplimit Implementation:**
+1. Select **Text** element
+2. Copy markdown below:
 
-**Key Insight:**
-Serena didn't build her substantial net worth by being the best tennis player (though she is). She built it by strategically allocating capital to equity investments and identifying undervalued markets.
+```markdown
+## Module 5 Complete: Strategic Analysis Applied
+
+By exploring Serena's modeled strategy through the Portfolio Analyzer, you discovered she allocated ~30% to endorsements (income) and ~70% to owned businesses/investments (wealth). S by Serena was strategic equity building, not just creative expression. She built assets during her career (2014-2018) that generate value post-retirement (2023+), and her women's sports investments captured 10-15x returns as first mover.
+
+**Key Insight:** Serena didn't build her substantial net worth by being the best tennis player. She built it by strategically allocating capital to equity investments and identifying undervalued markets—principles you can apply to any athlete brand strategy.
 
 **Up Next: Module 6 - Athlete Brand Strategy Reflection**
 
-Now capture what you learned about athlete brand strategy and how you'd apply these frameworks.
+Now capture what you learned and how you'd apply these frameworks to your own strategic planning.
+```

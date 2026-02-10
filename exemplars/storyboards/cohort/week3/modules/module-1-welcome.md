@@ -16,8 +16,11 @@
 | 1 | **ⓘ Infobox (Callout)** ⬤ Required | Display all 4 WLOs | Type directly | Blue variant, icon: ◉ |
 | 2 | **▬ Text** ⬤ Required | Week 3 introduction | Type directly | Connects to Week 2 media foundations |
 | 3 | **◫ Tiles** ◐ Recommended | 3 sponsorship/betting topics | Type directly | Blue variant |
-| 4 | **⚙ iFrame Widget** ◐ Recommended | Learning Outcomes Widget | Embed `learning-outcomes-week.html` | WLO-CLO mapping |
-| 5 | **⚙ iFrame Widget** ◐ Recommended | CFL Project Tie-In | Embed `cfl-project-tie-in.html` | Shows project progression, Week 3 highlighted |
+| 4 | **▬ Text** ◐ Recommended | Widget intro - Learning Outcomes | Type directly | Pre-widget context |
+| 5 | **⚙ iFrame Widget** ◐ Recommended | Learning Outcomes Widget | Embed `learning-outcomes-week.html` | WLO-CLO mapping |
+| 6 | **▬ Text** ◐ Recommended | Widget intro - CFL Project | Type directly | Pre-widget context |
+| 7 | **⚙ iFrame Widget** ◐ Recommended | CFL Project Tie-In | Embed `cfl-project-tie-in.html` | Shows project progression |
+| 8 | **▬ Text** ⬤ Required | Module complete + transition | Type directly | Module 2 preview |
 
 ---
 
@@ -74,9 +77,23 @@ Create 3 tiles:
 
 ---
 
-## Element 4: Learning Outcomes Widget
+## Element 4: Widget Introduction - Learning Outcomes
 
-**Widget Purpose:** Interactive visualization showing how Week 3's learning outcomes connect to course-level goals
+**Uplimit Implementation:**
+1. Select **Text** element
+2. Copy markdown below:
+
+```markdown
+### Your Learning Path This Week
+
+The four learning outcomes above map to specific course-level goals. This interactive visualization shows how Week 3's skills build on Weeks 1-2 (media foundations) and contribute to CLO 3: Evaluating Sponsorship & Betting Economics. You'll see the progression from understanding sponsorship fundamentals to designing activations with measurable ROI.
+
+*Time: 2 minutes*
+```
+
+---
+
+## Element 5: Learning Outcomes Widget
 
 **Embed Code:**
 ```html
@@ -94,9 +111,23 @@ Create 3 tiles:
 
 ---
 
-## Element 5: CFL Project Tie-In Widget
+## Element 6: Widget Introduction - CFL Project
 
-**Widget Purpose:** Orient students to this week's milestone in the course-long CFL Expansion Project
+**Uplimit Implementation:**
+1. Select **Text** element
+2. Copy markdown below:
+
+```markdown
+### Your Project This Week
+
+You're three weeks into building a CFL expansion strategy. This tracker shows where you've been (market analysis, media strategy) and where you're going (sponsorship & betting partnerships). Week 3 represents a critical milestone: identifying revenue opportunities beyond traditional media rights.
+
+*Time: 2 minutes*
+```
+
+---
+
+## Element 7: CFL Project Tie-In Widget
 
 **Embed Code:**
 ```html
@@ -112,7 +143,18 @@ Create 3 tiles:
 </iframe>
 ```
 
-**Widget Features:**
-- Shows 5-week milestone progression with Week 3 highlighted (Weeks 1-2 marked complete)
-- "This Week" section explains the sponsorship & betting strategy milestone
-- Links milestone to week's learning content
+---
+
+## Element 8: Module Complete - Transition to Module 2
+
+**Uplimit Implementation:**
+1. Select **Text** element
+2. Copy markdown below:
+
+```markdown
+## Module 1 Complete: You're Ready to Explore Sponsorship
+
+You've reviewed the four Week 3 learning outcomes and understand how sponsorship and betting revenue drive modern sports business. You've also seen how this week's milestone contributes to your CFL Expansion Project.
+
+**Up Next: Module 2** explores the sponsorship ecosystem. You'll learn why sponsorship now exceeds ticketing revenue in most leagues and how brands evaluate partnership opportunities.
+```

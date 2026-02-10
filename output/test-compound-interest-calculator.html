@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compound Interest Calculator - See Your Money Grow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+            --color-positive: #059669;
+            --color-negative: #dc2626;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+        body { font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: white; color: var(--color-neutral-800); padding: 1.5rem; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .widget-box { background: var(--color-neutral-50); border: 2px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.5rem; }
+        .widget-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--color-neutral-800); color: white; padding: 0.25rem 0.75rem; border-radius: var(--border-radius-sm); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+        .widget-badge::before { content: ''; width: 6px; height: 6px; background: #22c55e; border-radius: 50%; }
+        .widget-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.25rem; }
+        .widget-subtitle { font-size: 0.85rem; color: var(--color-neutral-600); margin-bottom: 0.5rem; }
+        .widget-disclaimer { font-size: 0.75rem; color: var(--color-neutral-500); font-style: italic; margin-bottom: 0.75rem; }
+
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+
+        /* Splash screen */
+        .splash-screen { text-align: center; }
+        .splash-scenario { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-neutral-800); padding: 1.25rem; border-radius: var(--border-radius-sm); margin-bottom: 1.25rem; text-align: left; }
+        .splash-scenario-label { font-size: 0.7rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .splash-scenario-text { font-size: 0.9rem; color: var(--color-neutral-700); line-height: 1.7; }
+        .splash-scenario-text strong { color: var(--color-neutral-900); }
+        .splash-simplifications { background: var(--color-neutral-100); border-radius: var(--border-radius-sm); padding: 1.25rem; margin-bottom: 1.5rem; text-align: left; }
+        .splash-simplifications-title { font-size: 0.85rem; font-weight: 700; color: var(--color-neutral-800); margin-bottom: 0.75rem; }
+        .splash-simplifications ul { margin: 0; padding-left: 1.25rem; color: var(--color-neutral-600); font-size: 0.85rem; }
+        .splash-simplifications li { margin-bottom: 0.5rem; line-height: 1.5; }
+        .start-btn { background: var(--color-neutral-800); color: white; border: none; padding: 0.875rem 2rem; font-size: 0.95rem; font-weight: 600; border-radius: var(--border-radius-sm); cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .start-btn:hover { background: var(--color-neutral-700); }
+        .calculator-screen { display: none; }
+
+        /* Two-column layout */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+
+        /* Input panels */
+        .input-panel { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1.25rem; }
+        .panel-title { font-size: 0.85rem; font-weight: 700; color: var(--color-neutral-800); margin-bottom: 1rem; border-bottom: 1px solid var(--color-neutral-200); padding-bottom: 0.5rem; }
+
+        .input-group { margin-bottom: 1rem; }
+        .input-group:last-child { margin-bottom: 0; }
+        .input-label { display: block; font-size: 0.8rem; font-weight: 500; color: var(--color-neutral-700); margin-bottom: 0.375rem; }
+        .input-field { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid var(--color-neutral-300); border-radius: var(--border-radius-sm); font-family: inherit; font-size: 0.9rem; }
+        .input-field:focus { border-color: var(--color-accent); }
+        .input-hint { font-size: 0.7rem; color: var(--color-neutral-500); margin-top: 0.25rem; }
+
+        /* Range slider */
+        input[type="range"] { width: 100%; height: 6px; border-radius: 3px; background: var(--color-neutral-300); -webkit-appearance: none; appearance: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--color-neutral-800); cursor: pointer; }
+        .range-display { text-align: center; font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.5rem; }
+        .range-hints { display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--color-neutral-500); }
+
+        /* Presets */
+        .presets { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .preset-btn { padding: 0.375rem 0.75rem; background: white; border: 1px solid var(--color-neutral-300); border-radius: var(--border-radius-sm); font-size: 0.75rem; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .preset-btn:hover { border-color: var(--color-neutral-500); }
+        .preset-btn.active { background: var(--color-neutral-800); color: white; border-color: var(--color-neutral-800); }
+
+        /* Calculate button */
+        .calculate-btn { width: 100%; background: var(--color-neutral-800); color: white; border: none; padding: 0.875rem; font-size: 0.95rem; font-weight: 600; border-radius: var(--border-radius-sm); cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .calculate-btn:hover { background: var(--color-neutral-700); }
+
+        /* Results section */
+        .results-section { display: none; animation: fadeIn 0.3s ease-out; }
+        .results-section.visible { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Metrics row */
+        .metrics-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
+        .metric-card { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; text-align: center; }
+        .metric-label { font-size: 0.65rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem; }
+        .metric-value { font-size: 1.1rem; font-weight: 700; color: var(--color-neutral-900); }
+        .metric-value.positive { color: var(--color-positive); }
+
+        /* Chart container */
+        .chart-container { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; margin-bottom: 1.5rem; }
+        .chart-title { font-size: 0.85rem; font-weight: 600; color: var(--color-neutral-800); margin-bottom: 0.75rem; }
+        .chart-wrapper { height: 250px; }
+
+        /* Insight box */
+        .insight-box { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); padding: 1rem; border-radius: var(--border-radius-sm); margin-bottom: 1rem; }
+        .insight-title { font-size: 0.85rem; font-weight: 600; color: var(--color-neutral-800); margin-bottom: 0.5rem; }
+        .insight-text { font-size: 0.8rem; color: var(--color-neutral-600); line-height: 1.6; }
+        .insight-text strong { color: var(--color-neutral-800); }
+
+        /* Action buttons */
+        .action-row { display: flex; gap: 0.75rem; }
+        .btn-secondary { flex: 1; padding: 0.625rem; background: var(--color-neutral-200); color: var(--color-neutral-700); border: none; border-radius: var(--border-radius-sm); font-size: 0.85rem; font-weight: 500; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .btn-secondary:hover { background: var(--color-neutral-300); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .two-col { grid-template-columns: 1fr; }
+            .metrics-row { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            * { animation: none !important; transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+            <div class="widget-badge">Interactive Calculator</div>
+            <h1 class="widget-title">Compound Interest Calculator</h1>
+            <p class="widget-subtitle">See how your money grows over time with the power of compounding</p>
+            <p class="widget-disclaimer">For educational purposes. Actual returns vary based on market conditions.</p>
+
+            <!-- Splash Screen -->
+            <div class="splash-screen" id="splashScreen">
+                <div class="splash-scenario">
+                    <div class="splash-scenario-label">Your Scenario</div>
+                    <p class="splash-scenario-text">
+                        You're a recent graduate starting your first job. Your employer offers a 401(k) with company match, but you're wondering: <strong>Is it really worth investing now when I have student loans?</strong> This calculator shows you exactly how time and compound interest affect your wealth—and why starting early matters more than starting big.
+                    </p>
+                </div>
+
+                <div class="splash-simplifications">
+                    <div class="splash-simplifications-title">Model Simplifications</div>
+                    <ul>
+                        <li><strong>Fixed return rate:</strong> Real returns fluctuate annually; we use average historical returns</li>
+                        <li><strong>No inflation adjustment:</strong> Future values shown in today's dollars without inflation</li>
+                        <li><strong>Monthly compounding:</strong> Interest compounds monthly (some accounts compound daily)</li>
+                        <li><strong>No taxes:</strong> Tax-advantaged accounts assumed; taxable accounts would reduce returns</li>
+                    </ul>
+                </div>
+
+                <button class="start-btn" onclick="showCalculator()">Start Calculating</button>
+            </div>
+
+            <!-- Calculator Screen -->
+            <div class="calculator-screen" id="calculatorScreen">
+
+                <!-- Presets -->
+                <div class="presets">
+                    <button class="preset-btn active" onclick="loadPreset('starter')">Young Starter</button>
+                    <button class="preset-btn" onclick="loadPreset('aggressive')">Aggressive Saver</button>
+                    <button class="preset-btn" onclick="loadPreset('latestart')">Late Starter</button>
+                    <button class="preset-btn" onclick="loadPreset('custom')">Custom</button>
+                </div>
+
+                <!-- Input Section -->
+                <div class="two-col">
+                    <div class="input-panel">
+                        <div class="panel-title">Investment Details</div>
+
+                        <div class="input-group">
+                            <label class="input-label" for="initialAmount">Initial Investment</label>
+                            <input type="number" id="initialAmount" class="input-field" value="1000" min="0" step="100" aria-describedby="initialHint">
+                            <div class="input-hint" id="initialHint">Starting amount you have to invest today</div>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label" for="monthlyContribution">Monthly Contribution</label>
+                            <input type="number" id="monthlyContribution" class="input-field" value="200" min="0" step="25" aria-describedby="monthlyHint">
+                            <div class="input-hint" id="monthlyHint">Amount you'll add each month</div>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label" for="years">Investment Period (Years)</label>
+                            <div class="range-display" id="yearsDisplay">30 years</div>
+                            <input type="range" id="years" min="1" max="50" value="30" aria-label="Investment period in years">
+                            <div class="range-hints">
+                                <span>1 year</span>
+                                <span>50 years</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-panel">
+                        <div class="panel-title">Return Assumptions</div>
+
+                        <div class="input-group">
+                            <label class="input-label" for="returnRate">Expected Annual Return</label>
+                            <div class="range-display" id="returnDisplay">7.0%</div>
+                            <input type="range" id="returnRate" min="1" max="15" step="0.5" value="7" aria-label="Expected annual return percentage">
+                            <div class="range-hints">
+                                <span>1% (Savings)</span>
+                                <span>15% (Aggressive)</span>
+                            </div>
+                            <div class="input-hint">S&P 500 historical average: 10%. After inflation: 7%</div>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label" for="compounding">Compounding Frequency</label>
+                            <select id="compounding" class="input-field">
+                                <option value="12">Monthly</option>
+                                <option value="4">Quarterly</option>
+                                <option value="1">Annually</option>
+                                <option value="365">Daily</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="calculate-btn" onclick="calculate()">Calculate Future Value</button>
+
+                <div id="sr-announcement" role="status" aria-live="polite" class="sr-only"></div>
+
+                <!-- Results Section -->
+                <div class="results-section" id="resultsSection">
+                    <div class="metrics-row">
+                        <div class="metric-card">
+                            <div class="metric-label">Future Value</div>
+                            <div class="metric-value positive" id="futureValue">$0</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Total Contributions</div>
+                            <div class="metric-value" id="totalContributions">$0</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Interest Earned</div>
+                            <div class="metric-value positive" id="interestEarned">$0</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Growth Multiple</div>
+                            <div class="metric-value" id="growthMultiple">0x</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-title">Wealth Growth Over Time</div>
+                        <div class="chart-wrapper">
+                            <canvas id="growthChart" role="img" aria-label="Line chart showing investment growth over time"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="insight-box" id="insightBox">
+                        <div class="insight-title">Key Insight</div>
+                        <p class="insight-text" id="insightText">Your insight will appear here after calculation.</p>
+                    </div>
+
+                    <div class="action-row">
+                        <button class="btn-secondary" onclick="resetCalculator()">Start Over</button>
+                        <button class="btn-secondary" onclick="exportResults()">Export Results</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let chart = null;
+
+        // Show calculator
+        function showCalculator() {
+            document.getElementById('splashScreen').style.display = 'none';
+            document.getElementById('calculatorScreen').style.display = 'block';
+        }
+
+        // Update range displays
+        document.getElementById('years').addEventListener('input', function() {
+            document.getElementById('yearsDisplay').textContent = this.value + ' years';
+        });
+
+        document.getElementById('returnRate').addEventListener('input', function() {
+            document.getElementById('returnDisplay').textContent = this.value + '%';
+        });
+
+        // Preset configurations
+        const presets = {
+            starter: { initial: 1000, monthly: 200, years: 30, rate: 7 },
+            aggressive: { initial: 5000, monthly: 500, years: 25, rate: 9 },
+            latestart: { initial: 10000, monthly: 800, years: 15, rate: 7 },
+            custom: { initial: 0, monthly: 0, years: 20, rate: 7 }
+        };
+
+        function loadPreset(preset) {
+            const config = presets[preset];
+            document.getElementById('initialAmount').value = config.initial;
+            document.getElementById('monthlyContribution').value = config.monthly;
+            document.getElementById('years').value = config.years;
+            document.getElementById('yearsDisplay').textContent = config.years + ' years';
+            document.getElementById('returnRate').value = config.rate;
+            document.getElementById('returnDisplay').textContent = config.rate + '%';
+
+            // Update active button
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Calculate compound interest
+        function calculate() {
+            const principal = parseFloat(document.getElementById('initialAmount').value) || 0;
+            const monthly = parseFloat(document.getElementById('monthlyContribution').value) || 0;
+            const years = parseInt(document.getElementById('years').value);
+            const annualRate = parseFloat(document.getElementById('returnRate').value) / 100;
+            const compoundingFreq = parseInt(document.getElementById('compounding').value);
+
+            const periodicRate = annualRate / compoundingFreq;
+            const totalPeriods = years * compoundingFreq;
+
+            // Calculate future value with monthly contributions
+            let futureValue = principal * Math.pow(1 + periodicRate, totalPeriods);
+
+            // Add contributions (PMT formula for annuity)
+            const monthlyPeriods = years * 12;
+            const monthlyRate = annualRate / 12;
+            futureValue += monthly * ((Math.pow(1 + monthlyRate, monthlyPeriods) - 1) / monthlyRate);
+
+            const totalContributions = principal + (monthly * 12 * years);
+            const interestEarned = futureValue - totalContributions;
+            const growthMultiple = totalContributions > 0 ? futureValue / totalContributions : 0;
+
+            // Update display
+            document.getElementById('futureValue').textContent = formatCurrency(futureValue);
+            document.getElementById('totalContributions').textContent = formatCurrency(totalContributions);
+            document.getElementById('interestEarned').textContent = formatCurrency(interestEarned);
+            document.getElementById('growthMultiple').textContent = growthMultiple.toFixed(1) + 'x';
+
+            // Generate insight
+            const interestPercent = ((interestEarned / futureValue) * 100).toFixed(0);
+            let insight = '';
+            if (years >= 30) {
+                insight = `Over ${years} years, <strong>${interestPercent}% of your wealth comes from compound interest</strong>, not your contributions. This is why starting early matters—time does most of the heavy lifting. Even a 5-year head start can mean hundreds of thousands more at retirement.`;
+            } else if (years >= 20) {
+                insight = `In ${years} years, compound interest contributes <strong>${interestPercent}% of your total wealth</strong>. Consider extending your timeline if possible—each additional decade roughly doubles the compounding effect.`;
+            } else {
+                insight = `With a ${years}-year timeline, your contributions still dominate (${100-interestPercent}% of total). <strong>The real power of compounding emerges after 20+ years</strong>. If you can extend your timeline, you'll see dramatically different results.`;
+            }
+            document.getElementById('insightText').innerHTML = insight;
+
+            // Show results
+            document.getElementById('resultsSection').classList.add('visible');
+
+            // Announce to screen readers
+            document.getElementById('sr-announcement').textContent =
+                `Calculation complete. Future value: ${formatCurrency(futureValue)}. Interest earned: ${formatCurrency(interestEarned)}.`;
+
+            // Generate chart data
+            updateChart(principal, monthly, annualRate, years);
+
+            // Scroll to results
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function updateChart(principal, monthly, annualRate, years) {
+            const labels = [];
+            const values = [];
+            const contributions = [];
+
+            for (let year = 0; year <= years; year++) {
+                labels.push('Year ' + year);
+
+                const monthlyRate = annualRate / 12;
+                const months = year * 12;
+
+                let fv = principal * Math.pow(1 + monthlyRate, months);
+                fv += monthly * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+
+                values.push(fv);
+                contributions.push(principal + (monthly * 12 * year));
+            }
+
+            if (chart) {
+                chart.destroy();
+            }
+
+            const ctx = document.getElementById('growthChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Total Value',
+                            data: values,
+                            borderColor: '#6b9085',
+                            backgroundColor: 'rgba(107, 144, 133, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Contributions',
+                            data: contributions,
+                            borderColor: '#737373',
+                            backgroundColor: 'transparent',
+                            borderDash: [5, 5],
+                            tension: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { font: { family: 'Geist', size: 11 } }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + (value / 1000).toFixed(0) + 'k';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                maximumFractionDigits: 0
+            }).format(value);
+        }
+
+        function resetCalculator() {
+            document.getElementById('resultsSection').classList.remove('visible');
+            loadPreset('starter');
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.preset-btn').classList.add('active');
+        }
+
+        function exportResults() {
+            const futureValue = document.getElementById('futureValue').textContent;
+            const contributions = document.getElementById('totalContributions').textContent;
+            const interest = document.getElementById('interestEarned').textContent;
+            const multiple = document.getElementById('growthMultiple').textContent;
+
+            const text = `COMPOUND INTEREST CALCULATION RESULTS
+=====================================
+Future Value: ${futureValue}
+Total Contributions: ${contributions}
+Interest Earned: ${interest}
+Growth Multiple: ${multiple}
+
+Initial Investment: $${document.getElementById('initialAmount').value}
+Monthly Contribution: $${document.getElementById('monthlyContribution').value}
+Investment Period: ${document.getElementById('years').value} years
+Expected Return: ${document.getElementById('returnRate').value}%
+
+Generated by Personal Finance Calculator
+For educational purposes only.`;
+
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'compound-interest-results.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

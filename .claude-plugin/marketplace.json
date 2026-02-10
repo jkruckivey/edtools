@@ -9,7 +9,7 @@
     {
       "name": "edtools-plugin",
       "source": "./",
-      "description": "Comprehensive toolkit for course developers with 18 specialized agents, 15 slash commands, hooks, skills, and automatic code review",
+      "description": "Comprehensive toolkit for course developers with 25 specialized agents (including 5-agent Uplimit storyboard pipeline and Canvas Learn agents), 25 slash commands, hooks, skills, and automatic code review",
       "version": "1.0.0",
       "author": {"name": "James Kruck"},
       "license": "MIT",
@@ -18,19 +18,29 @@
       "commands": [
         "./commands/audit-module.md",
         "./commands/build-storyboard.md",
+        "./commands/build-widgets.md",
+        "./commands/check-assessment-consistency.md",
         "./commands/check-branding.md",
         "./commands/check-cohort-structure.md",
         "./commands/check-concept-threading.md",
+        "./commands/check-self-paced-structure.md",
         "./commands/check-terminology.md",
         "./commands/create-outline.md",
         "./commands/design-assessment.md",
         "./commands/design-widget.md",
         "./commands/generate-rubric.md",
+        "./commands/generate-udl-content.md",
         "./commands/hello.md",
         "./commands/peer-review.md",
+        "./commands/review-backend.md",
         "./commands/review-content.md",
+        "./commands/review-frontend.md",
         "./commands/simulate-journey.md",
-        "./commands/test-widget.md"
+        "./commands/test-widget.md",
+        "./commands/uplimit-accessibility.md",
+        "./commands/uplimit-audit.md",
+        "./commands/uplimit-build.md",
+        "./commands/uplimit-structure.md"
       ],
       "agents": [
         "./agents/accessibility-auditor.md",
@@ -49,9 +59,15 @@
         "./agents/terminology-consistency-checker.md",
         "./agents/test-agent.md",
         "./agents/udl-content-generator.md",
-        "./agents/uplimit-storyboard-builder.md",
+        "./agents/uplimit-structure-agent.md",
+        "./agents/uplimit-builder-agent.md",
+        "./agents/uplimit-auditor-agent.md",
+        "./agents/uplimit-accessibility-auditor.md",
         "./agents/widget-designer.md",
-        "./agents/widget-tester.md"
+        "./agents/widget-tester.md",
+        "./agents/html-to-png.md",
+        "./agents/canvas-page-builder.md",
+        "./agents/canvas-widget-builder.md"
       ]
     }
   ]
